@@ -1,1 +1,1 @@
-worker: sh target/bin/doctr-spring
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/*.jar
