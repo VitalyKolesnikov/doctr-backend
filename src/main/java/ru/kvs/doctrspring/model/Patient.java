@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 public class Patient extends Person {
 
-    @Column(name = "info", nullable = false)
+    @Column(name = "info")
     private String info;
 
     @ManyToOne(fetch = FetchType.LAZY)

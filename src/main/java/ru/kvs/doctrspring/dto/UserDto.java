@@ -13,20 +13,16 @@ import ru.kvs.doctrspring.model.User;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDto {
-    private Long id;
+public class UserDto extends PersonDto {
     private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
 
-    public User toUser(){
+    public User toUser() {
         User user = new User();
-        user.setId(id);
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
+        user.setId(getId());
+        user.setUsername(getUsername());
+        user.setFirstName(getFirstName());
+        user.setLastName(getLastName());
+        user.setEmail(getEmail());
 
         return user;
     }

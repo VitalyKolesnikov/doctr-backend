@@ -8,5 +8,5 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    List<Patient> findAll();
+    List<Patient> findByDoctorId(Long id);
 }

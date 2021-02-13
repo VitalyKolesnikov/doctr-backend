@@ -19,8 +19,11 @@ import java.util.Date;
 @Data
 public abstract class BaseEntity {
 
+    public static final int START_SEQ = 1000;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private Long id;
 
     @CreatedDate
