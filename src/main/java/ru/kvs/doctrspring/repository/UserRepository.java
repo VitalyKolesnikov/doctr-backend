@@ -11,5 +11,5 @@ import ru.kvs.doctrspring.model.User;
  */
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String name);
+    User findByUsernameIgnoreCase(String name);
 }

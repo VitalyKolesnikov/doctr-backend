@@ -9,17 +9,17 @@ CREATE SEQUENCE global_seq START WITH 1000;
 CREATE TABLE users
 (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    username    VARCHAR                              NOT NULL,
-    password    VARCHAR                              NOT NULL,
-    first_name  VARCHAR                              NOT NULL,
+    username    VARCHAR NOT NULL,
+    password    VARCHAR NOT NULL,
+    first_name  VARCHAR NOT NULL,
     middle_name VARCHAR,
-    last_name   VARCHAR                              NOT NULL,
-    email       VARCHAR                              NOT NULL,
-    phone       VARCHAR                              NOT NULL,
+    last_name   VARCHAR NOT NULL,
+    email       VARCHAR NOT NULL,
+    phone       VARCHAR NOT NULL,
     birth_date  DATE,
     created     TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
     updated     TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
-    status      VARCHAR             DEFAULT 'ACTIVE' NOT NULL
+    status      VARCHAR             DEFAULT 'ACTIVE'
 );
 CREATE
     UNIQUE INDEX user_unique_email_idx ON users (email);
@@ -27,10 +27,10 @@ CREATE
 CREATE TABLE roles
 (
     id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    name    VARCHAR                              NOT NULL,
+    name    VARCHAR NOT NULL,
     created TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
     updated TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
-    status  VARCHAR             DEFAULT 'ACTIVE' NOT NULL
+    status  VARCHAR             DEFAULT 'ACTIVE'
 );
 
 CREATE TABLE user_roles
@@ -45,18 +45,16 @@ CREATE TABLE user_roles
 CREATE TABLE patients
 (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    first_name  VARCHAR                              NOT NULL,
+    first_name  VARCHAR NOT NULL,
     middle_name VARCHAR,
-    last_name   VARCHAR                              NOT NULL,
+    last_name   VARCHAR NOT NULL,
     email       VARCHAR,
     phone       VARCHAR,
     birth_date  DATE,
     info        VARCHAR,
-    doctor_id   INTEGER                              NOT NULL,
+    doctor_id   INTEGER NOT NULL,
     created     TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
     updated     TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
-    status      VARCHAR             DEFAULT 'ACTIVE' NOT NULL,
+    status      VARCHAR             DEFAULT 'ACTIVE',
     FOREIGN KEY (doctor_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-CREATE
-    UNIQUE INDEX patient_unique_email_idx ON patients (email);
