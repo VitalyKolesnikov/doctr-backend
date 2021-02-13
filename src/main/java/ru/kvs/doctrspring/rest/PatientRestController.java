@@ -33,7 +33,7 @@ public class PatientRestController {
         return patientRepository.findAll();
     }
 
-//    @GetMapping("/{id}")
+//    @GetMapping("{id}")
 //    public Patient get(@PathVariable int id) {
 //        log.info("Get patient by id");
 //        return patientRepository.findById(id).orElseThrow();
