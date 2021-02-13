@@ -44,7 +44,7 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<Map<Object, Object>> login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
@@ -59,6 +59,8 @@ public class AuthenticationRestController {
             Map<Object, Object> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
+            response.put("firstName", user.getFirstName());
+            response.put("lastName", user.getLastName());
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

@@ -6,7 +6,7 @@ ALTER SEQUENCE global_seq RESTART WITH 1000;
 
 INSERT INTO users (username, password, first_name, middle_name, last_name, email, phone, birth_date)
 VALUES ('nastya', '$2y$12$bjmCKwn/pjo.suvNTJeuluYlF0aDERqM2qE1eq1MPd6QPFrczYmPW', 'Анастасия', 'Леонидовна',
-        'Логвинова', 'doclogvinova@ya.ru', '+7-966-043-1809', '1989-06-23'),
+        'Колесникова', 'doclogvinova@ya.ru', '+7-966-043-1809', '1989-06-23'),
        ('katya', '$2y$12$xqESEK6d5PxiICEXkgHAU.MzD/McAC0rP24owv0QKuF7PCkN2iK.a', 'Екатерина', 'Юрьевна',
         'Шестакова', 'katya@ya.ru', '+7-966-085-1567', '1990-12-14');
 
