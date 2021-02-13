@@ -12,7 +12,7 @@ import ru.kvs.doctrspring.repository.UserRepository;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/patients")
+@RequestMapping(value = "/api/v1/patients/")
 public class PatientRestController {
 
     private final static int DOCTOR_ID = 1000;

@@ -20,12 +20,12 @@ import ru.kvs.doctrspring.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/v1/admin/")
-public class AdminRestControllerV1 {
+public class AdminRestController {
 
     private final UserService userService;
 
     @Autowired
-    public AdminRestControllerV1(UserService userService) {
+    public AdminRestController(UserService userService) {
         this.userService = userService;
     }
 
