@@ -17,7 +17,7 @@ import java.util.Date;
 
 @MappedSuperclass
 @Data
-public abstract class BaseEntity {
+public abstract class BaseEntity implements HasId {
 
     public static final int START_SEQ = 1000;
 

@@ -2,6 +2,7 @@ package ru.kvs.doctrspring.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static ru.kvs.doctrspring.rest.PatientRestController.REST_URL;
+import static ru.kvs.doctrspring.util.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(value = REST_URL)
@@ -38,11 +40,21 @@ public class PatientRestController {
         return patientService.getAll();
     }
 
-//    @GetMapping("{id}")
-//    public Patient get(@PathVariable int id) {
-//        log.info("Get patient by id");
-//        return patientRepository.findById(id).orElseThrow();
-//    }
+    @GetMapping("{id}")
+    public ResponseEntity<Patient> get(@PathVariable long id) {
+        log.info("Get patient by id={}", id);
+        Patient patient = patientService.get(id, AuthUtil.getAuthUserId());
+        return ResponseEntity.ok(patient);
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody Patient patient, @PathVariable long id) {
+        long doctorId = AuthUtil.getAuthUserId();
+        assureIdConsistent(patient, id);
+        log.info("update {} for user {}", patient, doctorId);
+        patientService.update(patient, doctorId);
+    }
 
     @PostMapping
     @Transactional
