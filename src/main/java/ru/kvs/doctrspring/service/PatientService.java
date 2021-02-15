@@ -9,4 +9,5 @@ public interface PatientService {
     Patient get(long id, long doctorId);
     void update(Patient patient, long doctorId);
     Patient save(Patient patient);
+    void delete(long id, long doctorId);
 }

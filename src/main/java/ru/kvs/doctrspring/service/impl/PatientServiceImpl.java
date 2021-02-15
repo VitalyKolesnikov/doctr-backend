@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.kvs.doctrspring.util.ValidationUtil.checkNotFoundWithId;
-
 @Service
 @Slf4j
 public class PatientServiceImpl implements PatientService {
@@ -46,6 +44,7 @@ public class PatientServiceImpl implements PatientService {
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
         Patient savedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
+        Assert.notNull(savedPatient, "no patient found!");
         patient.setDoctor(userRepository.getOne(doctorId));
         patient.setCreated(savedPatient.getCreated());
         patient.setUpdated(new Date());
@@ -53,11 +52,19 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.save(patient);
     }
 
-
     @Override
     public Patient save(Patient patient) {
         return patientRepository.save(patient);
     }
 
+    @Override
+    public void delete(long id, long doctorId) {
+        Patient patient = patientRepository.findByIdAndDoctorId(id, doctorId);
+        if (!Status.DELETED.equals(patient.getStatus())) {
+            patient.setUpdated(new Date());
+            patient.setStatus(Status.DELETED);
+            patientRepository.save(patient);
+        }
+    }
 
 }

@@ -73,4 +73,10 @@ public class PatientRestController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @DeleteMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+        patientService.delete(id, AuthUtil.getAuthUserId());
+    }
+
 }
