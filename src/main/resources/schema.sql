@@ -1,4 +1,6 @@
+DROP TABLE IF EXISTS visits;
 DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS clinics;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS users;
@@ -57,4 +59,35 @@ CREATE TABLE patients
     updated     TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
     status      VARCHAR             DEFAULT 'ACTIVE',
     FOREIGN KEY (doctor_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+);
+
+CREATE TABLE clinics
+(
+    id        INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    name      VARCHAR NOT NULL,
+    phone     VARCHAR,
+    address   VARCHAR,
+    doctor_id INTEGER NOT NULL,
+    created   TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    updated   TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    status    VARCHAR             DEFAULT 'ACTIVE',
+    FOREIGN KEY (doctor_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+);
+
+CREATE TABLE visits
+(
+    id         INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    doctor_id INTEGER NOT NULL,
+    patient_id INTEGER NOT NULL,
+    clinic_id  INTEGER NOT NULL,
+    visit_date DATE,
+    sum_rub    INTEGER,
+    sum_kop    INTEGER,
+    info       VARCHAR,
+    created    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    updated    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    status     VARCHAR             DEFAULT 'ACTIVE',
+    FOREIGN KEY (doctor_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (patient_id) REFERENCES patients (id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (clinic_id) REFERENCES clinics (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
