@@ -27,13 +27,10 @@ public class Visit extends BaseEntity {
 
     @Column(name = "visit_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate visitDate;
+    private LocalDate date;
 
-    @Column(name = "sum_rub")
-    private Integer sumRub;
-
-    @Column(name = "sum_kop")
-    private Integer sumKop;
+    @Column(name = "cost")
+    private Integer cost;
 
     @Column(name = "info")
     private String info;

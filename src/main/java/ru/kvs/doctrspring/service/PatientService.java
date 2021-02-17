@@ -3,6 +3,7 @@ package ru.kvs.doctrspring.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import ru.kvs.doctrspring.dto.PatientDto;
 import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.PatientRepository;
@@ -37,6 +38,14 @@ public class PatientService {
         return patientRepository.findByIdAndDoctorId(id, doctorId);
     }
 
+    public List<Patient> getSuggested(String part) {
+        return getAll().stream()
+                .filter(p -> (p.getLastName().toLowerCase().contains(part) ||
+                        p.getFirstName().toLowerCase().contains(part)) ||
+                        p.getMiddleName().toLowerCase().contains(part))
+                .collect(Collectors.toList());
+    }
+
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
@@ -48,8 +57,13 @@ public class PatientService {
         patientRepository.save(patient);
     }
 
-    public Patient save(Patient patient) {
-        return patientRepository.save(patient);
+    public Patient save(PatientDto patientDto) {
+        Patient created = patientDto.toPatient();
+        created.setCreated(new Date());
+        created.setUpdated(new Date());
+        created.setStatus(Status.ACTIVE);
+        created.setDoctor(AuthUtil.getAuthUser());
+        return patientRepository.save(created);
     }
 
     public void delete(long id, long doctorId) {

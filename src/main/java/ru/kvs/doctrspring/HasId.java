@@ -1,8 +1,9 @@
-package ru.kvs.doctrspring.model;
+package ru.kvs.doctrspring;
 
 import org.springframework.util.Assert;
 
 public interface HasId {
+
     Long getId();
 
     void setId(Long id);

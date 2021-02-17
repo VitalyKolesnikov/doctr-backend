@@ -1,10 +1,16 @@
 package ru.kvs.doctrspring.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import ru.kvs.doctrspring.dto.VisitDto;
+import ru.kvs.doctrspring.model.Clinic;
+import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
+import ru.kvs.doctrspring.repository.ClinicRepository;
+import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.UserRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
@@ -19,14 +25,19 @@ public class VisitService {
 
     private final VisitRepository visitRepository;
     private final UserRepository userRepository;
+    private final ClinicRepository clinicRepository;
+    private final PatientRepository patientRepository;
 
-    public VisitService(VisitRepository visitRepository, UserRepository userRepository) {
+    public VisitService(VisitRepository visitRepository, UserRepository userRepository, ClinicRepository clinicRepository, PatientRepository patientRepository) {
         this.visitRepository = visitRepository;
         this.userRepository = userRepository;
+        this.clinicRepository = clinicRepository;
+        this.patientRepository = patientRepository;
     }
 
     public List<Visit> getAll() {
-        List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
+        List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId(),
+                Sort.by(Sort.Direction.DESC, "date"));
         log.info("Filtering active visits");
         return visits.stream()
                 .filter(p -> Status.ACTIVE.equals(p.getStatus()))
@@ -37,19 +48,39 @@ public class VisitService {
         return visitRepository.findByIdAndDoctorId(id, doctorId);
     }
 
-    public void update(Visit visit, long doctorId) {
-        Assert.notNull(visit, "visit must not be null");
-        Visit storedVisit = visitRepository.findByIdAndDoctorId(visit.getId(), doctorId);
+    public void update(VisitDto visitDto, long doctorId) {
+        Assert.notNull(visitDto, "visit must not be null");
+        Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), doctorId);
         Assert.notNull(storedVisit, "no visit found!");
-        visit.setDoctor(userRepository.getOne(doctorId));
-        visit.setCreated(storedVisit.getCreated());
-        visit.setUpdated(new Date());
-        visit.setStatus(storedVisit.getStatus());
-        visitRepository.save(visit);
+
+        Clinic clinic = clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), AuthUtil.getAuthUserId());
+        Patient patient = patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), AuthUtil.getAuthUserId());
+
+        storedVisit.setClinic(clinic);
+        storedVisit.setPatient(patient);
+
+        storedVisit.setDate(visitDto.getDate());
+        storedVisit.setCost(visitDto.getCost());
+        storedVisit.setInfo(visitDto.getInfo());
+
+        storedVisit.setUpdated(new Date());
+        visitRepository.save(storedVisit);
     }
 
-    public Visit save(Visit visit) {
-        return visitRepository.save(visit);
+    public Visit save(VisitDto visitDto) {
+        Visit created = visitDto.toVisit();
+        created.setCreated(new Date());
+        created.setUpdated(new Date());
+        created.setStatus(Status.ACTIVE);
+        created.setDoctor(AuthUtil.getAuthUser());
+
+        Clinic clinic = clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), AuthUtil.getAuthUserId());
+        Patient patient = patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), AuthUtil.getAuthUserId());
+
+        created.setClinic(clinic);
+        created.setPatient(patient);
+
+        return visitRepository.save(created);
     }
 
     public void delete(long id, long doctorId) {

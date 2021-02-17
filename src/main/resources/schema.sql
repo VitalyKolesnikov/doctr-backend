@@ -77,12 +77,11 @@ CREATE TABLE clinics
 CREATE TABLE visits
 (
     id         INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    doctor_id INTEGER NOT NULL,
+    doctor_id  INTEGER NOT NULL,
     patient_id INTEGER NOT NULL,
     clinic_id  INTEGER NOT NULL,
     visit_date DATE,
-    sum_rub    INTEGER,
-    sum_kop    INTEGER,
+    cost       INTEGER,
     info       VARCHAR,
     created    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
     updated    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,

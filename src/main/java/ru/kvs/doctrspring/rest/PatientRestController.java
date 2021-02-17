@@ -47,6 +47,12 @@ public class PatientRestController {
         return ResponseEntity.ok(patient);
     }
 
+    @GetMapping("suggest/{part}")
+    public List<Patient> getSuggested(@PathVariable String part) {
+        log.info("Get patients by suggestion={}", part);
+        return patientService.getSuggested(part.toLowerCase());
+    }
+
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody Patient patient, @PathVariable long id) {
@@ -59,12 +65,7 @@ public class PatientRestController {
     @PostMapping
     @Transactional
     public ResponseEntity<Patient> createWithLocation(@RequestBody PatientDto patientDto) {
-        Patient created = patientDto.toPatient();
-        created.setCreated(new Date());
-        created.setUpdated(new Date());
-        created.setStatus(Status.ACTIVE);
-        created.setDoctor(AuthUtil.getAuthUser());
-        created = patientService.save(created);
+        Patient created = patientService.save(patientDto);
         log.info("Create new patient {}", created);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

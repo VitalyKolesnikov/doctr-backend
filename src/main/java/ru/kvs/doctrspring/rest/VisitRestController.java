@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.kvs.doctrspring.dto.VisitDto;
-import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.model.Status;
+import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.security.AuthUtil;
 import ru.kvs.doctrspring.service.VisitService;
 
@@ -50,27 +50,23 @@ public class VisitRestController {
 
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Visit Visit, @PathVariable long id) {
+    public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
         long doctorId = AuthUtil.getAuthUserId();
-        assureIdConsistent(Visit, id);
-        log.info("update {} for user {}", Visit, doctorId);
-        visitService.update(Visit, doctorId);
+        assureIdConsistent(visitDto, id);
+        log.info("update {} for user {}", visitDto, doctorId);
+        visitService.update(visitDto, doctorId);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Visit> createWithLocation(@RequestBody Visit visit) {
-        visit.setCreated(new Date());
-        visit.setUpdated(new Date());
-        visit.setStatus(Status.ACTIVE);
-        visit.setDoctor(AuthUtil.getAuthUser());
-        visit = visitService.save(visit);
-        log.info("Create new visit {}", visit);
+    public ResponseEntity<Visit> createWithLocation(@RequestBody VisitDto visitDto) {
+        Visit created = visitService.save(visitDto);
+        log.info("Create new visit {}", visitDto);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(visit.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(visit);
+                .buildAndExpand(visitDto.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @DeleteMapping("{id}")
