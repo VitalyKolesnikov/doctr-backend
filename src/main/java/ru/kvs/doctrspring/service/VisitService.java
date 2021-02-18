@@ -11,7 +11,6 @@ import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.repository.ClinicRepository;
 import ru.kvs.doctrspring.repository.PatientRepository;
-import ru.kvs.doctrspring.repository.UserRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
 
@@ -23,21 +22,22 @@ import java.util.stream.Collectors;
 @Slf4j
 public class VisitService {
 
+    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
+
     private final VisitRepository visitRepository;
-    private final UserRepository userRepository;
     private final ClinicRepository clinicRepository;
     private final PatientRepository patientRepository;
 
-    public VisitService(VisitRepository visitRepository, UserRepository userRepository, ClinicRepository clinicRepository, PatientRepository patientRepository) {
+    public VisitService(VisitRepository visitRepository,
+                        ClinicRepository clinicRepository,
+                        PatientRepository patientRepository) {
         this.visitRepository = visitRepository;
-        this.userRepository = userRepository;
         this.clinicRepository = clinicRepository;
         this.patientRepository = patientRepository;
     }
 
     public List<Visit> getAll() {
-        List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId(),
-                Sort.by(Sort.Direction.DESC, "date"));
+        List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId(), SORT_BY_DATE);
         log.info("Filtering active visits");
         return visits.stream()
                 .filter(p -> Status.ACTIVE.equals(p.getStatus()))
@@ -48,38 +48,26 @@ public class VisitService {
         return visitRepository.findByIdAndDoctorId(id, doctorId);
     }
 
+    public List<Visit> getForPatient(long doctorId, long patientId) {
+        return visitRepository.findAllByDoctorIdAndPatientId(doctorId, patientId, SORT_BY_DATE);
+    }
+
     public void update(VisitDto visitDto, long doctorId) {
         Assert.notNull(visitDto, "visit must not be null");
         Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), doctorId);
         Assert.notNull(storedVisit, "no visit found!");
-
-        Clinic clinic = clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), AuthUtil.getAuthUserId());
-        Patient patient = patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), AuthUtil.getAuthUserId());
-
-        storedVisit.setClinic(clinic);
-        storedVisit.setPatient(patient);
-
+        setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), storedVisit);
         storedVisit.setDate(visitDto.getDate());
         storedVisit.setCost(visitDto.getCost());
         storedVisit.setInfo(visitDto.getInfo());
-
         storedVisit.setUpdated(new Date());
         visitRepository.save(storedVisit);
     }
 
-    public Visit save(VisitDto visitDto) {
+    public Visit create(VisitDto visitDto) {
         Visit created = visitDto.toVisit();
-        created.setCreated(new Date());
-        created.setUpdated(new Date());
-        created.setStatus(Status.ACTIVE);
         created.setDoctor(AuthUtil.getAuthUser());
-
-        Clinic clinic = clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), AuthUtil.getAuthUserId());
-        Patient patient = patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), AuthUtil.getAuthUserId());
-
-        created.setClinic(clinic);
-        created.setPatient(patient);
-
+        setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), created);
         return visitRepository.save(created);
     }
 
@@ -90,6 +78,13 @@ public class VisitService {
             visit.setStatus(Status.DELETED);
             visitRepository.save(visit);
         }
+    }
+
+    private void setClinicAndPatient(long clinicId, long patientId, Visit visit) {
+        Clinic clinic = clinicRepository.findByIdAndDoctorId(clinicId, AuthUtil.getAuthUserId());
+        Patient patient = patientRepository.findByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
+        visit.setClinic(clinic);
+        visit.setPatient(patient);
     }
 
 }

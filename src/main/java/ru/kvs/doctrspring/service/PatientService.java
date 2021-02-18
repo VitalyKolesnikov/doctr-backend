@@ -57,11 +57,8 @@ public class PatientService {
         patientRepository.save(patient);
     }
 
-    public Patient save(PatientDto patientDto) {
+    public Patient create(PatientDto patientDto) {
         Patient created = patientDto.toPatient();
-        created.setCreated(new Date());
-        created.setUpdated(new Date());
-        created.setStatus(Status.ACTIVE);
         created.setDoctor(AuthUtil.getAuthUser());
         return patientRepository.save(created);
     }

@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.kvs.doctrspring.dto.PatientDto;
 import ru.kvs.doctrspring.model.Patient;
-import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.security.AuthUtil;
 import ru.kvs.doctrspring.service.PatientService;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
 
 import static ru.kvs.doctrspring.rest.PatientRestController.REST_URL;
@@ -65,7 +63,7 @@ public class PatientRestController {
     @PostMapping
     @Transactional
     public ResponseEntity<Patient> createWithLocation(@RequestBody PatientDto patientDto) {
-        Patient created = patientService.save(patientDto);
+        Patient created = patientService.create(patientDto);
         log.info("Create new patient {}", created);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

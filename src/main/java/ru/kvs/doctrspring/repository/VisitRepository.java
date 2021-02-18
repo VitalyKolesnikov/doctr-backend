@@ -10,5 +10,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findAllByDoctorId(long id, Sort sort);
+    List<Visit> findAllByDoctorIdAndPatientId(long doctorId, long patientId, Sort sort);
     Visit findByIdAndDoctorId(long id, long doctorId);
 }

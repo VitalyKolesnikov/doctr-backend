@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 
 public interface HasId {
@@ -8,6 +9,7 @@ public interface HasId {
 
     void setId(Long id);
 
+    @JsonIgnore
     default boolean isNew() {
         return getId() == null;
     }

@@ -32,16 +32,16 @@ public abstract class BaseEntity implements HasId {
     @CreatedDate
     @Column(name = "created")
     @JsonIgnore
-    private Date created;
+    private Date created = new Date();
 
     @LastModifiedDate
     @Column(name = "updated")
     @JsonIgnore
-    private Date updated;
+    private Date updated = new Date();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     @JsonIgnore
-    private Status status;
+    private Status status = Status.ACTIVE;
 
 }

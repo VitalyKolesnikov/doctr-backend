@@ -7,14 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.kvs.doctrspring.dto.VisitDto;
-import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.security.AuthUtil;
 import ru.kvs.doctrspring.service.VisitService;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
 
 import static ru.kvs.doctrspring.rest.VisitRestController.REST_URL;
@@ -48,6 +46,12 @@ public class VisitRestController {
         return ResponseEntity.ok(Visit);
     }
 
+    @GetMapping("patient/{id}")
+    public List<Visit> getForPatient(@PathVariable long id) {
+        log.info("Get visits by patientId={}", id);
+        return visitService.getForPatient(AuthUtil.getAuthUserId(), id);
+    }
+
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
@@ -60,7 +64,7 @@ public class VisitRestController {
     @PostMapping
     @Transactional
     public ResponseEntity<Visit> createWithLocation(@RequestBody VisitDto visitDto) {
-        Visit created = visitService.save(visitDto);
+        Visit created = visitService.create(visitDto);
         log.info("Create new visit {}", visitDto);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
