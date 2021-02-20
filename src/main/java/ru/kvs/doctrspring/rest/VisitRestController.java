@@ -11,7 +11,6 @@ import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.security.AuthUtil;
 import ru.kvs.doctrspring.service.VisitService;
 
-import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class VisitRestController {
     public VisitRestController(VisitService visitService) {
         this.visitService = visitService;
     }
-
 
     @GetMapping
     public List<Visit> getAll() {
@@ -62,7 +60,6 @@ public class VisitRestController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<Visit> createWithLocation(@RequestBody VisitDto visitDto) {
         Visit created = visitService.create(visitDto);
         log.info("Create new visit {}", visitDto);

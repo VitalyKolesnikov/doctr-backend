@@ -11,7 +11,6 @@ import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.security.AuthUtil;
 import ru.kvs.doctrspring.service.PatientService;
 
-import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 
@@ -33,9 +32,9 @@ public class PatientRestController {
     }
 
     @GetMapping
-    public List<Patient> getAll() {
-        log.info("Get all patients");
-        return patientService.getAll();
+    public List<Patient> getActive() {
+        log.info("Get all active patients");
+        return patientService.getActive();
     }
 
     @GetMapping("{id}")
@@ -61,7 +60,6 @@ public class PatientRestController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<Patient> createWithLocation(@RequestBody PatientDto patientDto) {
         Patient created = patientService.create(patientDto);
         log.info("Create new patient {}", created);

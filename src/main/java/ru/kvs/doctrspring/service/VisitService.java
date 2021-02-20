@@ -3,6 +3,7 @@ package ru.kvs.doctrspring.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.kvs.doctrspring.dto.VisitDto;
 import ru.kvs.doctrspring.model.Clinic;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class VisitService {
 
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
@@ -59,7 +61,9 @@ public class VisitService {
         setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), storedVisit);
         storedVisit.setDate(visitDto.getDate());
         storedVisit.setCost(visitDto.getCost());
-        storedVisit.setInfo(visitDto.getInfo());
+        storedVisit.setPercent(visitDto.getPercent());
+        storedVisit.setChild(visitDto.getChild());
+        storedVisit.setFirst(visitDto.getFirst());
         storedVisit.setUpdated(new Date());
         visitRepository.save(storedVisit);
     }

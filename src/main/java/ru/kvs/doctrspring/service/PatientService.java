@@ -2,6 +2,7 @@ package ru.kvs.doctrspring.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.kvs.doctrspring.dto.PatientDto;
 import ru.kvs.doctrspring.model.Patient;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class PatientService {
 
     private final PatientRepository patientRepository;
@@ -26,7 +28,7 @@ public class PatientService {
         this.userRepository = userRepository;
     }
 
-    public List<Patient> getAll() {
+    public List<Patient> getActive() {
         List<Patient> patients = patientRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
         log.info("Filtering active patients");
         return patients.stream()
@@ -39,10 +41,12 @@ public class PatientService {
     }
 
     public List<Patient> getSuggested(String part) {
-        return getAll().stream()
-                .filter(p -> (p.getLastName().toLowerCase().contains(part) ||
+        return getActive().stream()
+                .filter(p -> (
+                        p.getLastName().toLowerCase().contains(part) ||
                         p.getFirstName().toLowerCase().contains(part)) ||
-                        p.getMiddleName().toLowerCase().contains(part))
+                        p.getMiddleName().toLowerCase().contains(part)
+                )
                 .collect(Collectors.toList());
     }
 

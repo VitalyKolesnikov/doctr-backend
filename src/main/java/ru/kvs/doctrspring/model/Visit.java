@@ -32,6 +32,15 @@ public class Visit extends BaseEntity {
     @Column(name = "cost")
     private Integer cost;
 
+    @Column(name = "percent")
+    private Integer percent;
+
+    @Column(name = "child")
+    private Boolean child;
+
+    @Column(name = "first")
+    private Boolean first;
+
     @Column(name = "info")
     private String info;
 

@@ -2,6 +2,7 @@ package ru.kvs.doctrspring.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kvs.doctrspring.model.Clinic;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.ClinicRepository;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class ClinicService {
 
     private final ClinicRepository clinicRepository;

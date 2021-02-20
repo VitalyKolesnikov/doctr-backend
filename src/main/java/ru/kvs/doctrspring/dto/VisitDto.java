@@ -15,12 +15,18 @@ public class VisitDto extends BaseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate date;
     private Integer cost;
+    private Integer percent;
+    private Boolean child;
+    private Boolean first;
     private String info;
 
     public Visit toVisit() {
         Visit visit = new Visit();
         visit.setDate(getDate());
         visit.setCost(getCost());
+        visit.setPercent(getPercent());
+        visit.setChild(getChild());
+        visit.setFirst(getFirst());
         visit.setInfo(getInfo());
         return visit;
     }
