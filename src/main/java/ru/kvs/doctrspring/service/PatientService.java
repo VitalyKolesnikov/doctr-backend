@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class PatientService {
+public class PatientService extends BaseService {
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
@@ -30,10 +30,7 @@ public class PatientService {
 
     public List<Patient> getActive() {
         List<Patient> patients = patientRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
-        log.info("Filtering active patients");
-        return patients.stream()
-                .filter(p -> Status.ACTIVE.equals(p.getStatus()))
-                .collect(Collectors.toList());
+        return filterActive(patients);
     }
 
     public Patient get(long id, long doctorId) {

@@ -17,12 +17,11 @@ import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Transactional
-public class VisitService {
+public class VisitService extends BaseService {
 
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
 
@@ -40,10 +39,7 @@ public class VisitService {
 
     public List<Visit> getAll() {
         List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId(), SORT_BY_DATE);
-        log.info("Filtering active visits");
-        return visits.stream()
-                .filter(p -> Status.ACTIVE.equals(p.getStatus()))
-                .collect(Collectors.toList());
+        return filterActive(visits);
     }
 
     public Visit get(long id, long doctorId) {
@@ -51,7 +47,8 @@ public class VisitService {
     }
 
     public List<Visit> getForPatient(long doctorId, long patientId) {
-        return visitRepository.findAllByDoctorIdAndPatientId(doctorId, patientId, SORT_BY_DATE);
+        List<Visit> visits = visitRepository.findAllByDoctorIdAndPatientId(doctorId, patientId, SORT_BY_DATE);
+        return filterActive(visits);
     }
 
     public void update(VisitDto visitDto, long doctorId) {
