@@ -29,7 +29,7 @@ public class PatientService extends BaseService {
     }
 
     public List<Patient> getActive() {
-        List<Patient> patients = patientRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
+        List<Patient> patients = patientRepository.findAllByDoctorIdOrderByCreatedDesc(AuthUtil.getAuthUserId());
         return filterActive(patients);
     }
 

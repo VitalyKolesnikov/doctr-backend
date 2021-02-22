@@ -6,6 +6,6 @@ import ru.kvs.doctrspring.model.Patient;
 import java.util.List;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    List<Patient> findAllByDoctorId(long id);
+    List<Patient> findAllByDoctorIdOrderByCreatedDesc(long id);
     Patient findByIdAndDoctorId(long id, long doctorId);
 }
