@@ -38,7 +38,8 @@ public class VisitService extends BaseService {
     }
 
     public List<Visit> getAll() {
-        List<Visit> visits = visitRepository.findAllByDoctorId(AuthUtil.getAuthUserId(), SORT_BY_DATE);
+        List<Visit> visits =
+                visitRepository.findAllByDoctorIdOrderByDateDescCreatedDesc(AuthUtil.getAuthUserId(), SORT_BY_DATE);
         return filterActive(visits);
     }
 
@@ -47,7 +48,8 @@ public class VisitService extends BaseService {
     }
 
     public List<Visit> getForPatient(long doctorId, long patientId) {
-        List<Visit> visits = visitRepository.findAllByDoctorIdAndPatientId(doctorId, patientId, SORT_BY_DATE);
+        List<Visit> visits =
+                visitRepository.findAllByDoctorIdAndPatientIdOrderByDateDescCreatedDesc(doctorId, patientId, SORT_BY_DATE);
         return filterActive(visits);
     }
 
