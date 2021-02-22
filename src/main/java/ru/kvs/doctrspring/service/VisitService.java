@@ -61,6 +61,7 @@ public class VisitService extends BaseService {
         storedVisit.setPercent(visitDto.getPercent());
         storedVisit.setChild(visitDto.getChild());
         storedVisit.setFirst(visitDto.getFirst());
+        storedVisit.setInfo(visitDto.getInfo());
         storedVisit.setUpdated(new Date());
         visitRepository.save(storedVisit);
     }
