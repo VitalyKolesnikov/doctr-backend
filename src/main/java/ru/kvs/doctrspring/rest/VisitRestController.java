@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.kvs.doctrspring.dto.DatedVisitListDto;
 import ru.kvs.doctrspring.dto.VisitDto;
 import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.security.AuthUtil;
@@ -32,9 +33,9 @@ public class VisitRestController {
     }
 
     @GetMapping
-    public List<Visit> getAll() {
-        log.info("Get all Visits");
-        return visitService.getActive();
+    public List<DatedVisitListDto> getAllGroupByDate() {
+        log.info("Get all visits grouped by date");
+        return visitService.getAllGroupByDate();
     }
 
     @GetMapping("{id}")

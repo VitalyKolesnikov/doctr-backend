@@ -44,4 +44,8 @@ public class Visit extends BaseEntity {
     @Column(name = "info")
     private String info;
 
+    public int getShare() {
+        return (int) Math.round(cost / 100.0 * percent);
+    }
+
 }

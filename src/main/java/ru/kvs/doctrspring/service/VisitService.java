@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import ru.kvs.doctrspring.dto.DatedVisitListDto;
 import ru.kvs.doctrspring.dto.VisitDto;
 import ru.kvs.doctrspring.model.Clinic;
 import ru.kvs.doctrspring.model.Patient;
@@ -14,8 +15,10 @@ import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @Slf4j
@@ -34,9 +37,20 @@ public class VisitService extends BaseService {
         this.patientRepository = patientRepository;
     }
 
-    public List<Visit> getActive() {
+    private List<Visit> getActive() {
         List<Visit> visits = visitRepository.getAll(AuthUtil.getAuthUserId());
         return filterActive(visits);
+    }
+
+    public List<DatedVisitListDto> getAllGroupByDate() {
+        Map<LocalDate, List<Visit>> map = getActive().stream()
+                .collect(groupingBy(Visit::getDate));
+        List<DatedVisitListDto> list = new ArrayList<>();
+        map.forEach((key, value) -> {
+            list.add(new DatedVisitListDto(key, value));
+        });
+        list.sort(Collections.reverseOrder());
+        return list;
     }
 
     public Visit get(long id, long doctorId) {
