@@ -34,7 +34,7 @@ public class VisitRestController {
     @GetMapping
     public List<Visit> getAll() {
         log.info("Get all Visits");
-        return visitService.getAll();
+        return visitService.getActive();
     }
 
     @GetMapping("{id}")

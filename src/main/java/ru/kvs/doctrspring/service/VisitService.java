@@ -1,7 +1,6 @@
 package ru.kvs.doctrspring.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -23,8 +22,6 @@ import java.util.List;
 @Transactional
 public class VisitService extends BaseService {
 
-    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
-
     private final VisitRepository visitRepository;
     private final ClinicRepository clinicRepository;
     private final PatientRepository patientRepository;
@@ -37,9 +34,8 @@ public class VisitService extends BaseService {
         this.patientRepository = patientRepository;
     }
 
-    public List<Visit> getAll() {
-        List<Visit> visits =
-                visitRepository.findAllByDoctorIdOrderByDateDescCreatedDesc(AuthUtil.getAuthUserId(), SORT_BY_DATE);
+    public List<Visit> getActive() {
+        List<Visit> visits = visitRepository.getAll(AuthUtil.getAuthUserId());
         return filterActive(visits);
     }
 
@@ -48,8 +44,7 @@ public class VisitService extends BaseService {
     }
 
     public List<Visit> getForPatient(long doctorId, long patientId) {
-        List<Visit> visits =
-                visitRepository.findAllByDoctorIdAndPatientIdOrderByDateDescCreatedDesc(doctorId, patientId, SORT_BY_DATE);
+        List<Visit> visits = visitRepository.getAllForPatient(doctorId, patientId);
         return filterActive(visits);
     }
 
