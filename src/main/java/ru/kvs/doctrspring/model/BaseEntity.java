@@ -41,7 +41,6 @@ public abstract class BaseEntity implements HasId {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    @JsonIgnore
     private Status status = Status.ACTIVE;
 
 }

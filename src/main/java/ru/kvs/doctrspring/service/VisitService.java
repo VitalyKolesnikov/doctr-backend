@@ -46,9 +46,7 @@ public class VisitService extends BaseService {
         Map<LocalDate, List<Visit>> map = getActive().stream()
                 .collect(groupingBy(Visit::getDate));
         List<DatedVisitListDto> list = new ArrayList<>();
-        map.forEach((key, value) -> {
-            list.add(new DatedVisitListDto(key, value));
-        });
+        map.forEach((key, value) -> list.add(new DatedVisitListDto(key, value)));
         list.sort(Collections.reverseOrder());
         return list;
     }
@@ -62,9 +60,9 @@ public class VisitService extends BaseService {
         return filterActive(visits);
     }
 
-    public void update(VisitDto visitDto, long doctorId) {
+    public void update(VisitDto visitDto) {
         Assert.notNull(visitDto, "visit must not be null");
-        Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), doctorId);
+        Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), AuthUtil.getAuthUserId());
         Assert.notNull(storedVisit, "no visit found!");
         setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), storedVisit);
         storedVisit.setDate(visitDto.getDate());

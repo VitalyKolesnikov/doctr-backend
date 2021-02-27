@@ -93,3 +93,17 @@ CREATE TABLE visits
     FOREIGN KEY (patient_id) REFERENCES patients (id) ON DELETE CASCADE ON UPDATE RESTRICT,
     FOREIGN KEY (clinic_id) REFERENCES clinics (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
+CREATE TABLE reminders
+(
+    id         INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    doctor_id  INTEGER NOT NULL,
+    patient_id INTEGER NOT NULL,
+    date       DATE,
+    text       VARCHAR,
+    created    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    updated    TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
+    status     VARCHAR             DEFAULT 'ACTIVE',
+    FOREIGN KEY (doctor_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (patient_id) REFERENCES patients (id) ON DELETE CASCADE ON UPDATE RESTRICT
+);

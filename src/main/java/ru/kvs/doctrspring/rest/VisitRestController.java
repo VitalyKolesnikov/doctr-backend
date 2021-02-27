@@ -54,14 +54,13 @@ public class VisitRestController {
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
-        long doctorId = AuthUtil.getAuthUserId();
         assureIdConsistent(visitDto, id);
-        log.info("update {} for user {}", visitDto, doctorId);
-        visitService.update(visitDto, doctorId);
+        log.info("update {}", visitDto);
+        visitService.update(visitDto);
     }
 
     @PostMapping
-    public ResponseEntity<Visit> createWithLocation(@RequestBody VisitDto visitDto) {
+    public ResponseEntity<Visit> create(@RequestBody VisitDto visitDto) {
         Visit created = visitService.create(visitDto);
         log.info("Create new visit {}", visitDto);
 

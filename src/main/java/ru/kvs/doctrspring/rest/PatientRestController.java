@@ -60,7 +60,7 @@ public class PatientRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Patient> createWithLocation(@RequestBody PatientDto patientDto) {
+    public ResponseEntity<Patient> create(@RequestBody PatientDto patientDto) {
         Patient created = patientService.create(patientDto);
         log.info("Create new patient {}", created);
 
