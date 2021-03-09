@@ -52,7 +52,7 @@ public class PatientService {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
         Assert.notNull(storedPatient, "patient with provided id not found!");
-        patient.setDoctor(userRepository.getOne(doctorId));
+        patient.setDoctor(storedPatient.getDoctor());
         patient.setCreated(storedPatient.getCreated());
         patientRepository.save(patient);
     }
