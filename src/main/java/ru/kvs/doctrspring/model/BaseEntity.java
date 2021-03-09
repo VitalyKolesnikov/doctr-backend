@@ -4,19 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.util.Assert;
 import ru.kvs.doctrspring.HasId;
 
 import javax.persistence.*;
-import java.util.Date;
-
-/**
- * Base class with property 'id'.
- * Used as a base class for all objects that requires this property.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Data
@@ -32,12 +23,12 @@ public abstract class BaseEntity implements HasId {
     @CreatedDate
     @Column(name = "created")
     @JsonIgnore
-    private Date created = new Date();
+    private LocalDateTime created = LocalDateTime.now();
 
     @LastModifiedDate
     @Column(name = "updated")
     @JsonIgnore
-    private Date updated = new Date();
+    private LocalDateTime updated = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
