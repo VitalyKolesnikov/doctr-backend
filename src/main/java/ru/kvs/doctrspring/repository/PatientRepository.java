@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-    @Query("SELECT p FROM Patient p WHERE p.doctor.id=:doctorId ORDER BY p.lastName")
-    List<Patient> getAll(long doctorId);
+    @Query("SELECT p FROM Patient p WHERE p.doctor.id=:doctorId AND p.status = 'ACTIVE' ORDER BY p.lastName")
+    List<Patient> getActive(long doctorId);
 
     Patient findByIdAndDoctorId(long id, long doctorId);
 

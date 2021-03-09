@@ -33,8 +33,9 @@ public class PatientRestController {
 
     @GetMapping
     public List<Patient> getActive() {
-        log.info("Get all active patients");
-        return patientService.getActive();
+        long doctorId = AuthUtil.getAuthUserId();
+        log.info("Get all active patients for doctor with id={}", doctorId);
+        return patientService.getActive(doctorId);
     }
 
     @GetMapping("{id}")
@@ -46,8 +47,9 @@ public class PatientRestController {
 
     @GetMapping("suggest/{part}")
     public List<Patient> getSuggested(@PathVariable String part) {
+        long doctorId = AuthUtil.getAuthUserId();
         log.info("Get patients by suggestion={}", part);
-        return patientService.getSuggested(part.toLowerCase());
+        return patientService.getSuggested(doctorId, part);
     }
 
     @PutMapping("{id}")
@@ -61,7 +63,8 @@ public class PatientRestController {
 
     @PostMapping
     public ResponseEntity<Patient> create(@RequestBody PatientDto patientDto) {
-        Patient created = patientService.create(patientDto);
+        long doctorId = AuthUtil.getAuthUserId();
+        Patient created = patientService.create(patientDto, doctorId);
         log.info("Create new patient {}", created);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

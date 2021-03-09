@@ -6,16 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.kvs.doctrspring.dto.DatedVisitListDto;
 import ru.kvs.doctrspring.dto.VisitDto;
-import ru.kvs.doctrspring.model.Clinic;
-import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.repository.ClinicRepository;
 import ru.kvs.doctrspring.repository.PatientRepository;
+import ru.kvs.doctrspring.repository.UserRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
-import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -23,27 +22,29 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 @Slf4j
 @Transactional
-public class VisitService extends BaseService {
+public class VisitService {
 
     private final VisitRepository visitRepository;
     private final ClinicRepository clinicRepository;
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
 
     public VisitService(VisitRepository visitRepository,
                         ClinicRepository clinicRepository,
-                        PatientRepository patientRepository) {
+                        PatientRepository patientRepository,
+                        UserRepository userRepository) {
         this.visitRepository = visitRepository;
         this.clinicRepository = clinicRepository;
         this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
     }
 
-    private List<Visit> getActive() {
-        List<Visit> visits = visitRepository.getAll(AuthUtil.getAuthUserId());
-        return filterActive(visits);
+    private List<Visit> getActive(long doctorId) {
+        return visitRepository.getActive(doctorId);
     }
 
-    public List<DatedVisitListDto> getAllGroupByDate() {
-        Map<LocalDate, List<Visit>> map = getActive().stream()
+    public List<DatedVisitListDto> getAllGroupByDate(long doctorId) {
+        Map<LocalDate, List<Visit>> map = getActive(doctorId).stream()
                 .collect(groupingBy(Visit::getDate));
         List<DatedVisitListDto> list = new ArrayList<>();
         map.forEach((key, value) -> list.add(new DatedVisitListDto(key, value)));
@@ -56,46 +57,43 @@ public class VisitService extends BaseService {
     }
 
     public List<Visit> getForPatient(long doctorId, long patientId) {
-        List<Visit> visits = visitRepository.getAllForPatient(doctorId, patientId);
-        return filterActive(visits);
+        return visitRepository.getActiveForPatient(doctorId, patientId);
     }
 
-    public void update(VisitDto visitDto) {
+    public void update(VisitDto visitDto, long doctorId) {
         Assert.notNull(visitDto, "visit must not be null");
-        Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), AuthUtil.getAuthUserId());
+        Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), doctorId);
         Assert.notNull(storedVisit, "no visit found!");
-        setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), storedVisit);
+
+        storedVisit.setClinic(clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), doctorId));
         storedVisit.setDate(visitDto.getDate());
         storedVisit.setCost(visitDto.getCost());
         storedVisit.setPercent(visitDto.getPercent());
         storedVisit.setChild(visitDto.getChild());
         storedVisit.setFirst(visitDto.getFirst());
         storedVisit.setInfo(visitDto.getInfo());
-        storedVisit.setUpdated(new Date());
+        storedVisit.setUpdated(LocalDateTime.now());
+
         visitRepository.save(storedVisit);
     }
 
-    public Visit create(VisitDto visitDto) {
+    public Visit create(VisitDto visitDto, long doctorId) {
         Visit created = visitDto.toVisit();
-        created.setDoctor(AuthUtil.getAuthUser());
-        setClinicAndPatient(visitDto.getClinicId(), visitDto.getPatientId(), created);
+        created.setDoctor(userRepository.getOne(doctorId));
+
+        created.setClinic(clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), doctorId));
+        created.setPatient(patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), doctorId));
+
         return visitRepository.save(created);
     }
 
     public void delete(long id, long doctorId) {
         Visit visit = visitRepository.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(visit.getStatus())) {
-            visit.setUpdated(new Date());
+            visit.setUpdated(LocalDateTime.now());
             visit.setStatus(Status.DELETED);
             visitRepository.save(visit);
         }
-    }
-
-    private void setClinicAndPatient(long clinicId, long patientId, Visit visit) {
-        Clinic clinic = clinicRepository.findByIdAndDoctorId(clinicId, AuthUtil.getAuthUserId());
-        Patient patient = patientRepository.findByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
-        visit.setClinic(clinic);
-        visit.setPatient(patient);
     }
 
 }

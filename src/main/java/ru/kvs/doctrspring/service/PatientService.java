@@ -9,16 +9,15 @@ import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.UserRepository;
-import ru.kvs.doctrspring.security.AuthUtil;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Transactional
-public class PatientService extends BaseService {
+public class PatientService {
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
@@ -28,46 +27,46 @@ public class PatientService extends BaseService {
         this.userRepository = userRepository;
     }
 
-    public List<Patient> getActive() {
-        List<Patient> patients = patientRepository.getAll(AuthUtil.getAuthUserId());
-        return filterActive(patients);
+    public List<Patient> getActive(long doctorId) {
+        return patientRepository.getActive(doctorId);
     }
 
     public Patient get(long id, long doctorId) {
         return patientRepository.findByIdAndDoctorId(id, doctorId);
     }
 
-    public List<Patient> getSuggested(String part) {
-        return getActive().stream()
+    public List<Patient> getSuggested(long doctorId, String part) {
+        String partLowerCased = part.toLowerCase();
+        List<Patient> matched = getActive(doctorId).stream()
                 .filter(p -> (
-                        p.getLastName().toLowerCase().contains(part) ||
-                        p.getFirstName().toLowerCase().contains(part)) ||
-                        p.getMiddleName().toLowerCase().contains(part)
+                        p.getLastName().toLowerCase().contains(partLowerCased) ||
+                        p.getFirstName().toLowerCase().contains(partLowerCased)) ||
+                        p.getMiddleName().toLowerCase().contains(partLowerCased)
                 )
                 .collect(Collectors.toList());
+        log.info("Found by suggestion: {}", matched.size());
+        return matched;
     }
 
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
-        Assert.notNull(storedPatient, "no patient found!");
+        Assert.notNull(storedPatient, "patient with provided id not found!");
         patient.setDoctor(userRepository.getOne(doctorId));
         patient.setCreated(storedPatient.getCreated());
-        patient.setUpdated(new Date());
-        patient.setStatus(storedPatient.getStatus());
         patientRepository.save(patient);
     }
 
-    public Patient create(PatientDto patientDto) {
+    public Patient create(PatientDto patientDto, long doctorId) {
         Patient created = patientDto.toPatient();
-        created.setDoctor(AuthUtil.getAuthUser());
+        created.setDoctor(userRepository.getOne(doctorId));
         return patientRepository.save(created);
     }
 
     public void delete(long id, long doctorId) {
         Patient patient = patientRepository.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(patient.getStatus())) {
-            patient.setUpdated(new Date());
+            patient.setUpdated(LocalDateTime.now());
             patient.setStatus(Status.DELETED);
             patientRepository.save(patient);
         }

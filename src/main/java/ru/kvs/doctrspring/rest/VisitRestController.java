@@ -34,8 +34,9 @@ public class VisitRestController {
 
     @GetMapping
     public List<DatedVisitListDto> getAllGroupByDate() {
-        log.info("Get all visits grouped by date");
-        return visitService.getAllGroupByDate();
+        long doctorId = AuthUtil.getAuthUserId();
+        log.info("Get all visits grouped by date for doctor with id={}", doctorId);
+        return visitService.getAllGroupByDate(doctorId);
     }
 
     @GetMapping("{id}")
@@ -54,14 +55,16 @@ public class VisitRestController {
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
+        long doctorId = AuthUtil.getAuthUserId();
         assureIdConsistent(visitDto, id);
         log.info("update {}", visitDto);
-        visitService.update(visitDto);
+        visitService.update(visitDto, doctorId);
     }
 
     @PostMapping
     public ResponseEntity<Visit> create(@RequestBody VisitDto visitDto) {
-        Visit created = visitService.create(visitDto);
+        long doctorId = AuthUtil.getAuthUserId();
+        Visit created = visitService.create(visitDto, doctorId);
         log.info("Create new visit {}", visitDto);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
