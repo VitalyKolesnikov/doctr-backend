@@ -97,9 +97,8 @@ class PatientServiceTest {
     @Test
     void update_ShouldSet_Doctor() {
         when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
-        when(userRepository.getOne(DOCTOR_ID)).thenReturn(DOCTOR);
 
-        service.update(PATIENT1, DOCTOR_ID);
+        service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
         USER_MATCHER.assertMatch(PATIENT1.getDoctor(), DOCTOR);
     }
@@ -107,7 +106,6 @@ class PatientServiceTest {
     @Test
     void update_ShouldSet_Created() {
         when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
-        when(userRepository.getOne(DOCTOR_ID)).thenReturn(DOCTOR);
 
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
@@ -121,7 +119,6 @@ class PatientServiceTest {
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
         verify(patientRepository).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
-        verify(userRepository).getOne(DOCTOR_ID);
         verify(patientRepository).save(UPDATED_PATIENT1);
     }
 

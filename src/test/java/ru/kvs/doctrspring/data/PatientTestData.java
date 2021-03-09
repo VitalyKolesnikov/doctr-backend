@@ -9,6 +9,7 @@ import java.util.List;
 import static java.time.LocalDateTime.of;
 import static ru.kvs.doctrspring.builders.PatientBuilder.aPatient;
 import static ru.kvs.doctrspring.builders.PatientDtoBuilder.aPatientDto;
+import static ru.kvs.doctrspring.data.UserTestData.DOCTOR;
 
 public class PatientTestData {
 
@@ -19,6 +20,7 @@ public class PatientTestData {
             .lastName("Smith")
             .firstName("John")
             .middleName("Paul")
+            .doctor(DOCTOR)
             .created(of(2021, Month.FEBRUARY, 24, 13, 0, 0))
             .build();
 
@@ -47,6 +49,7 @@ public class PatientTestData {
             .lastName("Smith")
             .firstName("John")
             .middleName("Paul")
+            .info("lorem ipsum")
             .build();
 
     public static final PatientDto NEW_PATIENT_DTO = aPatientDto()
