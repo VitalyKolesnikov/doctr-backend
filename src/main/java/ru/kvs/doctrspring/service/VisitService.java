@@ -39,7 +39,7 @@ public class VisitService {
         this.userRepository = userRepository;
     }
 
-    private List<Visit> getActive(long doctorId) {
+    public List<Visit> getActive(long doctorId) {
         return visitRepository.getActive(doctorId);
     }
 
