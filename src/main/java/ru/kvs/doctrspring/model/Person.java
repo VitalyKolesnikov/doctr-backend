@@ -2,6 +2,8 @@ package ru.kvs.doctrspring.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -9,6 +11,8 @@ import java.time.LocalDate;
 
 @MappedSuperclass
 @Data
+@NoArgsConstructor
+@SuperBuilder
 public class Person extends BaseEntity {
 
     @Column(name = "first_name")

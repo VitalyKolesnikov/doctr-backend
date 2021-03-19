@@ -1,6 +1,8 @@
 package ru.kvs.doctrspring.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
+@SuperBuilder
 public class User extends Person {
 
     @Column(name = "username")

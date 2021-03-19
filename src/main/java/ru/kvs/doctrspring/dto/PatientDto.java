@@ -2,9 +2,13 @@ package ru.kvs.doctrspring.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ru.kvs.doctrspring.model.Patient;
 
 @Data
+@NoArgsConstructor
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PatientDto extends PersonDto {
     private String info;
