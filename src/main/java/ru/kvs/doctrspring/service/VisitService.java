@@ -15,7 +15,11 @@ import ru.kvs.doctrspring.repository.VisitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -39,12 +43,15 @@ public class VisitService {
         this.userRepository = userRepository;
     }
 
-    public List<Visit> getActive(long doctorId) {
-        return visitRepository.getActive(doctorId);
+    public List<Visit> getLastActive(long doctorId) {
+        LocalDate twoMonthsAgo = LocalDate.now().minusMonths(2);
+        return visitRepository.getActive(doctorId).stream()
+                .filter(visit -> visit.getDate().isAfter(twoMonthsAgo))
+                .collect(Collectors.toList());
     }
 
     public List<DatedVisitListDto> getAllGroupByDate(long doctorId) {
-        Map<LocalDate, List<Visit>> map = getActive(doctorId).stream()
+        Map<LocalDate, List<Visit>> map = getLastActive(doctorId).stream()
                 .collect(groupingBy(Visit::getDate));
         List<DatedVisitListDto> list = new ArrayList<>();
         map.forEach((key, value) -> list.add(new DatedVisitListDto(key, value)));

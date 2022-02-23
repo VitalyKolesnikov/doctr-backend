@@ -39,7 +39,7 @@ public class VisitServiceTest {
 
     @Test
     void getActive_ShouldCall_Repository() {
-        service.getActive(DOCTOR_ID);
+        service.getLastActive(DOCTOR_ID);
 
         verify(visitRepository).getActive(DOCTOR_ID);
     }
