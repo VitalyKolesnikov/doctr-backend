@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,19 +17,15 @@ import java.util.List;
 import static ru.kvs.doctrspring.rest.PatientRestController.REST_URL;
 import static ru.kvs.doctrspring.util.ValidationUtil.assureIdConsistent;
 
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = REST_URL)
 public class PatientRestController {
 
     public final static String REST_URL = "/api/v1/patients/";
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-
     private final PatientService patientService;
-
-    public PatientRestController(PatientService patientService) {
-        this.patientService = patientService;
-    }
 
     @GetMapping
     public List<Patient> getActive() {

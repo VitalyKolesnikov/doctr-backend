@@ -1,6 +1,6 @@
 package ru.kvs.doctrspring.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,7 +27,8 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping(value = "/api/v1/auth/")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/auth/")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
@@ -35,13 +36,6 @@ public class AuthenticationRestController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final UserService userService;
-
-    @Autowired
-    public AuthenticationRestController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-    }
 
     @PostMapping("login")
     public ResponseEntity<Map<Object, Object>> login(@RequestBody AuthenticationRequestDto requestDto) {

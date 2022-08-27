@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,21 +16,15 @@ import java.util.List;
 import static ru.kvs.doctrspring.rest.ReminderRestController.REST_URL;
 import static ru.kvs.doctrspring.util.ValidationUtil.assureIdConsistent;
 
-
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = REST_URL)
 public class ReminderRestController {
 
     public final static String REST_URL = "/api/v1/reminders/";
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-
     private final ReminderService reminderService;
-
-
-    public ReminderRestController(ReminderService reminderService) {
-        this.reminderService = reminderService;
-    }
 
     @GetMapping
     public List<Reminder> getActive() {

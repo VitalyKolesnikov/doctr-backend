@@ -1,6 +1,6 @@
 package ru.kvs.doctrspring.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,20 +19,17 @@ import ru.kvs.doctrspring.service.UserService;
  */
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users/")
 public class UserRestController {
+
     private final UserService userService;
 
-    @Autowired
-    public UserRestController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping(value = "{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id){
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
         User user = userService.findById(id);
 
-        if(user == null){
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 

@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,33 +18,33 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 public class ReminderService {
 
     private final ReminderRepository reminderRepository;
     private final PatientRepository patientRepository;
 
-    public ReminderService(ReminderRepository reminderRepository, PatientRepository patientRepository) {
-        this.reminderRepository = reminderRepository;
-        this.patientRepository = patientRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<Reminder> getActive() {
         return reminderRepository.getActual(AuthUtil.getAuthUserId());
     }
 
+    @Transactional(readOnly = true)
     public Reminder get(long id, long doctorId) {
         return reminderRepository.findByIdAndDoctorId(id, doctorId);
     }
 
+    @Transactional(readOnly = true)
     public List<Reminder> getForPatient(long doctorId, long patientId) {
         return reminderRepository.getAllForPatient(doctorId, patientId);
     }
 
+    @Transactional(readOnly = true)
     public int getActiveCount() {
         return reminderRepository.getActual(AuthUtil.getAuthUserId()).size();
     }
 
+    @Transactional
     public int complete(long id) {
         Reminder storedReminder = reminderRepository.findByIdAndDoctorId(id, AuthUtil.getAuthUserId());
         Assert.notNull(storedReminder, "no reminder found!");
@@ -53,6 +54,7 @@ public class ReminderService {
         return getActiveCount();
     }
 
+    @Transactional
     public Reminder create(ReminderDto reminderDto) {
         Reminder created = reminderDto.toReminder();
         created.setDoctor(AuthUtil.getAuthUser());
@@ -60,6 +62,7 @@ public class ReminderService {
         return reminderRepository.save(created);
     }
 
+    @Transactional
     public int update(ReminderDto reminderDto) {
         Assert.notNull(reminderDto, "reminder must not be null");
         Reminder storedReminder = reminderRepository.findByIdAndDoctorId(reminderDto.getId(), AuthUtil.getAuthUserId());

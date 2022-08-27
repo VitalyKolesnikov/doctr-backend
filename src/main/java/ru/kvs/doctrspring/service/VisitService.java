@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 public class VisitService {
 
     private final VisitRepository visitRepository;
@@ -33,16 +34,7 @@ public class VisitService {
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
 
-    public VisitService(VisitRepository visitRepository,
-                        ClinicRepository clinicRepository,
-                        PatientRepository patientRepository,
-                        UserRepository userRepository) {
-        this.visitRepository = visitRepository;
-        this.clinicRepository = clinicRepository;
-        this.patientRepository = patientRepository;
-        this.userRepository = userRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<Visit> getLastActive(long doctorId) {
         LocalDate twoMonthsAgo = LocalDate.now().minusMonths(2);
         return visitRepository.getActive(doctorId).stream()
@@ -50,6 +42,7 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<DatedVisitListDto> getAllGroupByDate(long doctorId) {
         Map<LocalDate, List<Visit>> map = getLastActive(doctorId).stream()
                 .collect(groupingBy(Visit::getDate));
@@ -59,14 +52,17 @@ public class VisitService {
         return list;
     }
 
+    @Transactional(readOnly = true)
     public Visit get(long id, long doctorId) {
         return visitRepository.findByIdAndDoctorId(id, doctorId);
     }
 
+    @Transactional(readOnly = true)
     public List<Visit> getForPatient(long doctorId, long patientId) {
         return visitRepository.getActiveForPatient(doctorId, patientId);
     }
 
+    @Transactional
     public void update(VisitDto visitDto, long doctorId) {
         Assert.notNull(visitDto, "visit must not be null");
         Visit storedVisit = visitRepository.findByIdAndDoctorId(visitDto.getId(), doctorId);
@@ -84,6 +80,7 @@ public class VisitService {
         visitRepository.save(storedVisit);
     }
 
+    @Transactional
     public Visit create(VisitDto visitDto, long doctorId) {
         Visit created = visitDto.toVisit();
         created.setDoctor(userRepository.getOne(doctorId));
@@ -94,6 +91,7 @@ public class VisitService {
         return visitRepository.save(created);
     }
 
+    @Transactional
     public void delete(long id, long doctorId) {
         Visit visit = visitRepository.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(visit.getStatus())) {

@@ -12,13 +12,6 @@ import ru.kvs.doctrspring.security.jwt.JwtUser;
 import ru.kvs.doctrspring.security.jwt.JwtUserFactory;
 import ru.kvs.doctrspring.service.UserService;
 
-/**
- * Implementation of {@link UserDetailsService} interface for {@link JwtUser}.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
-
 @Service
 @Slf4j
 @Primary

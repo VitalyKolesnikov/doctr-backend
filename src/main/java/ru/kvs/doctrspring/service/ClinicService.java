@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,23 +14,20 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 public class ClinicService {
 
     private final ClinicRepository clinicRepository;
 
-    public ClinicService(ClinicRepository clinicRepository) {
-        this.clinicRepository = clinicRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<Clinic> getAll() {
         List<Clinic> clinics = clinicRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
-        log.info("Filtering active clinics");
         return clinics.stream()
                 .filter(p -> Status.ACTIVE.equals(p.getStatus()))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Clinic get(long id, long doctorId) {
         return clinicRepository.findByIdAndDoctorId(id, doctorId);
     }

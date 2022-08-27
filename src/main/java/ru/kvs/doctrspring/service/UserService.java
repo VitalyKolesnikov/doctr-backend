@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,28 +17,14 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
+    @Transactional
     public User register(User user) {
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
@@ -54,18 +41,21 @@ public class UserService {
         return registeredUser;
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAll() {
         List<User> result = userRepository.findAll();
         log.info("IN getAll - {} users found", result.size());
         return result;
     }
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         User result = userRepository.findByUsernameIgnoreCase(username);
         log.info("IN findByUsername - user: {} found by username: {}", result, username);
         return result;
     }
 
+    @Transactional(readOnly = true)
     public User findById(Long id) {
         User result = userRepository.findById(id).orElse(null);
 
@@ -78,6 +68,7 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public void delete(Long id) {
         userRepository.deleteById(id);
         log.info("IN delete - user with id: {} successfully deleted", id);

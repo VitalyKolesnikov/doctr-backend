@@ -1,5 +1,6 @@
 package ru.kvs.doctrspring.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,31 +17,29 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 public class PatientService {
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
 
-    public PatientService(PatientRepository patientRepository, UserRepository userRepository) {
-        this.patientRepository = patientRepository;
-        this.userRepository = userRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<Patient> getActive(long doctorId) {
         return patientRepository.getActive(doctorId);
     }
 
+    @Transactional(readOnly = true)
     public Patient get(long id, long doctorId) {
         return patientRepository.findByIdAndDoctorId(id, doctorId);
     }
 
+    @Transactional(readOnly = true)
     public List<Patient> getSuggested(long doctorId, String part) {
         String partLowerCased = part.toLowerCase();
         List<Patient> matched = getActive(doctorId).stream()
                 .filter(p -> (
                         p.getLastName().toLowerCase().contains(partLowerCased) ||
-                        p.getFirstName().toLowerCase().contains(partLowerCased)) ||
+                                p.getFirstName().toLowerCase().contains(partLowerCased)) ||
                         p.getMiddleName().toLowerCase().contains(partLowerCased)
                 )
                 .collect(Collectors.toList());
@@ -48,6 +47,7 @@ public class PatientService {
         return matched;
     }
 
+    @Transactional
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
@@ -57,12 +57,14 @@ public class PatientService {
         patientRepository.save(patient);
     }
 
+    @Transactional
     public Patient create(PatientDto patientDto, long doctorId) {
         Patient created = patientDto.toPatient();
         created.setDoctor(userRepository.getOne(doctorId));
         return patientRepository.save(created);
     }
 
+    @Transactional
     public void delete(long id, long doctorId) {
         Patient patient = patientRepository.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(patient.getStatus())) {
