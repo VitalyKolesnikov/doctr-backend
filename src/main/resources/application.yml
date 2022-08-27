@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  main:
+    allow-circular-references: true
   datasource:
     url: jdbc:postgresql://${DOCTR_DB_HOST}:5432/${DOCTR_DB_NAME}?serverTimezone=UTC
     driver-class-name: org.postgresql.Driver
