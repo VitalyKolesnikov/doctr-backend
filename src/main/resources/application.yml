@@ -28,3 +28,7 @@ jwt:
 logging:
   level:
     org.springframework.security: DEBUG
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0

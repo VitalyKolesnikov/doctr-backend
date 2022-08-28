@@ -12,7 +12,6 @@
     <artifactId>doctr-springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>doctr-springboot</name>
-    <description>JWT based spring security REST API</description>
 
     <properties>
         <java.version>11</java.version>
@@ -76,7 +75,6 @@
         </dependency>
 
         <!-- Maven -->
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
@@ -84,7 +82,6 @@
         </dependency>
 
         <!-- Open API -->
-
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -97,6 +94,18 @@
             <version>1.6.9</version>
         </dependency>
 
+        <!-- Sentry -->
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-spring-boot-starter</artifactId>
+            <version>6.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-logback</artifactId>
+            <version>6.4.0</version>
+        </dependency>
 
     </dependencies>
 

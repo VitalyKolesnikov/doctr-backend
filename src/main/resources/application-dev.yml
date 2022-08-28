@@ -4,3 +4,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: doctr
     password: doctr123
+
+sentry:
+  dsn:
