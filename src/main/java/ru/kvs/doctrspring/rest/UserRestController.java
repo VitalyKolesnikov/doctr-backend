@@ -11,13 +11,6 @@ import ru.kvs.doctrspring.dto.UserDto;
 import ru.kvs.doctrspring.model.User;
 import ru.kvs.doctrspring.service.UserService;
 
-/**
- * REST controller user connected requestst.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users/")

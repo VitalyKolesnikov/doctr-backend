@@ -38,4 +38,9 @@ public abstract class BaseEntity implements HasId {
     @Column(name = "status")
     private Status status = Status.ACTIVE;
 
+    @JsonIgnore
+    public boolean isActive() {
+        return this.status == Status.ACTIVE;
+    }
+
 }

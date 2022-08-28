@@ -24,7 +24,7 @@ public class ClinicRestController {
     @GetMapping
     public List<Clinic> getAll() {
         log.info("Get all clinics");
-        return clinicService.getAll();
+        return clinicService.getAll(AuthUtil.getAuthUserId());
     }
 
     @GetMapping("{id}")

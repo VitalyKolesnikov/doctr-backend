@@ -3,9 +3,11 @@ package ru.kvs.doctrspring.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -15,13 +17,6 @@ import ru.kvs.doctrspring.security.jwt.JwtTokenProvider;
 
 import java.util.Arrays;
 import java.util.Collections;
-
-/**
- * Security configuration class for JWT based Spring Security application.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -76,6 +71,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    @Profile("integration-test")
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().anyRequest();
     }
 
 }

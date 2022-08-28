@@ -13,6 +13,7 @@ import ru.kvs.doctrspring.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -27,7 +28,7 @@ class PatientServiceTest {
     @InjectMocks
     PatientService service;
     @Mock
-    PatientRepository patientRepository;
+    PatientRepository patientRepositoryAdapter;
     @Mock
     UserRepository userRepository;
 
@@ -40,63 +41,63 @@ class PatientServiceTest {
     void getActive_ShouldCall_Repository() {
         service.getActive(DOCTOR_ID);
 
-        verify(patientRepository).getActive(DOCTOR_ID);
+        verify(patientRepositoryAdapter).getActive(DOCTOR_ID);
     }
 
     @Test
     void get_ShouldCall_Repository() {
         service.get(PATIENT_ID, DOCTOR_ID);
 
-        verify(patientRepository).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
+        verify(patientRepositoryAdapter).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
     }
 
     @Test
     void getSuggested_ShouldCheck_FirstLastAndMiddleNames() {
-        when(patientRepository.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
+        when(patientRepositoryAdapter.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
 
         List<Patient> list = service.getSuggested(DOCTOR_ID, "Paul");
 
-        verify(patientRepository).getActive(DOCTOR_ID);
+        verify(patientRepositoryAdapter).getActive(DOCTOR_ID);
         assertThat(list, hasSize(3));
     }
 
     @Test
     void getSuggested_ShouldIgnoreCase() {
-        when(patientRepository.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
+        when(patientRepositoryAdapter.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
 
         List<Patient> list = service.getSuggested(DOCTOR_ID, "PAUL");
 
-        verify(patientRepository).getActive(DOCTOR_ID);
+        verify(patientRepositoryAdapter).getActive(DOCTOR_ID);
         assertThat(list, hasSize(3));
     }
 
     @Test
     void getSuggested_ShouldReturn_EmptyList_When_NothingFound() {
-        when(patientRepository.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
+        when(patientRepositoryAdapter.getActive(DOCTOR_ID)).thenReturn(PATIENTS);
 
         List<Patient> list = service.getSuggested(DOCTOR_ID, "andrew");
 
-        verify(patientRepository).getActive(DOCTOR_ID);
+        verify(patientRepositoryAdapter).getActive(DOCTOR_ID);
         assertThat(list, hasSize(0));
     }
 
     @Test
     void update_ShouldThrow_When_PatientIsNull() {
         assertThrows(IllegalArgumentException.class, () -> service.update(null, DOCTOR_ID));
-        verify(patientRepository, never()).save(any());
+        verify(patientRepositoryAdapter, never()).save(any());
     }
 
     @Test
     void update_ShouldThrow_When_PatientNotFoundById() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(null);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenThrow(new NoSuchElementException());
 
-        assertThrows(IllegalArgumentException.class, () -> service.update(PATIENT1, DOCTOR_ID));
-        verify(patientRepository, never()).save(any());
+        assertThrows(NoSuchElementException.class, () -> service.update(PATIENT1, DOCTOR_ID));
+        verify(patientRepositoryAdapter, never()).save(any());
     }
 
     @Test
     void update_ShouldSet_Doctor() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
@@ -105,7 +106,7 @@ class PatientServiceTest {
 
     @Test
     void update_ShouldSet_Created() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
@@ -114,12 +115,12 @@ class PatientServiceTest {
 
     @Test
     void update_ShouldCall_Repository() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
-        verify(patientRepository).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
-        verify(patientRepository).save(UPDATED_PATIENT1);
+        verify(patientRepositoryAdapter).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
+        verify(patientRepositoryAdapter).save(UPDATED_PATIENT1);
     }
 
     @Test
@@ -127,32 +128,32 @@ class PatientServiceTest {
         service.create(NEW_PATIENT_DTO, DOCTOR_ID);
 
         verify(userRepository).getOne(DOCTOR_ID);
-        verify(patientRepository).save(any(Patient.class));
+        verify(patientRepositoryAdapter).save(any(Patient.class));
     }
 
     @Test
     void delete_ShouldDoNothing_When_StatusIsAlreadyDeleted() {
         PATIENT1.setStatus(Status.DELETED);
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.delete(PATIENT_ID, DOCTOR_ID);
 
-        verify(patientRepository, never()).save(any(Patient.class));
+        verify(patientRepositoryAdapter, never()).save(any(Patient.class));
     }
 
     @Test
     void delete_ShouldCall_Repository() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.delete(PATIENT_ID, DOCTOR_ID);
 
-        verify(patientRepository).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
-        verify(patientRepository).save(PATIENT1);
+        verify(patientRepositoryAdapter).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
+        verify(patientRepositoryAdapter).save(PATIENT1);
     }
 
     @Test
     void delete_ShouldUpdate_Status() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.delete(PATIENT_ID, DOCTOR_ID);
 
@@ -161,7 +162,7 @@ class PatientServiceTest {
 
     @Test
     void delete_ShouldSet_UpdateTime() {
-        when(patientRepository.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
+        when(patientRepositoryAdapter.findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
         LocalDateTime prevUpdatedValue = PATIENT1.getUpdated();
 
         service.delete(PATIENT_ID, DOCTOR_ID);

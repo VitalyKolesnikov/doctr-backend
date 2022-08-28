@@ -1,9 +1,7 @@
 package ru.kvs.doctrspring.util;
 
 import ru.kvs.doctrspring.HasId;
-import ru.kvs.doctrspring.model.BaseEntity;
 import ru.kvs.doctrspring.util.exception.IllegalRequestDataException;
-import ru.kvs.doctrspring.util.exception.NotFoundException;
 
 public class ValidationUtil {
 

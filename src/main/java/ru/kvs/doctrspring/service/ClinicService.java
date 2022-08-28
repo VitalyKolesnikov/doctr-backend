@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kvs.doctrspring.model.BaseEntity;
 import ru.kvs.doctrspring.model.Clinic;
-import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.ClinicRepository;
-import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +19,10 @@ public class ClinicService {
     private final ClinicRepository clinicRepository;
 
     @Transactional(readOnly = true)
-    public List<Clinic> getAll() {
-        List<Clinic> clinics = clinicRepository.findAllByDoctorId(AuthUtil.getAuthUserId());
+    public List<Clinic> getAll(Long userId) {
+        List<Clinic> clinics = clinicRepository.findAllByDoctorId(userId);
         return clinics.stream()
-                .filter(p -> Status.ACTIVE.equals(p.getStatus()))
+                .filter(BaseEntity::isActive)
                 .collect(Collectors.toList());
     }
 

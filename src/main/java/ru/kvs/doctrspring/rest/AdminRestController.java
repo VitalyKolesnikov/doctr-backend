@@ -11,13 +11,6 @@ import ru.kvs.doctrspring.dto.AdminUserDto;
 import ru.kvs.doctrspring.model.User;
 import ru.kvs.doctrspring.service.UserService;
 
-/**
- * REST controller for ROLE_ADMIN requests.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/")

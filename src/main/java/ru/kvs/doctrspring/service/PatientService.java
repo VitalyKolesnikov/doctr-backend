@@ -19,18 +19,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class PatientService {
-
-    private final PatientRepository patientRepository;
+    private final PatientRepository patientRepositoryAdapter;
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<Patient> getActive(long doctorId) {
-        return patientRepository.getActive(doctorId);
+        return patientRepositoryAdapter.getActive(doctorId);
     }
 
     @Transactional(readOnly = true)
     public Patient get(long id, long doctorId) {
-        return patientRepository.findByIdAndDoctorId(id, doctorId);
+        return patientRepositoryAdapter.findByIdAndDoctorId(id, doctorId);
     }
 
     @Transactional(readOnly = true)
@@ -50,27 +49,27 @@ public class PatientService {
     @Transactional
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
-        Patient storedPatient = patientRepository.findByIdAndDoctorId(patient.getId(), doctorId);
-        Assert.notNull(storedPatient, "patient with provided id not found!");
+        Patient storedPatient = patientRepositoryAdapter.findByIdAndDoctorId(patient.getId(), doctorId);
+
         patient.setDoctor(storedPatient.getDoctor());
         patient.setCreated(storedPatient.getCreated());
-        patientRepository.save(patient);
+        patientRepositoryAdapter.save(patient);
     }
 
     @Transactional
     public Patient create(PatientDto patientDto, long doctorId) {
         Patient created = patientDto.toPatient();
         created.setDoctor(userRepository.getOne(doctorId));
-        return patientRepository.save(created);
+        return patientRepositoryAdapter.save(created);
     }
 
     @Transactional
     public void delete(long id, long doctorId) {
-        Patient patient = patientRepository.findByIdAndDoctorId(id, doctorId);
+        Patient patient = patientRepositoryAdapter.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(patient.getStatus())) {
             patient.setUpdated(LocalDateTime.now());
             patient.setStatus(Status.DELETED);
-            patientRepository.save(patient);
+            patientRepositoryAdapter.save(patient);
         }
     }
 

@@ -10,7 +10,7 @@ import ru.kvs.doctrspring.dto.VisitDto;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.repository.ClinicRepository;
-import ru.kvs.doctrspring.repository.PatientRepository;
+import ru.kvs.doctrspring.repository.PatientJpaRepository;
 import ru.kvs.doctrspring.repository.UserRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
 
@@ -31,7 +31,7 @@ public class VisitService {
 
     private final VisitRepository visitRepository;
     private final ClinicRepository clinicRepository;
-    private final PatientRepository patientRepository;
+    private final PatientJpaRepository patientRepository;
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
