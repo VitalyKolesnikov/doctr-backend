@@ -47,20 +47,22 @@ public class PatientService {
     }
 
     @Transactional
+    public Patient create(PatientDto patientDto, long doctorId) {
+        Patient created = patientDto.toPatient();
+        created.setDoctor(userRepository.getOne(doctorId));
+        return patientRepositoryAdapter.save(created);
+    }
+
+    @Transactional
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = patientRepositoryAdapter.findByIdAndDoctorId(patient.getId(), doctorId);
 
         patient.setDoctor(storedPatient.getDoctor());
         patient.setCreated(storedPatient.getCreated());
+        patient.setUpdated(LocalDateTime.now());
+        patient.setStatus(storedPatient.getStatus());
         patientRepositoryAdapter.save(patient);
-    }
-
-    @Transactional
-    public Patient create(PatientDto patientDto, long doctorId) {
-        Patient created = patientDto.toPatient();
-        created.setDoctor(userRepository.getOne(doctorId));
-        return patientRepositoryAdapter.save(created);
     }
 
     @Transactional

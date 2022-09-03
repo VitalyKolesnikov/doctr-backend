@@ -48,15 +48,6 @@ public class PatientRestController {
         return patientService.getSuggested(doctorId, part);
     }
 
-    @PutMapping("{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Patient patient, @PathVariable long id) {
-        long doctorId = AuthUtil.getAuthUserId();
-        assureIdConsistent(patient, id);
-        log.info("update {} for user {}", patient, doctorId);
-        patientService.update(patient, doctorId);
-    }
-
     @PostMapping
     public ResponseEntity<Patient> create(@RequestBody PatientDto patientDto) {
         long doctorId = AuthUtil.getAuthUserId();
@@ -67,6 +58,15 @@ public class PatientRestController {
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody Patient patient, @PathVariable long id) {
+        long doctorId = AuthUtil.getAuthUserId();
+        assureIdConsistent(patient, id);
+        log.info("update {} for user {}", patient, doctorId);
+        patientService.update(patient, doctorId);
     }
 
     @DeleteMapping("{id}")
