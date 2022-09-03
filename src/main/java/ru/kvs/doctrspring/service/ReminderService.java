@@ -13,6 +13,7 @@ import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.ReminderRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +21,9 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ReminderService {
-
+    
+    private final Clock clock;
+    
     private final ReminderRepository reminderRepository;
     private final PatientRepository patientRepository;
 
@@ -49,7 +52,7 @@ public class ReminderService {
         Reminder storedReminder = reminderRepository.findByIdAndDoctorId(id, AuthUtil.getAuthUserId());
         Assert.notNull(storedReminder, "no reminder found!");
         storedReminder.setStatus(Status.NOT_ACTIVE);
-        storedReminder.setUpdated(LocalDateTime.now());
+        storedReminder.setUpdated(LocalDateTime.now(clock));
         reminderRepository.save(storedReminder);
         return getActiveCount();
     }
@@ -70,7 +73,7 @@ public class ReminderService {
         setPatient(reminderDto.getPatientId(), storedReminder);
         storedReminder.setDate(reminderDto.getDate());
         storedReminder.setText(reminderDto.getText());
-        storedReminder.setUpdated(LocalDateTime.now());
+        storedReminder.setUpdated(LocalDateTime.now(clock));
         reminderRepository.save(storedReminder);
         return getActiveCount();
     }

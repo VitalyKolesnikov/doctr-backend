@@ -11,7 +11,7 @@ import ru.kvs.doctrspring.model.Visit;
 import ru.kvs.doctrspring.repository.ClinicRepository;
 import ru.kvs.doctrspring.repository.VisitRepository;
 
-import java.time.LocalDateTime;
+import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,14 +27,23 @@ public class VisitServiceTest {
 
     @InjectMocks
     VisitService service;
+
+    @Mock
+    Clock clock;
+
     @Mock
     VisitRepository visitRepository;
+
     @Mock
     ClinicRepository clinicRepository;
 
     @BeforeEach
     void init() {
         VISIT1.setStatus(Status.ACTIVE);
+
+        Clock fixedClock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+        lenient().when(clock.instant()).thenReturn(fixedClock.instant());
+        lenient().when(clock.getZone()).thenReturn(fixedClock.getZone());
     }
 
     @Test

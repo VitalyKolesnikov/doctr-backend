@@ -44,8 +44,8 @@ public class PatientIntegrationTest extends AbstractTestBase {
     @DisplayName("API returns patient by id")
     void getById() {
         // given
-        givenPatients();
-        var patientId = 1100L;
+        var patientIds = givenPatients();
+        var patientId = patientIds.get(0);
 
         // when
         var patient = RestAssured.given()
@@ -89,11 +89,10 @@ public class PatientIntegrationTest extends AbstractTestBase {
     void getByIdNotFound() {
         // given
         givenPatients();
-        var wrongPatientId = 404L;
 
         // when
         var errorRepresentation = RestAssured.given()
-                .get("/api/v1/patients/{id}", wrongPatientId)
+                .get("/api/v1/patients/{id}", WRONG_ID)
                 .then()
                 .assertThat()
                 .statusCode(404)
@@ -102,7 +101,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
 
         // then
         assertThat(errorRepresentation.getMessage())
-                .isEqualTo(String.format("Patient with id [%s] not found", wrongPatientId));
+                .isEqualTo(String.format("Patient with id [%s] not found", WRONG_ID));
     }
 
     @Test
@@ -179,7 +178,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
 
     @Test
     @DisplayName("API soft-deletes existing patient")
-    void delete() {
+    void softDelete() {
         // given
         var patientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
 
@@ -204,16 +203,16 @@ public class PatientIntegrationTest extends AbstractTestBase {
         assertThat(patient.getStatus()).isEqualTo(DELETED);
     }
 
-    private void givenPatients() {
-        givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
-        givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
-        givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
+    private List<Long> givenPatients() {
+        var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
+        var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
+        var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
+
+        return List.of(patientId_1, patientId_2, patientId_3);
     }
 
     private Long givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
         int createdPatientId = RestAssured.given()
-                .log()
-                .all()
                 .contentType("application/json")
                 .body(PatientDto.builder()
                         .firstName(firstName)
@@ -227,8 +226,6 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 )
                 .post("/api/v1/patients/")
                 .then()
-                .log()
-                .all()
                 .assertThat()
                 .statusCode(201)
                 .extract()

@@ -9,11 +9,9 @@ import ru.kvs.doctrspring.dto.DatedVisitListDto;
 import ru.kvs.doctrspring.dto.VisitDto;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
-import ru.kvs.doctrspring.repository.ClinicRepository;
-import ru.kvs.doctrspring.repository.PatientJpaRepository;
-import ru.kvs.doctrspring.repository.UserRepository;
-import ru.kvs.doctrspring.repository.VisitRepository;
+import ru.kvs.doctrspring.repository.*;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +27,8 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 public class VisitService {
 
+    private final Clock clock;
+    
     private final VisitRepository visitRepository;
     private final ClinicRepository clinicRepository;
     private final PatientJpaRepository patientRepository;
@@ -36,7 +36,7 @@ public class VisitService {
 
     @Transactional(readOnly = true)
     public List<Visit> getLastActive(long doctorId) {
-        LocalDate twoMonthsAgo = LocalDate.now().minusMonths(2);
+        LocalDate twoMonthsAgo = LocalDate.now(clock).minusMonths(2);
         return visitRepository.getActive(doctorId).stream()
                 .filter(visit -> visit.getDate().isAfter(twoMonthsAgo))
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class VisitService {
         storedVisit.setChild(visitDto.getChild());
         storedVisit.setFirst(visitDto.getFirst());
         storedVisit.setInfo(visitDto.getInfo());
-        storedVisit.setUpdated(LocalDateTime.now());
+        storedVisit.setUpdated(LocalDateTime.now(clock));
 
         visitRepository.save(storedVisit);
     }
@@ -86,7 +86,7 @@ public class VisitService {
         created.setDoctor(userRepository.getOne(doctorId));
 
         created.setClinic(clinicRepository.findByIdAndDoctorId(visitDto.getClinicId(), doctorId));
-        created.setPatient(patientRepository.findByIdAndDoctorId(visitDto.getPatientId(), doctorId));
+        created.setPatient(patientRepository.getByIdAndDoctorId(visitDto.getPatientId(), doctorId));
 
         return visitRepository.save(created);
     }
@@ -95,7 +95,7 @@ public class VisitService {
     public void delete(long id, long doctorId) {
         Visit visit = visitRepository.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(visit.getStatus())) {
-            visit.setUpdated(LocalDateTime.now());
+            visit.setUpdated(LocalDateTime.now(clock));
             visit.setStatus(Status.DELETED);
             visitRepository.save(visit);
         }

@@ -42,19 +42,10 @@ public class VisitRestController {
         return ResponseEntity.ok(Visit);
     }
 
-    @GetMapping("patient/{id}")
-    public List<Visit> getForPatient(@PathVariable long id) {
-        log.info("Get visits by patientId={}", id);
-        return visitService.getForPatient(AuthUtil.getAuthUserId(), id);
-    }
-
-    @PutMapping("{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
-        long doctorId = AuthUtil.getAuthUserId();
-        assureIdConsistent(visitDto, id);
-        log.info("update {}", visitDto);
-        visitService.update(visitDto, doctorId);
+    @GetMapping("patient/{patientId}")
+    public List<Visit> getForPatient(@PathVariable long patientId) {
+        log.info("Get visits by patientId={}", patientId);
+        return visitService.getForPatient(AuthUtil.getAuthUserId(), patientId);
     }
 
     @PostMapping
@@ -67,6 +58,15 @@ public class VisitRestController {
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(visitDto.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody VisitDto visitDto, @PathVariable long id) {
+        long doctorId = AuthUtil.getAuthUserId();
+        assureIdConsistent(visitDto, id);
+        log.info("update {}", visitDto);
+        visitService.update(visitDto, doctorId);
     }
 
     @DeleteMapping("{id}")

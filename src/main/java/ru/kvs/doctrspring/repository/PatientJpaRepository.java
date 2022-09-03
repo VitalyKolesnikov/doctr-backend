@@ -12,8 +12,8 @@ public interface PatientJpaRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT p FROM Patient p WHERE p.doctor.id=:doctorId AND p.status = 'ACTIVE' ORDER BY p.lastName")
     List<Patient> getActive(long doctorId);
 
-    Patient findByIdAndDoctorId(long id, long doctorId);
+    Patient getByIdAndDoctorId(long id, long doctorId);
 
-    Optional<Patient> findOneByIdAndDoctorId(long id, long doctorId);
+    Optional<Patient> findByIdAndDoctorId(long id, long doctorId);
 
 }

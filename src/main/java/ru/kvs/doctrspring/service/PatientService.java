@@ -11,6 +11,7 @@ import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.UserRepository;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class PatientService {
+    
+    private final Clock clock;
+    
     private final PatientRepository patientRepositoryAdapter;
     private final UserRepository userRepository;
 
@@ -60,7 +64,7 @@ public class PatientService {
 
         patient.setDoctor(storedPatient.getDoctor());
         patient.setCreated(storedPatient.getCreated());
-        patient.setUpdated(LocalDateTime.now());
+        patient.setUpdated(LocalDateTime.now(clock));
         patient.setStatus(storedPatient.getStatus());
         patientRepositoryAdapter.save(patient);
     }
@@ -69,7 +73,7 @@ public class PatientService {
     public void delete(long id, long doctorId) {
         Patient patient = patientRepositoryAdapter.findByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(patient.getStatus())) {
-            patient.setUpdated(LocalDateTime.now());
+            patient.setUpdated(LocalDateTime.now(clock));
             patient.setStatus(Status.DELETED);
             patientRepositoryAdapter.save(patient);
         }

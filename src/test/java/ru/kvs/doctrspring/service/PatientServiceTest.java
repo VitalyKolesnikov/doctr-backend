@@ -11,7 +11,10 @@ import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.PatientRepository;
 import ru.kvs.doctrspring.repository.UserRepository;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,14 +30,23 @@ class PatientServiceTest {
 
     @InjectMocks
     PatientService service;
+
+    @Mock
+    Clock clock;
+
     @Mock
     PatientRepository patientRepositoryAdapter;
+
     @Mock
     UserRepository userRepository;
 
     @BeforeEach
     void init() {
         PATIENT1.setStatus(Status.ACTIVE);
+
+        Clock fixedClock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+        lenient().when(clock.instant()).thenReturn(fixedClock.instant());
+        lenient().when(clock.getZone()).thenReturn(fixedClock.getZone());
     }
 
     @Test

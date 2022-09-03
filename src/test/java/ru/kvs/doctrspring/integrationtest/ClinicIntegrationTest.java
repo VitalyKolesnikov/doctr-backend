@@ -56,12 +56,9 @@ public class ClinicIntegrationTest extends AbstractTestBase {
     @Test
     @DisplayName("API returns 404 when clinic not found by id")
     void getByIdNotFound() {
-        // given
-        var wrongClinicId = 404L;
-
         // when
         var errorRepresentation = RestAssured.given()
-                .get("/api/v1/clinics/{id}", wrongClinicId)
+                .get("/api/v1/clinics/{id}", WRONG_ID)
                 .then()
                 .assertThat()
                 .statusCode(404)
@@ -70,7 +67,7 @@ public class ClinicIntegrationTest extends AbstractTestBase {
 
         // then
         assertThat(errorRepresentation.getMessage())
-                .isEqualTo(String.format("Clinic with id [%s] not found", wrongClinicId));
+                .isEqualTo(String.format("Clinic with id [%s] not found", WRONG_ID));
     }
 
 }

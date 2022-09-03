@@ -20,7 +20,7 @@ public class PatientRepositoryAdapter implements PatientRepository {
 
     @Override
     public Patient findByIdAndDoctorId(long id, long doctorId) {
-        return patientJpaRepository.findOneByIdAndDoctorId(id, doctorId)
+        return patientJpaRepository.findByIdAndDoctorId(id, doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Patient with id [%s] not found", id)));
     }
 
