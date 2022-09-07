@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VisitIntegrationTest extends AbstractTestBase {
 
     @Test
-    @DisplayName("API returns all visits of last two months grouped by date")
+    @DisplayName("API returns all visits of last six months grouped by date")
     void getAllGroupByDate() throws Exception {
         // given
         givenVisits();

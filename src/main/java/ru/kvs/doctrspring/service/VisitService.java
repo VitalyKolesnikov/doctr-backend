@@ -36,9 +36,9 @@ public class VisitService {
 
     @Transactional(readOnly = true)
     public List<Visit> getLastActive(long doctorId) {
-        LocalDate twoMonthsAgo = LocalDate.now(clock).minusMonths(2);
+        LocalDate sixMonthsAgo = LocalDate.now(clock).minusMonths(6);
         return visitRepository.getActive(doctorId).stream()
-                .filter(visit -> visit.getDate().isAfter(twoMonthsAgo))
+                .filter(visit -> visit.getDate().isAfter(sixMonthsAgo))
                 .collect(Collectors.toList());
     }
 
