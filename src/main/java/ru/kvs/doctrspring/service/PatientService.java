@@ -8,8 +8,7 @@ import org.springframework.util.Assert;
 import ru.kvs.doctrspring.dto.PatientDto;
 import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Status;
-import ru.kvs.doctrspring.repository.PatientRepository;
-import ru.kvs.doctrspring.repository.UserRepository;
+import ru.kvs.doctrspring.repository.DoctrRepository;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -23,17 +22,16 @@ public class PatientService {
     
     private final Clock clock;
     
-    private final PatientRepository patientRepositoryAdapter;
-    private final UserRepository userRepository;
+    private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
     public List<Patient> getActive(long doctorId) {
-        return patientRepositoryAdapter.getActive(doctorId);
+        return doctrRepository.getPatients(doctorId);
     }
 
     @Transactional(readOnly = true)
     public Patient get(long id, long doctorId) {
-        return patientRepositoryAdapter.findByIdAndDoctorId(id, doctorId);
+        return doctrRepository.getPatientByIdAndDoctorId(id, doctorId);
     }
 
     @Transactional(readOnly = true)
@@ -53,29 +51,29 @@ public class PatientService {
     @Transactional
     public Patient create(PatientDto patientDto, long doctorId) {
         Patient created = patientDto.toPatient();
-        created.setDoctor(userRepository.getOne(doctorId));
-        return patientRepositoryAdapter.save(created);
+        created.setDoctor(doctrRepository.getUser(doctorId));
+        return doctrRepository.savePatient(created);
     }
 
     @Transactional
     public void update(Patient patient, long doctorId) {
         Assert.notNull(patient, "patient must not be null");
-        Patient storedPatient = patientRepositoryAdapter.findByIdAndDoctorId(patient.getId(), doctorId);
+        Patient storedPatient = doctrRepository.getPatientByIdAndDoctorId(patient.getId(), doctorId);
 
         patient.setDoctor(storedPatient.getDoctor());
         patient.setCreated(storedPatient.getCreated());
         patient.setUpdated(LocalDateTime.now(clock));
         patient.setStatus(storedPatient.getStatus());
-        patientRepositoryAdapter.save(patient);
+        doctrRepository.savePatient(patient);
     }
 
     @Transactional
     public void delete(long id, long doctorId) {
-        Patient patient = patientRepositoryAdapter.findByIdAndDoctorId(id, doctorId);
+        Patient patient = doctrRepository.getPatientByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(patient.getStatus())) {
             patient.setUpdated(LocalDateTime.now(clock));
             patient.setStatus(Status.DELETED);
-            patientRepositoryAdapter.save(patient);
+            doctrRepository.savePatient(patient);
         }
     }
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kvs.doctrspring.model.BaseEntity;
 import ru.kvs.doctrspring.model.Clinic;
-import ru.kvs.doctrspring.repository.ClinicRepository;
+import ru.kvs.doctrspring.repository.DoctrRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClinicService {
 
-    private final ClinicRepository clinicRepository;
+    private final DoctrRepository repository;
 
     @Transactional(readOnly = true)
     public List<Clinic> getAll(Long userId) {
-        List<Clinic> clinics = clinicRepository.findAllByDoctorId(userId);
+        List<Clinic> clinics = repository.getClinicsByDoctorId(userId);
         return clinics.stream()
                 .filter(BaseEntity::isActive)
                 .collect(Collectors.toList());
@@ -28,7 +28,7 @@ public class ClinicService {
 
     @Transactional(readOnly = true)
     public Clinic get(long id, long doctorId) {
-        return clinicRepository.findByIdAndDoctorId(id, doctorId);
+        return repository.getClinicByIdAndDoctorId(id, doctorId);
     }
 
 }

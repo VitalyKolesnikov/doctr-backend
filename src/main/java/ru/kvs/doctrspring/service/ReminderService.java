@@ -9,7 +9,7 @@ import ru.kvs.doctrspring.dto.ReminderDto;
 import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Reminder;
 import ru.kvs.doctrspring.model.Status;
-import ru.kvs.doctrspring.repository.PatientRepository;
+import ru.kvs.doctrspring.repository.DoctrRepository;
 import ru.kvs.doctrspring.repository.ReminderRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
 
@@ -23,9 +23,8 @@ import java.util.List;
 public class ReminderService {
     
     private final Clock clock;
-    
+    private final DoctrRepository doctrRepository;
     private final ReminderRepository reminderRepository;
-    private final PatientRepository patientRepository;
 
     @Transactional(readOnly = true)
     public List<Reminder> getActive() {
@@ -79,7 +78,7 @@ public class ReminderService {
     }
 
     private void setPatient(long patientId, Reminder reminder) {
-        Patient patient = patientRepository.findByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
+        Patient patient = doctrRepository.getPatientByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
         reminder.setPatient(patient);
     }
 }

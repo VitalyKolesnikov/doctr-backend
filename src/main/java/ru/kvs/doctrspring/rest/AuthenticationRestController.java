@@ -25,9 +25,7 @@ import java.util.Map;
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
 
     @PostMapping("login")
@@ -54,4 +52,5 @@ public class AuthenticationRestController {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
+
 }

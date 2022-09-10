@@ -8,8 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.model.Visit;
-import ru.kvs.doctrspring.repository.ClinicRepository;
-import ru.kvs.doctrspring.repository.VisitRepository;
+import ru.kvs.doctrspring.repository.DoctrRepository;
 
 import java.time.*;
 
@@ -32,10 +31,7 @@ public class VisitServiceTest {
     Clock clock;
 
     @Mock
-    VisitRepository visitRepository;
-
-    @Mock
-    ClinicRepository clinicRepository;
+    DoctrRepository repository;
 
     @BeforeEach
     void init() {
@@ -50,72 +46,72 @@ public class VisitServiceTest {
     void getActive_ShouldCall_Repository() {
         service.getLastActive(DOCTOR_ID);
 
-        verify(visitRepository).getActive(DOCTOR_ID);
+        verify(repository).getVisits(DOCTOR_ID);
     }
 
     @Test
     void get_ShouldCall_Repository() {
         service.get(PATIENT_ID, DOCTOR_ID);
 
-        verify(visitRepository).findByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
+        verify(repository).getVisitByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
     }
 
     @Test
     void getForPatient_ShouldCall_Repository() {
         service.getForPatient(DOCTOR_ID, PATIENT_ID);
 
-        verify(visitRepository).getActiveForPatient(DOCTOR_ID, PATIENT_ID);
+        verify(repository).getVisitsOfPatient(DOCTOR_ID, PATIENT_ID);
     }
 
     @Test
     void update_ShouldThrow_When_VisitIsNull() {
         assertThrows(IllegalArgumentException.class, () -> service.update(null, DOCTOR_ID));
-        verify(visitRepository, never()).save(any());
+        verify(repository, never()).saveVisit(any());
     }
 
     @Test
     void update_ShouldThrow_When_VisitNotFoundById() {
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(null);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> service.update(VISIT_DTO, DOCTOR_ID));
-        verify(visitRepository, never()).save(any());
+        verify(repository, never()).saveVisit(any());
     }
 
     @Test
     void update_ShouldCall_Repository() {
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
-        when(clinicRepository.findByIdAndDoctorId(CLINIC_ID, DOCTOR_ID)).thenReturn(CLINIC1);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
+        when(repository.getClinicByIdAndDoctorId(CLINIC_ID, DOCTOR_ID)).thenReturn(CLINIC1);
 
         service.update(VISIT_DTO, DOCTOR_ID);
 
-        verify(visitRepository).findByIdAndDoctorId(VISIT_ID, DOCTOR_ID);
-        verify(clinicRepository).findByIdAndDoctorId(CLINIC_ID, DOCTOR_ID);
-        verify(visitRepository).save(any(Visit.class));
+        verify(repository).getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID);
+        verify(repository).getClinicByIdAndDoctorId(CLINIC_ID, DOCTOR_ID);
+        verify(repository).saveVisit(any(Visit.class));
     }
 
     @Test
     void delete_ShouldDoNothing_When_StatusIsAlreadyDeleted() {
         VISIT1.setStatus(Status.DELETED);
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
 
         service.delete(VISIT_ID, DOCTOR_ID);
 
-        verify(visitRepository, never()).save(any(Visit.class));
+        verify(repository, never()).saveVisit(any(Visit.class));
     }
 
     @Test
     void delete_ShouldCall_Repository() {
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
 
         service.delete(VISIT_ID, DOCTOR_ID);
 
-        verify(visitRepository).findByIdAndDoctorId(VISIT_ID, DOCTOR_ID);
-        verify(visitRepository).save(VISIT1);
+        verify(repository).getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID);
+        verify(repository).saveVisit(VISIT1);
     }
 
     @Test
     void delete_ShouldUpdate_Status() {
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
 
         service.delete(VISIT_ID, DOCTOR_ID);
 
@@ -124,7 +120,7 @@ public class VisitServiceTest {
 
     @Test
     void delete_ShouldSet_UpdateTime() {
-        when(visitRepository.findByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
+        when(repository.getVisitByIdAndDoctorId(VISIT_ID, DOCTOR_ID)).thenReturn(VISIT1);
         LocalDateTime prevUpdatedValue = VISIT1.getUpdated();
 
         service.delete(VISIT_ID, DOCTOR_ID);
