@@ -113,22 +113,12 @@ class PatientServiceTest {
     }
 
     @Test
-    void update_ShouldSet_Created() {
-        when(doctrRepository.getPatientByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
-
-        service.update(UPDATED_PATIENT1, DOCTOR_ID);
-
-        assertEquals(UPDATED_PATIENT1.getCreated(), PATIENT1.getCreated());
-    }
-
-    @Test
     void update_ShouldCall_Repository() {
         when(doctrRepository.getPatientByIdAndDoctorId(PATIENT_ID, DOCTOR_ID)).thenReturn(PATIENT1);
 
         service.update(UPDATED_PATIENT1, DOCTOR_ID);
 
         verify(doctrRepository).getPatientByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
-        verify(doctrRepository).savePatient(UPDATED_PATIENT1);
     }
 
     @Test
@@ -156,7 +146,6 @@ class PatientServiceTest {
         service.delete(PATIENT_ID, DOCTOR_ID);
 
         verify(doctrRepository).getPatientByIdAndDoctorId(PATIENT_ID, DOCTOR_ID);
-        verify(doctrRepository).savePatient(PATIENT1);
     }
 
     @Test

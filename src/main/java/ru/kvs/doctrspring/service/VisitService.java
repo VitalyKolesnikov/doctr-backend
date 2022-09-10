@@ -28,12 +28,12 @@ import static java.util.stream.Collectors.groupingBy;
 public class VisitService {
 
     private final Clock clock;
-    private final DoctrRepository repository;
+    private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
     public List<Visit> getLastActive(long doctorId) {
         LocalDate sixMonthsAgo = LocalDate.now(clock).minusMonths(6);
-        return repository.getVisits(doctorId).stream()
+        return doctrRepository.getVisits(doctorId).stream()
                 .filter(visit -> visit.getDate().isAfter(sixMonthsAgo))
                 .collect(Collectors.toList());
     }
@@ -50,21 +50,31 @@ public class VisitService {
 
     @Transactional(readOnly = true)
     public Visit get(long id, long doctorId) {
-        return repository.getVisitByIdAndDoctorId(id, doctorId);
+        return doctrRepository.getVisitByIdAndDoctorId(id, doctorId);
     }
 
     @Transactional(readOnly = true)
     public List<Visit> getForPatient(long doctorId, long patientId) {
-        return repository.getVisitsOfPatient(doctorId, patientId);
+        return doctrRepository.getVisitsOfPatient(doctorId, patientId);
+    }
+
+    @Transactional
+    public Visit create(VisitDto visitDto, long doctorId) {
+        Visit created = visitDto.toVisit();
+        created.setDoctor(doctrRepository.getUser(doctorId));
+
+        created.setClinic(doctrRepository.getClinicByIdAndDoctorId(visitDto.getClinicId(), doctorId));
+        created.setPatient(doctrRepository.getPatientByIdAndDoctorId(visitDto.getPatientId(), doctorId));
+
+        return doctrRepository.saveVisit(created);
     }
 
     @Transactional
     public void update(VisitDto visitDto, long doctorId) {
         Assert.notNull(visitDto, "visit must not be null");
-        Visit storedVisit = repository.getVisitByIdAndDoctorId(visitDto.getId(), doctorId);
-        Assert.notNull(storedVisit, "no visit found!");
+        Visit storedVisit = doctrRepository.getVisitByIdAndDoctorId(visitDto.getId(), doctorId);
 
-        storedVisit.setClinic(repository.getClinicByIdAndDoctorId(visitDto.getClinicId(), doctorId));
+        storedVisit.setClinic(doctrRepository.getClinicByIdAndDoctorId(visitDto.getClinicId(), doctorId));
         storedVisit.setDate(visitDto.getDate());
         storedVisit.setCost(visitDto.getCost());
         storedVisit.setPercent(visitDto.getPercent());
@@ -72,28 +82,14 @@ public class VisitService {
         storedVisit.setFirst(visitDto.getFirst());
         storedVisit.setInfo(visitDto.getInfo());
         storedVisit.setUpdated(LocalDateTime.now(clock));
-
-        repository.saveVisit(storedVisit);
-    }
-
-    @Transactional
-    public Visit create(VisitDto visitDto, long doctorId) {
-        Visit created = visitDto.toVisit();
-        created.setDoctor(repository.getUser(doctorId));
-
-        created.setClinic(repository.getClinicByIdAndDoctorId(visitDto.getClinicId(), doctorId));
-        created.setPatient(repository.getPatientByIdAndDoctorId(visitDto.getPatientId(), doctorId));
-
-        return repository.saveVisit(created);
     }
 
     @Transactional
     public void delete(long id, long doctorId) {
-        Visit visit = repository.getVisitByIdAndDoctorId(id, doctorId);
+        Visit visit = doctrRepository.getVisitByIdAndDoctorId(id, doctorId);
         if (!Status.DELETED.equals(visit.getStatus())) {
             visit.setUpdated(LocalDateTime.now(clock));
             visit.setStatus(Status.DELETED);
-            repository.saveVisit(visit);
         }
     }
 

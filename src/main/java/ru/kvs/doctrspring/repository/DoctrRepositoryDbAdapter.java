@@ -2,10 +2,8 @@ package ru.kvs.doctrspring.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.kvs.doctrspring.model.Clinic;
-import ru.kvs.doctrspring.model.Patient;
-import ru.kvs.doctrspring.model.User;
-import ru.kvs.doctrspring.model.Visit;
+import ru.kvs.doctrspring.model.*;
+import ru.kvs.doctrspring.repository.jpa.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,6 +16,7 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     private final ClinicJpaRepository clinicJpaRepository;
     private final PatientJpaRepository patientJpaRepository;
     private final VisitJpaRepository visitJpaRepository;
+    private final ReminderJpaRepository reminderJpaRepository;
 
     @Override
     public User getUser(long doctorId) {
@@ -76,6 +75,27 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     @Override
     public Visit saveVisit(Visit visit) {
         return visitJpaRepository.save(visit);
+    }
+
+    @Override
+    public List<Reminder> getActualReminders(long doctorId) {
+        return reminderJpaRepository.getActual(doctorId);
+    }
+
+    @Override
+    public List<Reminder> getRemindersOfPatient(long doctorId, long patientId) {
+        return reminderJpaRepository.getAllForPatient(doctorId, patientId);
+    }
+
+    @Override
+    public Reminder getReminderByIdAndDoctorId(long reminderId, long doctorId) {
+        return reminderJpaRepository.findByIdAndDoctorId(reminderId, doctorId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Reminder with id [%s] not found", reminderId)));
+    }
+
+    @Override
+    public Reminder saveReminder(Reminder reminder) {
+        return reminderJpaRepository.save(reminder);
     }
 
 }

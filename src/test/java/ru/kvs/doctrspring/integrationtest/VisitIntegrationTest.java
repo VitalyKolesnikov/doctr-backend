@@ -96,8 +96,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.[0].date", is("10.09.2022")))
                 .andExpect(jsonPath("$.[0].patient.id", comparesEqualTo(patientId.intValue())))
                 .andExpect(jsonPath("$.[1].date", is("05.09.2022")))
-                .andExpect(jsonPath("$.[1].patient.id", comparesEqualTo(patientId.intValue())))
-        ;
+                .andExpect(jsonPath("$.[1].patient.id", comparesEqualTo(patientId.intValue())));
     }
 
     @Test

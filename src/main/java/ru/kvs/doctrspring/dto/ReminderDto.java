@@ -3,13 +3,18 @@ package ru.kvs.doctrspring.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ru.kvs.doctrspring.model.Reminder;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReminderDto extends BaseDto {
+
     private Long patientId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate date;
@@ -21,4 +26,5 @@ public class ReminderDto extends BaseDto {
         reminder.setText(getText());
         return reminder;
     }
+
 }

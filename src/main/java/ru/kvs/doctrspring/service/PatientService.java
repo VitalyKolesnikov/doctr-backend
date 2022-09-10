@@ -19,9 +19,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class PatientService {
-    
+
     private final Clock clock;
-    
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
@@ -60,11 +59,14 @@ public class PatientService {
         Assert.notNull(patient, "patient must not be null");
         Patient storedPatient = doctrRepository.getPatientByIdAndDoctorId(patient.getId(), doctorId);
 
-        patient.setDoctor(storedPatient.getDoctor());
-        patient.setCreated(storedPatient.getCreated());
-        patient.setUpdated(LocalDateTime.now(clock));
-        patient.setStatus(storedPatient.getStatus());
-        doctrRepository.savePatient(patient);
+        storedPatient.setFirstName(patient.getFirstName());
+        storedPatient.setMiddleName(patient.getMiddleName());
+        storedPatient.setLastName(patient.getLastName());
+        storedPatient.setBirthDate(patient.getBirthDate());
+        storedPatient.setEmail(patient.getEmail());
+        storedPatient.setPhone(patient.getPhone());
+        storedPatient.setInfo(patient.getInfo());
+        storedPatient.setUpdated(LocalDateTime.now(clock));
     }
 
     @Transactional
@@ -73,7 +75,6 @@ public class PatientService {
         if (!Status.DELETED.equals(patient.getStatus())) {
             patient.setUpdated(LocalDateTime.now(clock));
             patient.setStatus(Status.DELETED);
-            doctrRepository.savePatient(patient);
         }
     }
 

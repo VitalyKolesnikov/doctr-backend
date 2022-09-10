@@ -1,4 +1,4 @@
-package ru.kvs.doctrspring.repository;
+package ru.kvs.doctrspring.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.kvs.doctrspring.model.Clinic;

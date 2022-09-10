@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClinicService {
 
-    private final DoctrRepository repository;
+    private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
     public List<Clinic> getAll(Long userId) {
-        List<Clinic> clinics = repository.getClinicsByDoctorId(userId);
+        List<Clinic> clinics = doctrRepository.getClinicsByDoctorId(userId);
         return clinics.stream()
                 .filter(BaseEntity::isActive)
                 .collect(Collectors.toList());
@@ -28,7 +28,7 @@ public class ClinicService {
 
     @Transactional(readOnly = true)
     public Clinic get(long id, long doctorId) {
-        return repository.getClinicByIdAndDoctorId(id, doctorId);
+        return doctrRepository.getClinicByIdAndDoctorId(id, doctorId);
     }
 
 }

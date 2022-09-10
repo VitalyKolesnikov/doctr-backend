@@ -10,7 +10,6 @@ import ru.kvs.doctrspring.model.Patient;
 import ru.kvs.doctrspring.model.Reminder;
 import ru.kvs.doctrspring.model.Status;
 import ru.kvs.doctrspring.repository.DoctrRepository;
-import ru.kvs.doctrspring.repository.ReminderRepository;
 import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.time.Clock;
@@ -21,59 +20,54 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ReminderService {
-    
+
     private final Clock clock;
     private final DoctrRepository doctrRepository;
-    private final ReminderRepository reminderRepository;
 
     @Transactional(readOnly = true)
     public List<Reminder> getActive() {
-        return reminderRepository.getActual(AuthUtil.getAuthUserId());
+        return doctrRepository.getActualReminders(AuthUtil.getAuthUserId());
     }
 
     @Transactional(readOnly = true)
-    public Reminder get(long id, long doctorId) {
-        return reminderRepository.findByIdAndDoctorId(id, doctorId);
+    public Reminder get(long reminderId, long doctorId) {
+        return doctrRepository.getReminderByIdAndDoctorId(reminderId, doctorId);
     }
 
     @Transactional(readOnly = true)
     public List<Reminder> getForPatient(long doctorId, long patientId) {
-        return reminderRepository.getAllForPatient(doctorId, patientId);
+        return doctrRepository.getRemindersOfPatient(doctorId, patientId);
     }
 
     @Transactional(readOnly = true)
     public int getActiveCount() {
-        return reminderRepository.getActual(AuthUtil.getAuthUserId()).size();
+        return doctrRepository.getActualReminders(AuthUtil.getAuthUserId()).size();
     }
 
     @Transactional
-    public int complete(long id) {
-        Reminder storedReminder = reminderRepository.findByIdAndDoctorId(id, AuthUtil.getAuthUserId());
-        Assert.notNull(storedReminder, "no reminder found!");
-        storedReminder.setStatus(Status.NOT_ACTIVE);
-        storedReminder.setUpdated(LocalDateTime.now(clock));
-        reminderRepository.save(storedReminder);
-        return getActiveCount();
-    }
-
-    @Transactional
-    public Reminder create(ReminderDto reminderDto) {
+    public Reminder create(ReminderDto reminderDto, long doctorId) {
         Reminder created = reminderDto.toReminder();
-        created.setDoctor(AuthUtil.getAuthUser());
+        created.setDoctor(doctrRepository.getUser(doctorId));
         setPatient(reminderDto.getPatientId(), created);
-        return reminderRepository.save(created);
+        return doctrRepository.saveReminder(created);
     }
 
     @Transactional
     public int update(ReminderDto reminderDto) {
         Assert.notNull(reminderDto, "reminder must not be null");
-        Reminder storedReminder = reminderRepository.findByIdAndDoctorId(reminderDto.getId(), AuthUtil.getAuthUserId());
-        Assert.notNull(storedReminder, "no reminder found!");
+        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(reminderDto.getId(), AuthUtil.getAuthUserId());
         setPatient(reminderDto.getPatientId(), storedReminder);
         storedReminder.setDate(reminderDto.getDate());
         storedReminder.setText(reminderDto.getText());
         storedReminder.setUpdated(LocalDateTime.now(clock));
-        reminderRepository.save(storedReminder);
+        return getActiveCount();
+    }
+
+    @Transactional
+    public int complete(long id) {
+        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(id, AuthUtil.getAuthUserId());
+        storedReminder.setStatus(Status.NOT_ACTIVE);
+        storedReminder.setUpdated(LocalDateTime.now(clock));
         return getActiveCount();
     }
 
@@ -81,4 +75,5 @@ public class ReminderService {
         Patient patient = doctrRepository.getPatientByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
         reminder.setPatient(patient);
     }
+
 }
