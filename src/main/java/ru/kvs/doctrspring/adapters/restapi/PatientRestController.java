@@ -1,12 +1,12 @@
 package ru.kvs.doctrspring.adapters.restapi;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
+import ru.kvs.doctrspring.adapters.restapi.mapper.PatientMapper;
 import ru.kvs.doctrspring.app.PatientService;
 import ru.kvs.doctrspring.domain.Patient;
 import ru.kvs.doctrspring.security.AuthUtil;
@@ -16,7 +16,6 @@ import java.util.List;
 
 import static ru.kvs.doctrspring.adapters.restapi.PatientRestController.REST_URL;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = REST_URL)
@@ -25,25 +24,23 @@ public class PatientRestController {
     public final static String REST_URL = "/api/v1/patients/";
 
     private final PatientService patientService;
+    private final PatientMapper patientMapper;
 
     @GetMapping
     public List<Patient> getActive() {
         long doctorId = AuthUtil.getAuthUserId();
-        log.info("Get all active patients for doctor with id={}", doctorId);
         return patientService.getActive(doctorId);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Patient> get(@PathVariable long id) {
-        log.info("Get patient by id={}", id);
+    public ResponseEntity<PatientDto> get(@PathVariable long id) {
         Patient patient = patientService.get(id, AuthUtil.getAuthUserId());
-        return ResponseEntity.ok(patient);
+        return ResponseEntity.ok(patientMapper.toDto(patient));
     }
 
     @GetMapping("suggest/{part}")
     public List<Patient> getSuggested(@PathVariable String part) {
         long doctorId = AuthUtil.getAuthUserId();
-        log.info("Get patients by suggestion={}", part);
         return patientService.getSuggested(doctorId, part);
     }
 
@@ -51,11 +48,11 @@ public class PatientRestController {
     public ResponseEntity<Patient> create(@RequestBody PatientDto patientDto) {
         long doctorId = AuthUtil.getAuthUserId();
         Patient created = patientService.create(patientDto, doctorId);
-        log.info("Create new patient {}", created);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
+
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
@@ -63,7 +60,6 @@ public class PatientRestController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody Patient patient, @PathVariable long id) {
         long doctorId = AuthUtil.getAuthUserId();
-        log.info("update {} for user {}", patient, doctorId);
         patientService.update(patient, id, doctorId);
     }
 
