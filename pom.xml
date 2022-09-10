@@ -102,6 +102,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- ArchUnit -->
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit</artifactId>
+            <version>1.0.0-rc1</version>
+        </dependency>
+
         <!-- Maven -->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
