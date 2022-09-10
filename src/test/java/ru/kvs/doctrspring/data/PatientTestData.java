@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.data;
 
-import ru.kvs.doctrspring.dto.PatientDto;
-import ru.kvs.doctrspring.model.Patient;
+import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
+import ru.kvs.doctrspring.domain.Patient;
 
 import java.time.Month;
 import java.util.List;

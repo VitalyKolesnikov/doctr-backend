@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import ru.kvs.doctrspring.dto.PatientDto;
-import ru.kvs.doctrspring.dto.VisitDto;
-import ru.kvs.doctrspring.rest.representation.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.VisitDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.data;
 
-import ru.kvs.doctrspring.dto.VisitDto;
-import ru.kvs.doctrspring.model.Visit;
+import ru.kvs.doctrspring.adapters.restapi.dto.VisitDto;
+import ru.kvs.doctrspring.domain.Visit;
 
 import java.time.Month;
 import java.util.List;

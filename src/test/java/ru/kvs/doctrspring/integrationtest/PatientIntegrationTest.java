@@ -4,16 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.kvs.doctrspring.dto.PatientDto;
-import ru.kvs.doctrspring.model.Patient;
-import ru.kvs.doctrspring.rest.representation.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
+import ru.kvs.doctrspring.domain.Patient;
+import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.kvs.doctrspring.model.Status.ACTIVE;
-import static ru.kvs.doctrspring.model.Status.DELETED;
+import static ru.kvs.doctrspring.domain.Status.ACTIVE;
+import static ru.kvs.doctrspring.domain.Status.DELETED;
 
 public class PatientIntegrationTest extends AbstractTestBase {
 

@@ -2,9 +2,9 @@ package ru.kvs.doctrspring.security.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.kvs.doctrspring.model.Role;
-import ru.kvs.doctrspring.model.Status;
-import ru.kvs.doctrspring.model.User;
+import ru.kvs.doctrspring.domain.Role;
+import ru.kvs.doctrspring.domain.Status;
+import ru.kvs.doctrspring.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public final class JwtUserFactory {
                 user.getEmail(),
                 user.getPassword(),
                 mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
-                user.getStatus().equals(Status.ACTIVE),
+                user.getStatus() == Status.ACTIVE,
                 user.getUpdated()
         );
     }
@@ -35,4 +35,5 @@ public final class JwtUserFactory {
                         new SimpleGrantedAuthority(role.getName())
                 ).collect(Collectors.toList());
     }
+
 }

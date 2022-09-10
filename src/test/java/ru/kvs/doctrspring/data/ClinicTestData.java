@@ -1,6 +1,6 @@
 package ru.kvs.doctrspring.data;
 
-import ru.kvs.doctrspring.model.Clinic;
+import ru.kvs.doctrspring.domain.Clinic;
 
 public class ClinicTestData {
 

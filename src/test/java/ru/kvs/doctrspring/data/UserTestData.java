@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.data;
 
 import ru.kvs.doctrspring.TestMatcher;
-import ru.kvs.doctrspring.model.User;
+import ru.kvs.doctrspring.domain.User;
 
 public class UserTestData {
 

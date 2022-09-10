@@ -1,7 +1,7 @@
 package ru.kvs.doctrspring.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.kvs.doctrspring.model.User;
+import ru.kvs.doctrspring.domain.User;
 import ru.kvs.doctrspring.security.jwt.JwtUser;
 
 public class AuthUtil {

@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.kvs.doctrspring.model.BaseEntity;
-import ru.kvs.doctrspring.model.Clinic;
-import ru.kvs.doctrspring.rest.representation.ErrorRepresentation;
+import ru.kvs.doctrspring.domain.BaseEntity;
+import ru.kvs.doctrspring.domain.Clinic;
+import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 
 import java.util.List;
 
