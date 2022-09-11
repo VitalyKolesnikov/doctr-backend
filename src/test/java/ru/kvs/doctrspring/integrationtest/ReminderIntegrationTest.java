@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
 import ru.kvs.doctrspring.adapters.restapi.dto.ReminderDto;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,7 +59,18 @@ public class ReminderIntegrationTest extends AbstractTestBase {
 
         // then
         resultActions
-                .andExpect(jsonPath("$.id", comparesEqualTo(reminderId.intValue())));
+                .andExpect(jsonPath("$.id", comparesEqualTo(reminderId.intValue())))
+                .andExpect(jsonPath("$.date", is("01.09.2022")))
+                .andExpect(jsonPath("$.text", is("p-1 r-3")))
+                .andExpect(jsonPath("$.status", is("ACTIVE")))
+                .andExpect(jsonPath("$.patient.firstName", is("Adam")))
+                .andExpect(jsonPath("$.patient.middleName", is("Peter")))
+                .andExpect(jsonPath("$.patient.lastName", is("Brown")))
+                .andExpect(jsonPath("$.patient.birthDate", is("01.01.1985")))
+                .andExpect(jsonPath("$.patient.email", is("abrown@gmail.com")))
+                .andExpect(jsonPath("$.patient.phone", is("111")))
+                .andExpect(jsonPath("$.patient.info", is("p-1 info")))
+                .andExpect(jsonPath("$.patient.status", is("ACTIVE")));
     }
 
     @Test
@@ -176,7 +187,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
 
         // when
         mockMvc.perform(patch("/api/v1/reminders/complete/{id}", reminderId)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // then

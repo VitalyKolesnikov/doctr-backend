@@ -56,7 +56,29 @@ public class VisitIntegrationTest extends AbstractTestBase {
 
         // then
         resultActions
-                .andExpect(jsonPath("$.id", comparesEqualTo(visitId.intValue())));
+                .andExpect(jsonPath("$.id", comparesEqualTo(visitId.intValue())))
+                .andExpect(jsonPath("$.date", is("05.09.2022")))
+                .andExpect(jsonPath("$.cost", is(4000)))
+                .andExpect(jsonPath("$.percent", is(25)))
+                .andExpect(jsonPath("$.child", is(false)))
+                .andExpect(jsonPath("$.first", is(true)))
+                .andExpect(jsonPath("$.info", is("p-1 v-1")))
+                .andExpect(jsonPath("$.share", is(1000)))
+                .andExpect(jsonPath("$.status", is("ACTIVE")))
+                .andExpect(jsonPath("$.patient.id", is(1100)))
+                .andExpect(jsonPath("$.patient.firstName", is("Adam")))
+                .andExpect(jsonPath("$.patient.middleName", is("Peter")))
+                .andExpect(jsonPath("$.patient.lastName", is("Brown")))
+                .andExpect(jsonPath("$.patient.birthDate", is("01.01.1985")))
+                .andExpect(jsonPath("$.patient.email", is("abrown@gmail.com")))
+                .andExpect(jsonPath("$.patient.phone", is("111")))
+                .andExpect(jsonPath("$.patient.info", is("p-1 info")))
+                .andExpect(jsonPath("$.patient.status", is("ACTIVE")))
+                .andExpect(jsonPath("$.clinic.id", is(1004)))
+                .andExpect(jsonPath("$.clinic.name", is("Clinic1")))
+                .andExpect(jsonPath("$.clinic.phone", is("+7(499)111-1111")))
+                .andExpect(jsonPath("$.clinic.address", is("Moscow, Lenina 1")))
+                .andExpect(jsonPath("$.clinic.status", is("ACTIVE")));
     }
 
     @Test

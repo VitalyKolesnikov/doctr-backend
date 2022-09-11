@@ -59,6 +59,14 @@ public class PatientIntegrationTest extends AbstractTestBase {
 
         // then
         assertThat(patient.getId()).isEqualTo(patientId);
+        assertThat(patient.getFirstName()).isEqualTo("Adam");
+        assertThat(patient.getMiddleName()).isEqualTo("Peter");
+        assertThat(patient.getLastName()).isEqualTo("Brown");
+        assertThat(patient.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
+        assertThat(patient.getEmail()).isEqualTo("abrown@gmail.com");
+        assertThat(patient.getPhone()).isEqualTo("111");
+        assertThat(patient.getInfo()).isEqualTo("p-1 info");
+        assertThat(patient.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test

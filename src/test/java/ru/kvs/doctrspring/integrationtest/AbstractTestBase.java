@@ -16,6 +16,7 @@ import ru.kvs.doctrspring.config.DatabaseTestConfig;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {DatabaseTestConfig.class})
@@ -56,7 +57,7 @@ abstract public class AbstractTestBase {
     }
 
     protected String testResource(String filePath) {
-        return new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(filePath))).lines().collect(Collectors.joining("\n"));
+        return new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass().getResourceAsStream(filePath)))).lines().collect(Collectors.joining("\n"));
     }
 
 }

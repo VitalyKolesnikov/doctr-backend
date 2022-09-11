@@ -11,6 +11,7 @@ import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ru.kvs.doctrspring.domain.Status.ACTIVE;
 
 public class ClinicIntegrationTest extends AbstractTestBase {
 
@@ -51,6 +52,10 @@ public class ClinicIntegrationTest extends AbstractTestBase {
 
         // then
         assertThat(clinic.getId()).isEqualTo(clinicId);
+        assertThat(clinic.getName()).isEqualTo("Clinic1");
+        assertThat(clinic.getPhone()).isEqualTo("+7(499)111-1111");
+        assertThat(clinic.getAddress()).isEqualTo("Moscow, Lenina 1");
+        assertThat(clinic.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test
