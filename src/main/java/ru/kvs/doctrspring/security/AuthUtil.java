@@ -15,14 +15,15 @@ public class AuthUtil {
 
     public static User getAuthUser() {
         JwtUser jwtUser = getJwtUser();
-        User user = new User();
-        user.setId(jwtUser.getId());
-        user.setUsername(jwtUser.getUsername());
-        user.setFirstName(jwtUser.getFirstname());
-        user.setLastName(jwtUser.getLastname());
-        user.setPassword(jwtUser.getPassword());
-        user.setEmail(jwtUser.getEmail());
-        return user;
+
+        return User.builder()
+                .id(jwtUser.getId())
+                .username(jwtUser.getUsername())
+                .firstName(jwtUser.getFirstname())
+                .lastName(jwtUser.getLastname())
+                .password(jwtUser.getPassword())
+                .email(jwtUser.getEmail())
+                .build();
     }
 
     public static Long getAuthUserId() {

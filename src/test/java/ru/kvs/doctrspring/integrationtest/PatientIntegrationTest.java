@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
-import ru.kvs.doctrspring.domain.Patient;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.PatientCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,17 +24,17 @@ public class PatientIntegrationTest extends AbstractTestBase {
         givenPatients();
 
         // when
-        var patients = RestAssured.given()
+        var patientDtos = RestAssured.given()
                 .get("/api/v1/patients/")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<List<Patient>>() {
+                .as(new TypeRef<List<PatientDto>>() {
                 });
 
         // then
-        assertThat(patients)
+        assertThat(patientDtos)
                 .hasSize(3)
                 .extracting("lastName")
                 .containsExactly("Brown", "Charles", "Peterson");
@@ -48,25 +48,25 @@ public class PatientIntegrationTest extends AbstractTestBase {
         var patientId = patientIds.get(0);
 
         // when
-        var patient = RestAssured.given()
+        var patientDto = RestAssured.given()
                 .get("/api/v1/patients/{id}", patientId)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<Patient>() {
+                .as(new TypeRef<PatientDto>() {
                 });
 
         // then
-        assertThat(patient.getId()).isEqualTo(patientId);
-        assertThat(patient.getFirstName()).isEqualTo("Adam");
-        assertThat(patient.getMiddleName()).isEqualTo("Peter");
-        assertThat(patient.getLastName()).isEqualTo("Brown");
-        assertThat(patient.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
-        assertThat(patient.getEmail()).isEqualTo("abrown@gmail.com");
-        assertThat(patient.getPhone()).isEqualTo("111");
-        assertThat(patient.getInfo()).isEqualTo("p-1 info");
-        assertThat(patient.getStatus()).isEqualTo(ACTIVE);
+        assertThat(patientDto.getId()).isEqualTo(patientId);
+        assertThat(patientDto.getFirstName()).isEqualTo("Adam");
+        assertThat(patientDto.getMiddleName()).isEqualTo("Peter");
+        assertThat(patientDto.getLastName()).isEqualTo("Brown");
+        assertThat(patientDto.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
+        assertThat(patientDto.getEmail()).isEqualTo("abrown@gmail.com");
+        assertThat(patientDto.getPhone()).isEqualTo("111");
+        assertThat(patientDto.getInfo()).isEqualTo("p-1 info");
+        assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test
@@ -77,19 +77,19 @@ public class PatientIntegrationTest extends AbstractTestBase {
         var query = "peter";
 
         // when
-        var patients = RestAssured.given()
+        var patientDtos = RestAssured.given()
                 .get("/api/v1/patients/suggest/{part}", query)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<List<Patient>>() {
+                .as(new TypeRef<List<PatientDto>>() {
                 });
 
         // then
-        assertThat(patients).hasSize(2);
-        assertThat(patients).extracting("lastName").containsExactly("Brown", "Peterson");
-        assertThat(patients).extracting("middleName").containsExactly("Peter", "Mac");
+        assertThat(patientDtos).hasSize(2);
+        assertThat(patientDtos).extracting("lastName").containsExactly("Brown", "Peterson");
+        assertThat(patientDtos).extracting("middleName").containsExactly("Peter", "Mac");
     }
 
     @Test
@@ -119,24 +119,27 @@ public class PatientIntegrationTest extends AbstractTestBase {
         var createdPatientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
 
         // then
-        var patient = RestAssured.given()
+        var patientDto = RestAssured.given()
                 .get("/api/v1/patients/{id}", createdPatientId)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<Patient>() {
+                .as(new TypeRef<PatientDto>() {
                 });
 
-        assertThat(patient.getId()).isEqualTo(createdPatientId);
-        assertThat(patient.getFirstName()).isEqualTo("Adam");
-        assertThat(patient.getMiddleName()).isEqualTo("Peter");
-        assertThat(patient.getLastName()).isEqualTo("Brown");
-        assertThat(patient.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
-        assertThat(patient.getEmail()).isEqualTo("abrown@gmail.com");
-        assertThat(patient.getPhone()).isEqualTo("111");
-        assertThat(patient.getInfo()).isEqualTo("p-1 info");
-        assertThat(patient.getStatus()).isEqualTo(ACTIVE);
+        assertThat(patientDto.getId()).isEqualTo(createdPatientId);
+        assertThat(patientDto.getFirstName()).isEqualTo("Adam");
+        assertThat(patientDto.getMiddleName()).isEqualTo("Peter");
+        assertThat(patientDto.getLastName()).isEqualTo("Brown");
+        assertThat(patientDto.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
+        assertThat(patientDto.getEmail()).isEqualTo("abrown@gmail.com");
+        assertThat(patientDto.getPhone()).isEqualTo("111");
+        assertThat(patientDto.getInfo()).isEqualTo("p-1 info");
+        assertThat(patientDto.getCreated()).isNotNull();
+        assertThat(patientDto.getUpdated()).isNotNull();
+        assertThat(patientDto.getCreated()).isEqualTo(patientDto.getUpdated());
+        assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test
@@ -148,7 +151,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
         // when
         RestAssured.given()
                 .contentType("application/json")
-                .body(Patient.builder()
+                .body(PatientDto.builder()
                         .firstName("Adam-upd")
                         .middleName("Peter-upd")
                         .lastName("Brown-upd")
@@ -164,24 +167,27 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 .statusCode(204);
 
         // then
-        var patient = RestAssured.given()
+        var patientDto = RestAssured.given()
                 .get("/api/v1/patients/{id}", patientId)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<Patient>() {
+                .as(new TypeRef<PatientDto>() {
                 });
 
-        assertThat(patient.getId()).isEqualTo(patientId);
-        assertThat(patient.getFirstName()).isEqualTo("Adam-upd");
-        assertThat(patient.getMiddleName()).isEqualTo("Peter-upd");
-        assertThat(patient.getLastName()).isEqualTo("Brown-upd");
-        assertThat(patient.getBirthDate()).isEqualTo(LocalDate.of(1984, 12, 11));
-        assertThat(patient.getEmail()).isEqualTo("abrown-upd@gmail.com");
-        assertThat(patient.getPhone()).isEqualTo("111-222");
-        assertThat(patient.getInfo()).isEqualTo("p-1 info-upd");
-        assertThat(patient.getStatus()).isEqualTo(ACTIVE);
+        assertThat(patientDto.getId()).isEqualTo(patientId);
+        assertThat(patientDto.getFirstName()).isEqualTo("Adam-upd");
+        assertThat(patientDto.getMiddleName()).isEqualTo("Peter-upd");
+        assertThat(patientDto.getLastName()).isEqualTo("Brown-upd");
+        assertThat(patientDto.getBirthDate()).isEqualTo(LocalDate.of(1984, 12, 11));
+        assertThat(patientDto.getEmail()).isEqualTo("abrown-upd@gmail.com");
+        assertThat(patientDto.getPhone()).isEqualTo("111-222");
+        assertThat(patientDto.getInfo()).isEqualTo("p-1 info-upd");
+        assertThat(patientDto.getCreated()).isNotNull();
+        assertThat(patientDto.getUpdated()).isNotNull();
+        assertThat(patientDto.getCreated()).isNotEqualTo(patientDto.getUpdated());
+        assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test
@@ -199,16 +205,16 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 .statusCode(204);
 
         // then
-        var patient = RestAssured.given()
+        var patientDto = RestAssured.given()
                 .get("/api/v1/patients/{id}", patientId)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<Patient>() {
+                .as(new TypeRef<PatientDto>() {
                 });
 
-        assertThat(patient.getStatus()).isEqualTo(DELETED);
+        assertThat(patientDto.getStatus()).isEqualTo(DELETED);
     }
 
     private List<Long> givenPatients() {
@@ -222,7 +228,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
     private Long givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
         int createdPatientId = RestAssured.given()
                 .contentType("application/json")
-                .body(PatientDto.builder()
+                .body(PatientCreateOrUpdateRequest.builder()
                         .firstName(firstName)
                         .middleName(middleName)
                         .lastName(lastName)

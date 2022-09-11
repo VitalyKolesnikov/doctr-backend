@@ -1,7 +1,6 @@
-package ru.kvs.doctrspring.adapters.restapi.dto;
+package ru.kvs.doctrspring.adapters.restapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import ru.kvs.doctrspring.domain.Visit;
 
@@ -9,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class DatedVisitListDto implements Comparable<DatedVisitListDto> {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
@@ -29,9 +27,9 @@ public class DatedVisitListDto implements Comparable<DatedVisitListDto> {
                 .sum();
     }
 
-
     @Override
     public int compareTo(DatedVisitListDto o) {
         return getDate().compareTo(o.getDate());
     }
+
 }

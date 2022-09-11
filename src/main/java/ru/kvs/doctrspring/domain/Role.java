@@ -1,13 +1,16 @@
 package ru.kvs.doctrspring.domain;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "roles")
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role extends BaseEntity {
 
     @Column(name = "name")

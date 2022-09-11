@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.kvs.doctrspring.domain.BaseEntity;
-import ru.kvs.doctrspring.domain.Clinic;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.BaseDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ClinicDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
 
 import java.util.List;
 
@@ -20,18 +20,18 @@ public class ClinicIntegrationTest extends AbstractTestBase {
     void getAll() {
 
         // when
-        var clinics = RestAssured.given()
+        var clinicDtos = RestAssured.given()
                 .get("/api/v1/clinics/")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<List<Clinic>>() {
+                .as(new TypeRef<List<ClinicDto>>() {
                 });
 
         // then
-        assertThat(clinics).hasSize(2);
-        assertThat(clinics).allMatch(BaseEntity::isActive);
+        assertThat(clinicDtos).hasSize(2);
+        assertThat(clinicDtos).allMatch(BaseDto::isActive);
     }
 
     @Test
@@ -41,21 +41,21 @@ public class ClinicIntegrationTest extends AbstractTestBase {
         var clinicId = 1004L;
 
         // when
-        var clinic = RestAssured.given()
+        var clinicDto = RestAssured.given()
                 .get("/api/v1/clinics/{id}", clinicId)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
-                .as(new TypeRef<Clinic>() {
+                .as(new TypeRef<ClinicDto>() {
                 });
 
         // then
-        assertThat(clinic.getId()).isEqualTo(clinicId);
-        assertThat(clinic.getName()).isEqualTo("Clinic1");
-        assertThat(clinic.getPhone()).isEqualTo("+7(499)111-1111");
-        assertThat(clinic.getAddress()).isEqualTo("Moscow, Lenina 1");
-        assertThat(clinic.getStatus()).isEqualTo(ACTIVE);
+        assertThat(clinicDto.getId()).isEqualTo(clinicId);
+        assertThat(clinicDto.getName()).isEqualTo("Clinic1");
+        assertThat(clinicDto.getPhone()).isEqualTo("+7(499)111-1111");
+        assertThat(clinicDto.getAddress()).isEqualTo("Moscow, Lenina 1");
+        assertThat(clinicDto.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test

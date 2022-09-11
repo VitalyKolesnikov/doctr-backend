@@ -1,8 +1,9 @@
 package ru.kvs.doctrspring.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -11,15 +12,13 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "visits")
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class Visit extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
-    @JsonIgnore
-    private User doctor;
+    private Long doctorId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
@@ -48,8 +47,26 @@ public class Visit extends BaseEntity {
     @Column(name = "info")
     private String info;
 
+    @JsonProperty("share")
     public int getShare() {
         return (int) Math.round(cost / 100.0 * percent);
+    }
+
+    public void create(long doctorId, Patient patient, Clinic clinic) {
+        this.doctorId = doctorId;
+        this.patient = patient;
+        this.clinic = clinic;
+        this.onCreate();
+    }
+
+    public void update(Visit visit) {
+        this.date = visit.getDate();
+        this.cost = visit.getCost();
+        this.percent = visit.getPercent();
+        this.child = visit.getChild();
+        this.first = visit.getFirst();
+        this.info = visit.getInfo();
+        this.onUpdate();
     }
 
 }

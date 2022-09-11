@@ -1,13 +1,13 @@
-package ru.kvs.doctrspring.adapters.restapi.dto;
+package ru.kvs.doctrspring.adapters.restapi.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ru.kvs.doctrspring.domain.User;
 
+@NoArgsConstructor
 @Getter
 @SuperBuilder
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto extends PersonDto {
 
     private String username;

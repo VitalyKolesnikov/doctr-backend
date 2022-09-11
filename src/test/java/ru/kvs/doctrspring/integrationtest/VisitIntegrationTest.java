@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
-import ru.kvs.doctrspring.adapters.restapi.dto.VisitDto;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.VisitCreateOrUpdateRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -134,14 +134,16 @@ public class VisitIntegrationTest extends AbstractTestBase {
         mockMvc.perform(get("/api/v1/visits/{id}", createdVisitId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", comparesEqualTo(createdVisitId.intValue())))
-                .andExpect(jsonPath("$.status", is("ACTIVE")))
                 .andExpect(jsonPath("$.date", is("05.09.2022")))
                 .andExpect(jsonPath("$.cost", comparesEqualTo(4000)))
                 .andExpect(jsonPath("$.percent", comparesEqualTo(25)))
                 .andExpect(jsonPath("$.child", is(false)))
                 .andExpect(jsonPath("$.first", is(true)))
                 .andExpect(jsonPath("$.info", is("p-1 v-1")))
-                .andExpect(jsonPath("$.share", comparesEqualTo(1000)));
+                .andExpect(jsonPath("$.share", comparesEqualTo(1000)))
+                .andExpect(jsonPath("$.created", notNullValue()))
+                .andExpect(jsonPath("$.updated", notNullValue()))
+                .andExpect(jsonPath("$.status", is("ACTIVE")));
     }
 
     @Test
@@ -211,7 +213,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .log()
                 .all()
                 .contentType("application/json")
-                .body(VisitDto.builder()
+                .body(VisitCreateOrUpdateRequest.builder()
                         .clinicId(1004L)
                         .patientId(patientId)
                         .date(date)

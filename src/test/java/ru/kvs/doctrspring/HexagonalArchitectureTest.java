@@ -30,7 +30,7 @@ class HexagonalArchitectureTest {
                 .layer(SECURITY).definedBy("ru.kvs.doctrspring.security..")
                 .layer(TESTS).definedBy("ru.kvs.doctrspring.integrationtest..")
                 .layer(ENTRY_POINT).definedBy("ru.kvs.doctrspring")
-//                .whereLayer(ADAPTERS).mayOnlyBeAccessedByLayers(TESTS, ENTRY_POINT) // TODO: 10.09.2022 uncomment after adding mapstruct
+                .whereLayer(ADAPTERS).mayOnlyBeAccessedByLayers(TESTS, ENTRY_POINT)
                 .whereLayer(OPERATIONS).mayOnlyBeAccessedByLayers(ADAPTERS, TESTS, ENTRY_POINT, SECURITY)
                 .whereLayer(DOMAIN).mayOnlyBeAccessedByLayers(ADAPTERS, OPERATIONS, TESTS, ENTRY_POINT, SECURITY);
 

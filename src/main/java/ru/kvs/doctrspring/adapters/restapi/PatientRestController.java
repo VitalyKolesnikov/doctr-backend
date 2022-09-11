@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.PatientCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
 import ru.kvs.doctrspring.adapters.restapi.mapper.PatientMapper;
 import ru.kvs.doctrspring.app.PatientService;
 import ru.kvs.doctrspring.domain.Patient;
@@ -27,39 +28,47 @@ public class PatientRestController {
     private final PatientMapper patientMapper;
 
     @GetMapping
-    public List<Patient> getActive() {
+    public ResponseEntity<List<PatientDto>> getActive() {
         long doctorId = AuthUtil.getAuthUserId();
-        return patientService.getActive(doctorId);
+        List<Patient> patients = patientService.getActive(doctorId);
+
+        return ResponseEntity.ok(patientMapper.toPatientDtos(patients));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<PatientDto> get(@PathVariable long id) {
         Patient patient = patientService.get(id, AuthUtil.getAuthUserId());
-        return ResponseEntity.ok(patientMapper.toDto(patient));
+
+        return ResponseEntity.ok(patientMapper.toPatientDto(patient));
     }
 
     @GetMapping("suggest/{part}")
-    public List<Patient> getSuggested(@PathVariable String part) {
+    public ResponseEntity<List<PatientDto>> getSuggested(@PathVariable String part) {
         long doctorId = AuthUtil.getAuthUserId();
-        return patientService.getSuggested(doctorId, part);
+        List<Patient> patients = patientService.getSuggested(doctorId, part);
+
+        return ResponseEntity.ok(patientMapper.toPatientDtos(patients));
     }
 
     @PostMapping
-    public ResponseEntity<Patient> create(@RequestBody PatientDto patientDto) {
+    public ResponseEntity<PatientDto> create(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest) {
         long doctorId = AuthUtil.getAuthUserId();
-        Patient created = patientService.create(patientDto, doctorId);
+        Patient patient = patientMapper.toPatient(patientCreateOrUpdateRequest);
+        Patient created = patientService.create(patient, doctorId);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).body(patientMapper.toPatientDto(created));
     }
 
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Patient patient, @PathVariable long id) {
+    public void update(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest, @PathVariable long id) {
         long doctorId = AuthUtil.getAuthUserId();
+        Patient patient = patientMapper.toPatient(patientCreateOrUpdateRequest);
+
         patientService.update(patient, id, doctorId);
     }
 

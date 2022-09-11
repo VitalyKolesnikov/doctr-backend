@@ -1,4 +1,4 @@
-package ru.kvs.doctrspring.adapters.restapi.dto;
+package ru.kvs.doctrspring.adapters.restapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -7,6 +7,7 @@ import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorRepresentation {
+
     private Integer statusCode;
     private String errorCode;
     private String message;

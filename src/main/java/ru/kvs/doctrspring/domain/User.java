@@ -1,6 +1,6 @@
 package ru.kvs.doctrspring.domain;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
 @NoArgsConstructor
 @SuperBuilder
 public class User extends Person {

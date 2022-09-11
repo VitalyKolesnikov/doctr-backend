@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
-import ru.kvs.doctrspring.adapters.restapi.dto.PatientDto;
-import ru.kvs.doctrspring.adapters.restapi.dto.ReminderDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.ReminderCreateOrUpdateRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -152,6 +152,8 @@ public class ReminderIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.patient.id", comparesEqualTo(patientId.intValue())))
                 .andExpect(jsonPath("$.date", is("05.09.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-1")))
+                .andExpect(jsonPath("$.created", notNullValue()))
+                .andExpect(jsonPath("$.updated", notNullValue()))
                 .andExpect(jsonPath("$.status", is("ACTIVE")));
     }
 
@@ -175,6 +177,8 @@ public class ReminderIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.patient.id", comparesEqualTo(patientId.intValue())))
                 .andExpect(jsonPath("$.date", is("28.10.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-1-upd")))
+                .andExpect(jsonPath("$.created", notNullValue()))
+                .andExpect(jsonPath("$.updated", notNullValue()))
                 .andExpect(jsonPath("$.status", is("ACTIVE")));
     }
 
@@ -221,7 +225,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
                 .log()
                 .all()
                 .contentType("application/json")
-                .body(ReminderDto.builder()
+                .body(ReminderCreateOrUpdateRequest.builder()
                         .patientId(patientId)
                         .date(date)
                         .text(text)

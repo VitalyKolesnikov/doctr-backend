@@ -1,18 +1,17 @@
-package ru.kvs.doctrspring.adapters.restapi.dto;
+package ru.kvs.doctrspring.adapters.restapi.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
 @Getter
 @SuperBuilder
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class PersonDto extends BaseDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class PersonRequest {
     private String firstName;
     private String middleName;
     private String lastName;

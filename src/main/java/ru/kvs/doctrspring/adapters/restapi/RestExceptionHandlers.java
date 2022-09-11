@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.kvs.doctrspring.adapters.restapi.dto.ErrorRepresentation;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;

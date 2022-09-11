@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.kvs.doctrspring.adapters.restapi.dto.AuthenticationRequestDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.AuthenticationRequest;
 import ru.kvs.doctrspring.domain.User;
 import ru.kvs.doctrspring.security.jwt.JwtTokenProvider;
 import ru.kvs.doctrspring.app.UserService;
@@ -29,7 +29,7 @@ public class AuthenticationRestController {
     private final UserService userService;
 
     @PostMapping("login")
-    public ResponseEntity<Map<Object, Object>> login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<Map<Object, Object>> login(@RequestBody AuthenticationRequest requestDto) {
         try {
             String username = requestDto.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));

@@ -1,16 +1,19 @@
 package ru.kvs.doctrspring.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "clinics")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class Clinic extends BaseEntity {
 
@@ -23,9 +26,7 @@ public class Clinic extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
-    @JsonIgnore
-    private User doctor;
+    private Long doctorId;
 
 }

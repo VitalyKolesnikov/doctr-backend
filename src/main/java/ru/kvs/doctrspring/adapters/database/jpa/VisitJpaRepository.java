@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface VisitJpaRepository extends JpaRepository<Visit, Long> {
 
-    @Query("SELECT v FROM Visit v WHERE v.doctor.id=:doctorId AND v.status = 'ACTIVE' ORDER BY v.date DESC, v.created DESC")
+    @Query("SELECT v FROM Visit v WHERE v.doctorId=:doctorId AND v.status = 'ACTIVE' ORDER BY v.date DESC, v.created DESC")
     List<Visit> getActive(@Param("doctorId") long doctorId);
 
-    @Query("SELECT v FROM Visit v WHERE v.doctor.id=:doctorId AND " +
+    @Query("SELECT v FROM Visit v WHERE v.doctorId=:doctorId AND " +
             "v.patient.id=:patientId AND v.status = 'ACTIVE' ORDER BY v.date DESC, v.created DESC")
     List<Visit> getActiveForPatient(@Param("doctorId") long doctorId, @Param("patientId") long patientId);
 

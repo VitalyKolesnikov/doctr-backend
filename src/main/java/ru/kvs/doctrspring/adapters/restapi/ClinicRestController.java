@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ClinicDto;
+import ru.kvs.doctrspring.adapters.restapi.mapper.ClinicMapper;
+import ru.kvs.doctrspring.app.ClinicService;
 import ru.kvs.doctrspring.domain.Clinic;
 import ru.kvs.doctrspring.security.AuthUtil;
-import ru.kvs.doctrspring.app.ClinicService;
 
 import java.util.List;
 
@@ -20,18 +22,22 @@ import java.util.List;
 public class ClinicRestController {
 
     private final ClinicService clinicService;
+    private final ClinicMapper clinicMapper;
 
     @GetMapping
-    public List<Clinic> getAll() {
+    public ResponseEntity<List<ClinicDto>> getAll() {
         log.info("Get all clinics");
-        return clinicService.getAll(AuthUtil.getAuthUserId());
+        List<Clinic> clinics = clinicService.getAll(AuthUtil.getAuthUserId());
+
+        return ResponseEntity.ok(clinicMapper.toClinicDtos(clinics));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Clinic> get(@PathVariable long id) {
+    public ResponseEntity<ClinicDto> get(@PathVariable long id) {
         log.info("Get clinic by id={}", id);
         Clinic clinic = clinicService.get(id, AuthUtil.getAuthUserId());
-        return ResponseEntity.ok(clinic);
+
+        return ResponseEntity.ok(clinicMapper.toClinicDto(clinic));
     }
 
 }

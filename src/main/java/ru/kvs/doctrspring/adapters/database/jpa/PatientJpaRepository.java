@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PatientJpaRepository extends JpaRepository<Patient, Long> {
 
-    @Query("SELECT p FROM Patient p WHERE p.doctor.id=:doctorId AND p.status = 'ACTIVE' ORDER BY p.lastName")
+    @Query("SELECT p FROM Patient p WHERE p.doctorId=:doctorId AND p.status = 'ACTIVE' ORDER BY p.lastName")
     List<Patient> getActive(@Param("doctorId") long doctorId);
 
     Optional<Patient> findByIdAndDoctorId(long id, long doctorId);

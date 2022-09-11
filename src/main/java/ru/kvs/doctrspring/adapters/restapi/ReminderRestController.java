@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.kvs.doctrspring.adapters.restapi.dto.ReminderDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.request.ReminderCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ReminderDto;
+import ru.kvs.doctrspring.adapters.restapi.mapper.ReminderMapper;
 import ru.kvs.doctrspring.app.ReminderService;
 import ru.kvs.doctrspring.domain.Reminder;
 import ru.kvs.doctrspring.security.AuthUtil;
@@ -22,47 +24,57 @@ public class ReminderRestController {
     public final static String REST_URL = "/api/v1/reminders/";
 
     private final ReminderService reminderService;
+    private final ReminderMapper reminderMapper;
 
     @GetMapping
-    public List<Reminder> getActive() {
-        return reminderService.getActive();
+    public ResponseEntity<List<ReminderDto>> getActive() {
+        List<Reminder> reminders = reminderService.getActive(AuthUtil.getAuthUserId());
+
+        return ResponseEntity.ok(reminderMapper.toReminderDtos(reminders));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Reminder> get(@PathVariable long id) {
+    public ResponseEntity<ReminderDto> get(@PathVariable long id) {
         Reminder reminder = reminderService.get(id, AuthUtil.getAuthUserId());
-        return ResponseEntity.ok(reminder);
+
+        return ResponseEntity.ok(reminderMapper.toReminderDto(reminder));
     }
 
     @GetMapping("patient/{id}")
-    public List<Reminder> getForPatient(@PathVariable long id) {
-        return reminderService.getForPatient(AuthUtil.getAuthUserId(), id);
+    public ResponseEntity<List<ReminderDto>> getForPatient(@PathVariable long id) {
+        List<Reminder> reminders = reminderService.getByPatient(AuthUtil.getAuthUserId(), id);
+
+        return ResponseEntity.ok(reminderMapper.toReminderDtos(reminders));
     }
 
     @GetMapping("count/")
-    public int getActiveCount() {
-        return reminderService.getActiveCount();
+    public ResponseEntity<Integer> getActiveCount() {
+        return ResponseEntity.ok(reminderService.getActiveCount(AuthUtil.getAuthUserId()));
     }
 
     @PostMapping
-    public ResponseEntity<Reminder> create(@RequestBody ReminderDto reminderDto) {
+    public ResponseEntity<ReminderDto> create(@RequestBody ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest) {
         long doctorId = AuthUtil.getAuthUserId();
-        Reminder created = reminderService.create(reminderDto, doctorId);
+        Reminder reminder = reminderMapper.toReminder(reminderCreateOrUpdateRequest);
+        Reminder created = reminderService.create(reminder, reminderCreateOrUpdateRequest.getPatientId(), doctorId);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(reminderDto.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(reminderMapper.toReminderDto(created));
     }
 
     @PutMapping("{id}")
-    public int update(@RequestBody ReminderDto reminderDto, @PathVariable long id) {
-        return reminderService.update(reminderDto, id);
+    public ResponseEntity<Integer> update(@RequestBody ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest, @PathVariable long id) {
+        Reminder reminder = reminderMapper.toReminder(reminderCreateOrUpdateRequest);
+
+        return ResponseEntity.ok(reminderService.update(reminder, id, AuthUtil.getAuthUserId()));
     }
 
     @PatchMapping("complete/{id}")
-    public int complete(@PathVariable long id) {
-        return reminderService.complete(id);
+    public ResponseEntity<Integer> complete(@PathVariable long id) {
+        return ResponseEntity.ok(reminderService.complete(id, AuthUtil.getAuthUserId()));
     }
 
 }

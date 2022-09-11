@@ -4,16 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import ru.kvs.doctrspring.adapters.restapi.dto.ReminderDto;
-import ru.kvs.doctrspring.domain.Patient;
-import ru.kvs.doctrspring.domain.Reminder;
-import ru.kvs.doctrspring.domain.Status;
 import ru.kvs.doctrspring.domain.DoctrRepository;
-import ru.kvs.doctrspring.security.AuthUtil;
+import ru.kvs.doctrspring.domain.Reminder;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +19,8 @@ public class ReminderService {
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
-    public List<Reminder> getActive() {
-        return doctrRepository.getActualReminders(AuthUtil.getAuthUserId());
+    public List<Reminder> getActive(long doctorId) {
+        return doctrRepository.getActualReminders(doctorId);
     }
 
     @Transactional(readOnly = true)
@@ -35,45 +29,34 @@ public class ReminderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reminder> getForPatient(long doctorId, long patientId) {
+    public List<Reminder> getByPatient(long doctorId, long patientId) {
         return doctrRepository.getRemindersOfPatient(doctorId, patientId);
     }
 
     @Transactional(readOnly = true)
-    public int getActiveCount() {
-        return doctrRepository.getActualReminders(AuthUtil.getAuthUserId()).size();
+    public int getActiveCount(long doctorId) {
+        return doctrRepository.getActualReminders(doctorId).size();
     }
 
     @Transactional
-    public Reminder create(ReminderDto reminderDto, long doctorId) {
-        Reminder created = reminderDto.toReminder();
-        created.setDoctor(doctrRepository.getUser(doctorId));
-        setPatient(reminderDto.getPatientId(), created);
-        return doctrRepository.saveReminder(created);
+    public Reminder create(Reminder reminder, Long patientId, long doctorId) {
+        var patient = doctrRepository.getPatientByIdAndDoctorId(patientId, doctorId);
+        reminder.create(doctorId, patient);
+        return doctrRepository.saveReminder(reminder);
     }
 
     @Transactional
-    public int update(ReminderDto reminderDto, long reminderId) {
-        Assert.notNull(reminderDto, "reminder must not be null");
-        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(reminderId, AuthUtil.getAuthUserId());
-        setPatient(reminderDto.getPatientId(), storedReminder);
-        storedReminder.setDate(reminderDto.getDate());
-        storedReminder.setText(reminderDto.getText());
-        storedReminder.setUpdated(LocalDateTime.now(clock));
-        return getActiveCount();
+    public int update(Reminder reminder, long reminderId, long doctorId) {
+        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(reminderId, doctorId);
+        storedReminder.update(reminder);
+        return getActiveCount(doctorId);
     }
 
     @Transactional
-    public int complete(long id) {
-        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(id, AuthUtil.getAuthUserId());
-        storedReminder.setStatus(Status.NOT_ACTIVE);
-        storedReminder.setUpdated(LocalDateTime.now(clock));
-        return getActiveCount();
-    }
-
-    private void setPatient(long patientId, Reminder reminder) {
-        Patient patient = doctrRepository.getPatientByIdAndDoctorId(patientId, AuthUtil.getAuthUserId());
-        reminder.setPatient(patient);
+    public int complete(long id, long doctorId) {
+        Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(id, doctorId);
+        storedReminder.complete();
+        return getActiveCount(doctorId);
     }
 
 }

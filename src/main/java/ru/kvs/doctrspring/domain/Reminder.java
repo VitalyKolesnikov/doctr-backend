@@ -1,25 +1,25 @@
 package ru.kvs.doctrspring.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import static ru.kvs.doctrspring.domain.Status.NOT_ACTIVE;
+
 @Entity
 @Table(name = "reminders")
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class Reminder extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
-    @JsonIgnore
-    private User doctor;
+    private Long doctorId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
@@ -31,5 +31,22 @@ public class Reminder extends BaseEntity {
 
     @Column(name = "text")
     private String text;
+
+    public void create(long doctorId, Patient patient) {
+        this.doctorId = doctorId;
+        this.patient = patient;
+        this.onCreate();
+    }
+
+    public void update(Reminder reminder) {
+        this.date = reminder.getDate();
+        this.text = reminder.getText();
+        this.onUpdate();
+    }
+
+    public void complete() {
+        this.status = NOT_ACTIVE;
+        this.onUpdate();
+    }
 
 }

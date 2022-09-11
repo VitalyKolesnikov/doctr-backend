@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.kvs.doctrspring.adapters.restapi.dto.UserDto;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.UserDto;
 import ru.kvs.doctrspring.domain.User;
 import ru.kvs.doctrspring.app.UserService;
 

@@ -1,10 +1,8 @@
 package ru.kvs.doctrspring.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,11 +10,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static ru.kvs.doctrspring.domain.Status.ACTIVE;
+import static ru.kvs.doctrspring.domain.Status.DELETED;
+
 @MappedSuperclass
-@NoArgsConstructor
 @Getter
-@Setter
 @SuperBuilder
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class BaseEntity {
 
@@ -30,21 +30,34 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "created")
-    @JsonIgnore
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
     @LastModifiedDate
     @Column(name = "updated")
-    @JsonIgnore
-    private LocalDateTime updated = LocalDateTime.now();
+    private LocalDateTime updated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status = Status.ACTIVE;
+    protected Status status;
 
-    @JsonIgnore
     public boolean isActive() {
-        return this.status == Status.ACTIVE;
+        return this.status == ACTIVE;
+    }
+
+    public void onCreate() {
+        var now = LocalDateTime.now();
+        this.created = now;
+        this.updated = now;
+        this.status = ACTIVE;
+    }
+
+    public void onUpdate() {
+        this.updated = LocalDateTime.now();
+    }
+
+    public void softDelete() {
+        this.onUpdate();
+        this.status = DELETED;
     }
 
 }

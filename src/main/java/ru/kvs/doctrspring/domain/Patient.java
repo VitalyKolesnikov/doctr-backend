@@ -1,27 +1,42 @@
 package ru.kvs.doctrspring.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "patients")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class Patient extends Person {
 
     @Column(name = "info")
     private String info;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
-    @JsonIgnore
-    private User doctor;
+    private Long doctorId;
+
+    public void create(Long doctorId) {
+        this.doctorId = doctorId;
+        this.onCreate();
+    }
+
+    public void update(Patient patient) {
+        this.firstName = patient.getFirstName();
+        this.middleName = patient.getMiddleName();
+        this.lastName = patient.getLastName();
+        this.birthDate = patient.getBirthDate();
+        this.email = patient.getEmail();
+        this.phone = patient.getPhone();
+        this.info = patient.getInfo();
+        this.onUpdate();
+    }
 
 }
