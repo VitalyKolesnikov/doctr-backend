@@ -1,7 +1,7 @@
 FROM maven:3.6.3 AS maven
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 WORKDIR /opt/app
