@@ -206,9 +206,9 @@
                 <version>${spring.version}</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
+                        <configuration>
+                            <mainClass>ru.kvs.doctrspring.DoctrApplication</mainClass>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
