@@ -5,10 +5,7 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:postgresql://${DOCTR_DB_HOST}:5432/${DOCTR_DB_NAME}?serverTimezone=UTC
     driver-class-name: org.postgresql.Driver
-    username: ${DOCTR_DB_USER}
-    password: ${DOCTR_DB_PASS}
   jpa:
     hibernate:
       ddl-auto: none
