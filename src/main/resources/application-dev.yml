@@ -1,9 +1,12 @@
+server:
+  port: 8085
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/doctrdb?serverTimezone=UTC
+    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME}?serverTimezone=UTC
     driver-class-name: org.postgresql.Driver
-    username: doctr
-    password: doctr123
+    username: ${DB_USER}
+    password: ${DB_PASS}
 
 sentry:
   dsn:
