@@ -81,7 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Profile("integration-test")
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().anyRequest();
+        return (web) -> web.ignoring()
+                .antMatchers("/**");
     }
 
 }
