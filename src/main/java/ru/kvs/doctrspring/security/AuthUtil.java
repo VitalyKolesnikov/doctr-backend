@@ -2,6 +2,7 @@ package ru.kvs.doctrspring.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.kvs.doctrspring.domain.User;
+import ru.kvs.doctrspring.domain.ids.UserId;
 import ru.kvs.doctrspring.security.jwt.JwtUser;
 
 public class AuthUtil {
@@ -26,7 +27,7 @@ public class AuthUtil {
                 .build();
     }
 
-    public static Long getAuthUserId() {
+    public static UserId getAuthUserId() {
         return getJwtUser().getId();
     }
 }

@@ -3,13 +3,14 @@ package ru.kvs.doctrspring.security.jwt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kvs.doctrspring.domain.ids.UserId;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class JwtUser implements UserDetails {
 
-    private final Long id;
+    private final UserId id;
     private final String username;
     private final String firstName;
     private final String lastName;
@@ -20,7 +21,7 @@ public class JwtUser implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public JwtUser(
-            Long id,
+            UserId id,
             String username,
             String firstName,
             String lastName,
@@ -41,7 +42,7 @@ public class JwtUser implements UserDetails {
     }
 
     @JsonIgnore
-    public Long getId() {
+    public UserId getId() {
         return id;
     }
 

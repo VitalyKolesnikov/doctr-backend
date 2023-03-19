@@ -3,6 +3,8 @@ package ru.kvs.doctrspring.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.RoleId;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role extends BaseEntity {
 
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private RoleId id;
+
     @Column(name = "name")
     private String name;
 
@@ -20,9 +26,8 @@ public class Role extends BaseEntity {
     private List<User> users;
 
     @Override
-    public String toString() {
-        return "Role{" +
-                "id: " + super.getId() + ", " +
-                "name: " + name + "}";
+    protected void generateId() {
+        this.id = RoleId.newId();
     }
+
 }

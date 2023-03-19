@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.UserDto;
-import ru.kvs.doctrspring.domain.User;
 import ru.kvs.doctrspring.app.UserService;
+import ru.kvs.doctrspring.domain.User;
+import ru.kvs.doctrspring.domain.ids.UserId;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class UserRestController {
     private final UserService userService;
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UserId id) {
         User user = userService.findById(id);
 
         if (user == null) {

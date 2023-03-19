@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.kvs.doctrspring.domain.ids.ClinicId;
+import ru.kvs.doctrspring.domain.ids.PatientId;
 
 import java.time.LocalDate;
 
@@ -11,8 +13,8 @@ import java.time.LocalDate;
 @Getter
 @SuperBuilder
 public class VisitCreateOrUpdateRequest {
-    private Long clinicId;
-    private Long patientId;
+    private ClinicId clinicId;
+    private PatientId patientId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate date;
     private Integer cost;

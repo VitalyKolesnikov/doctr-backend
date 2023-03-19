@@ -4,9 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import org.springframework.test.context.jdbc.Sql;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.PatientCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
+import ru.kvs.doctrspring.domain.ids.PatientId;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.kvs.doctrspring.domain.Status.ACTIVE;
 import static ru.kvs.doctrspring.domain.Status.DELETED;
 
+@Sql(value = {
+        "/sql/clearDb.sql",
+        "/sql/user.sql",
+        "/sql/clinics.sql"
+})
 public class PatientIntegrationTest extends AbstractTestBase {
 
     @Test
@@ -49,7 +56,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
 
         // when
         var patientDto = RestAssured.given()
-                .get("/api/v1/patients/{id}", patientId)
+                .get("/api/v1/patients/{id}", patientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -58,7 +65,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 });
 
         // then
-        assertThat(patientDto.getId()).isEqualTo(patientId);
+        assertThat(patientDto.getId()).isEqualTo(patientId.asString());
         assertThat(patientDto.getFirstName()).isEqualTo("Adam");
         assertThat(patientDto.getMiddleName()).isEqualTo("Peter");
         assertThat(patientDto.getLastName()).isEqualTo("Brown");
@@ -120,7 +127,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
 
         // then
         var patientDto = RestAssured.given()
-                .get("/api/v1/patients/{id}", createdPatientId)
+                .get("/api/v1/patients/{id}", createdPatientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -128,7 +135,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 .as(new TypeRef<PatientDto>() {
                 });
 
-        assertThat(patientDto.getId()).isEqualTo(createdPatientId);
+        assertThat(patientDto.getId()).isEqualTo(createdPatientId.asString());
         assertThat(patientDto.getFirstName()).isEqualTo("Adam");
         assertThat(patientDto.getMiddleName()).isEqualTo("Peter");
         assertThat(patientDto.getLastName()).isEqualTo("Brown");
@@ -161,14 +168,14 @@ public class PatientIntegrationTest extends AbstractTestBase {
                         .info("p-1 info-upd")
                         .build()
                 )
-                .put("/api/v1/patients/{id}", patientId)
+                .put("/api/v1/patients/{id}", patientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(204);
 
         // then
         var patientDto = RestAssured.given()
-                .get("/api/v1/patients/{id}", patientId)
+                .get("/api/v1/patients/{id}", patientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -176,7 +183,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 .as(new TypeRef<PatientDto>() {
                 });
 
-        assertThat(patientDto.getId()).isEqualTo(patientId);
+        assertThat(patientDto.getId()).isEqualTo(patientId.asString());
         assertThat(patientDto.getFirstName()).isEqualTo("Adam-upd");
         assertThat(patientDto.getMiddleName()).isEqualTo("Peter-upd");
         assertThat(patientDto.getLastName()).isEqualTo("Brown-upd");
@@ -199,14 +206,14 @@ public class PatientIntegrationTest extends AbstractTestBase {
         // when
         RestAssured.given()
                 .contentType("application/json")
-                .delete("/api/v1/patients/{id}", patientId)
+                .delete("/api/v1/patients/{id}", patientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(204);
 
         // then
         var patientDto = RestAssured.given()
-                .get("/api/v1/patients/{id}", patientId)
+                .get("/api/v1/patients/{id}", patientId.asString())
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -217,7 +224,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
         assertThat(patientDto.getStatus()).isEqualTo(DELETED);
     }
 
-    private List<Long> givenPatients() {
+    private List<PatientId> givenPatients() {
         var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
         var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
         var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
@@ -225,8 +232,8 @@ public class PatientIntegrationTest extends AbstractTestBase {
         return List.of(patientId_1, patientId_2, patientId_3);
     }
 
-    private Long givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
-        int createdPatientId = RestAssured.given()
+    private PatientId givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
+        String createdPatientId = RestAssured.given()
                 .contentType("application/json")
                 .body(PatientCreateOrUpdateRequest.builder()
                         .firstName(firstName)
@@ -245,7 +252,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
                 .extract()
                 .path("id");
 
-        return (long) createdPatientId;
+        return PatientId.of(createdPatientId);
     }
 
 }

@@ -4,9 +4,11 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
-import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
+import org.springframework.test.context.jdbc.Sql;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.ReminderCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.ReminderId;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +19,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Sql(value = {
+        "/sql/clearDb.sql",
+        "/sql/user.sql",
+        "/sql/clinics.sql",
+        "/sql/patients.sql"
+})
 public class ReminderIntegrationTest extends AbstractTestBase {
 
     @Test
@@ -32,15 +40,12 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         // then
         resultActions
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.[0].patient.id", is(1100)))
                 .andExpect(jsonPath("$.[0].date", is("05.09.2022")))
                 .andExpect(jsonPath("$.[0].text", is("p-1 r-1")))
                 .andExpect(jsonPath("$.[0].status", is("ACTIVE")))
-                .andExpect(jsonPath("$.[1].patient.id", is(1100)))
                 .andExpect(jsonPath("$.[1].date", is("01.09.2022")))
                 .andExpect(jsonPath("$.[1].text", is("p-1 r-3")))
                 .andExpect(jsonPath("$.[1].status", is("ACTIVE")))
-                .andExpect(jsonPath("$.[2].patient.id", is(1101)))
                 .andExpect(jsonPath("$.[2].date", is("17.08.2022")))
                 .andExpect(jsonPath("$.[2].text", is("p-2 r-1")))
                 .andExpect(jsonPath("$.[2].status", is("ACTIVE")));
@@ -59,7 +64,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
 
         // then
         resultActions
-                .andExpect(jsonPath("$.id", comparesEqualTo(reminderId.intValue())))
+                .andExpect(jsonPath("$.id", is(reminderId.asString())))
                 .andExpect(jsonPath("$.date", is("01.09.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-3")))
                 .andExpect(jsonPath("$.status", is("ACTIVE")))
@@ -98,7 +103,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
     void getForPatient() throws Exception {
         // given
         givenReminders();
-        Long patientId = 1100L;
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
 
         // when
         var resultActions = mockMvc.perform(get("/api/v1/reminders/patient/{id}", patientId))
@@ -107,15 +112,15 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         // then
         resultActions
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.[0].patient.id", is(1100)))
+                .andExpect(jsonPath("$.[0].patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.[0].date", is("05.09.2022")))
                 .andExpect(jsonPath("$.[0].text", is("p-1 r-1")))
                 .andExpect(jsonPath("$.[0].status", is("ACTIVE")))
-                .andExpect(jsonPath("$.[1].patient.id", is(1100)))
+                .andExpect(jsonPath("$.[1].patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.[1].date", is("01.09.2022")))
                 .andExpect(jsonPath("$.[1].text", is("p-1 r-3")))
                 .andExpect(jsonPath("$.[1].status", is("ACTIVE")))
-                .andExpect(jsonPath("$.[2].patient.id", is(1100)))
+                .andExpect(jsonPath("$.[2].patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.[2].date", is("10.09.2022")))
                 .andExpect(jsonPath("$.[2].text", is("p-1 r-2")))
                 .andExpect(jsonPath("$.[2].status", is("NOT_ACTIVE")));
@@ -140,16 +145,16 @@ public class ReminderIntegrationTest extends AbstractTestBase {
     @DisplayName("API creates new reminder")
     void create() throws Exception {
         // given
-        var patientId = givenPatients().get(0);
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
 
         // when
-        var createdReminderId = givenReminder(patientId, LocalDate.of(2022, 9, 5), "p-1 r-1");
+        var reminderId = givenReminder(patientId, LocalDate.of(2022, 9, 5), "p-1 r-1");
 
         // then
-        mockMvc.perform(get("/api/v1/reminders/{id}", createdReminderId))
+        mockMvc.perform(get("/api/v1/reminders/{id}", reminderId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", comparesEqualTo(createdReminderId.intValue())))
-                .andExpect(jsonPath("$.patient.id", comparesEqualTo(patientId.intValue())))
+                .andExpect(jsonPath("$.id", is(reminderId.asString())))
+                .andExpect(jsonPath("$.patient.id", is(patientId.asString())))
                 .andExpect(jsonPath("$.date", is("05.09.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-1")))
                 .andExpect(jsonPath("$.created", notNullValue()))
@@ -161,7 +166,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
     @DisplayName("API updates existing reminder")
     void update() throws Exception {
         // given
-        var patientId = givenPatients().get(0);
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
         var reminderId = givenReminder(patientId, LocalDate.of(2022, 9, 5), "p-1 r-1");
 
         // when
@@ -173,8 +178,8 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         // then
         mockMvc.perform(get("/api/v1/reminders/{id}", reminderId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", comparesEqualTo(reminderId.intValue())))
-                .andExpect(jsonPath("$.patient.id", comparesEqualTo(patientId.intValue())))
+                .andExpect(jsonPath("$.id", is(reminderId.asString())))
+                .andExpect(jsonPath("$.patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.date", is("28.10.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-1-upd")))
                 .andExpect(jsonPath("$.created", notNullValue()))
@@ -197,15 +202,19 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         // then
         mockMvc.perform(get("/api/v1/reminders/{id}", reminderId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", comparesEqualTo(reminderId.intValue())))
-                .andExpect(jsonPath("$.patient.id", is(1100)))
+                .andExpect(jsonPath("$.id", is(reminderId.asString())))
+                .andExpect(jsonPath("$.patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.date", is("01.09.2022")))
                 .andExpect(jsonPath("$.text", is("p-1 r-3")))
                 .andExpect(jsonPath("$.status", is("NOT_ACTIVE")));
     }
 
-    private List<Long> givenReminders() {
-        var patientIds = givenPatients();
+    private List<ReminderId> givenReminders() {
+        var patientIds = List.of(
+                PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d"),
+                PatientId.of("5d6b362f-5953-4e6c-8ae9-82f03ace7039"),
+                PatientId.of("d8643baf-f50a-4248-93bc-106d5e1f1440")
+        );
 
         var patientId_1 = patientIds.get(0);
         var patientId_2 = patientIds.get(1);
@@ -220,8 +229,8 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         return List.of(reminderId_3, reminderId_2, reminderId_1, reminderId_4);
     }
 
-    private Long givenReminder(Long patientId, LocalDate date, String text) {
-        int createdReminderId = RestAssured.given()
+    private ReminderId givenReminder(PatientId patientId, LocalDate date, String text) {
+        String createdReminderId = RestAssured.given()
                 .log()
                 .all()
                 .contentType("application/json")
@@ -238,49 +247,18 @@ public class ReminderIntegrationTest extends AbstractTestBase {
                 .extract()
                 .path("id");
 
-        return (long) createdReminderId;
+        return ReminderId.of(createdReminderId);
     }
 
-    private void setReminderCompleted(Long reminderId) {
+    private void setReminderCompleted(ReminderId reminderId) {
         RestAssured.given()
                 .log()
                 .all()
                 .contentType("application/json")
-                .patch("/api/v1/reminders/complete/{id}", reminderId)
+                .patch("/api/v1/reminders/complete/{id}", reminderId.asString())
                 .then()
                 .assertThat()
                 .statusCode(200);
-    }
-
-    private List<Long> givenPatients() {
-        var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
-        var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
-        var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
-
-        return List.of(patientId_1, patientId_2, patientId_3);
-    }
-
-    private Long givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
-        int createdPatientId = RestAssured.given()
-                .contentType("application/json")
-                .body(PatientDto.builder()
-                        .firstName(firstName)
-                        .middleName(middleName)
-                        .lastName(lastName)
-                        .birthDate(birthDate)
-                        .email(email)
-                        .phone(phone)
-                        .info(info)
-                        .build()
-                )
-                .post("/api/v1/patients/")
-                .then()
-                .assertThat()
-                .statusCode(201)
-                .extract()
-                .path("id");
-
-        return (long) createdPatientId;
     }
 
 }

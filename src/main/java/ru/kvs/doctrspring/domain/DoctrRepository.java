@@ -1,36 +1,38 @@
 package ru.kvs.doctrspring.domain;
 
+import ru.kvs.doctrspring.domain.ids.*;
+
 import java.util.List;
 
 public interface DoctrRepository {
 
-    User getUser(long doctorId);
+    User getUser(UserId doctorId);
 
     User getUserByUsernameIgnoreCase(String username);
 
-    List<Clinic> getClinicsByDoctorId(long doctorId);
+    List<Clinic> getClinicsByDoctorId(UserId doctorId);
 
-    Clinic getClinicByIdAndDoctorId(long clinicId, long doctorId);
+    Clinic getClinicByIdAndDoctorId(ClinicId clinicId, UserId doctorId);
 
-    List<Patient> getPatients(long doctorId);
+    List<Patient> getPatients(UserId doctorId);
 
-    Patient getPatientByIdAndDoctorId(long patientId, long doctorId);
+    Patient getPatientByIdAndDoctorId(PatientId patientId, UserId doctorId);
 
     Patient savePatient(Patient patient);
 
-    List<Visit> getVisits(long doctorId);
+    List<Visit> getVisits(UserId doctorId);
 
-    Visit getVisitByIdAndDoctorId(long visitId, long doctorId);
+    Visit getVisitByIdAndDoctorId(VisitId visitId, UserId doctorId);
 
-    List<Visit> getVisitsOfPatient(long doctorId, long patientId);
+    List<Visit> getVisitsOfPatient(UserId doctorId, PatientId patientId);
 
     Visit saveVisit(Visit visit);
 
-    List<Reminder> getActualReminders(long doctorId);
+    List<Reminder> getActualReminders(UserId doctorId);
 
-    List<Reminder> getRemindersOfPatient(long doctorId, long patientId);
+    List<Reminder> getRemindersOfPatient(UserId doctorId, PatientId patientId);
 
-    Reminder getReminderByIdAndDoctorId(long id, long doctorId);
+    Reminder getReminderByIdAndDoctorId(ReminderId id, UserId doctorId);
 
     Reminder saveReminder(Reminder reminder);
 

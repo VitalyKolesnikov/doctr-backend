@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kvs.doctrspring.domain.DoctrRepository;
 import ru.kvs.doctrspring.domain.Reminder;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.ReminderId;
+import ru.kvs.doctrspring.domain.ids.UserId;
 
 import java.time.Clock;
 import java.util.List;
@@ -19,41 +22,41 @@ public class ReminderService {
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
-    public List<Reminder> getActive(long doctorId) {
+    public List<Reminder> getActive(UserId doctorId) {
         return doctrRepository.getActualReminders(doctorId);
     }
 
     @Transactional(readOnly = true)
-    public Reminder get(long reminderId, long doctorId) {
+    public Reminder get(ReminderId reminderId, UserId doctorId) {
         return doctrRepository.getReminderByIdAndDoctorId(reminderId, doctorId);
     }
 
     @Transactional(readOnly = true)
-    public List<Reminder> getByPatient(long doctorId, long patientId) {
+    public List<Reminder> getByPatient(UserId doctorId, PatientId patientId) {
         return doctrRepository.getRemindersOfPatient(doctorId, patientId);
     }
 
     @Transactional(readOnly = true)
-    public int getActiveCount(long doctorId) {
+    public int getActiveCount(UserId doctorId) {
         return doctrRepository.getActualReminders(doctorId).size();
     }
 
     @Transactional
-    public Reminder create(Reminder reminder, Long patientId, long doctorId) {
+    public Reminder create(Reminder reminder, PatientId patientId, UserId doctorId) {
         var patient = doctrRepository.getPatientByIdAndDoctorId(patientId, doctorId);
         reminder.create(doctorId, patient);
         return doctrRepository.saveReminder(reminder);
     }
 
     @Transactional
-    public int update(Reminder reminder, long reminderId, long doctorId) {
+    public int update(Reminder reminder, ReminderId reminderId, UserId doctorId) {
         Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(reminderId, doctorId);
         storedReminder.update(reminder);
         return getActiveCount(doctorId);
     }
 
     @Transactional
-    public int complete(long id, long doctorId) {
+    public int complete(ReminderId id, UserId doctorId) {
         Reminder storedReminder = doctrRepository.getReminderByIdAndDoctorId(id, doctorId);
         storedReminder.complete();
         return getActiveCount(doctorId);

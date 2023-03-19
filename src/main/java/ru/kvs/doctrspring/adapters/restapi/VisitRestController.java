@@ -11,6 +11,9 @@ import ru.kvs.doctrspring.adapters.restapi.dto.response.VisitDto;
 import ru.kvs.doctrspring.adapters.restapi.mapper.VisitMapper;
 import ru.kvs.doctrspring.app.VisitService;
 import ru.kvs.doctrspring.domain.Visit;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.UserId;
+import ru.kvs.doctrspring.domain.ids.VisitId;
 import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.net.URI;
@@ -34,7 +37,7 @@ public class VisitRestController {
 
     @GetMapping
     public List<DatedVisitListDto> getAllGroupByDate() {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         Map<LocalDate, List<Visit>> visitsByDate = visitService.getAllGroupByDate(doctorId);
         List<DatedVisitListDto> datedVisitListDtos = new ArrayList<>();
 
@@ -45,14 +48,14 @@ public class VisitRestController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<VisitDto> get(@PathVariable long id) {
+    public ResponseEntity<VisitDto> get(@PathVariable VisitId id) {
         Visit visit = visitService.get(id, AuthUtil.getAuthUserId());
 
         return ResponseEntity.ok(visitMapper.toVisitDto(visit));
     }
 
     @GetMapping("patient/{patientId}")
-    public ResponseEntity<List<VisitDto>> getForPatient(@PathVariable long patientId) {
+    public ResponseEntity<List<VisitDto>> getForPatient(@PathVariable PatientId patientId) {
         List<Visit> visits = visitService.getForPatient(AuthUtil.getAuthUserId(), patientId);
 
         return ResponseEntity.ok(visitMapper.toVisitDtos(visits));
@@ -60,7 +63,7 @@ public class VisitRestController {
 
     @PostMapping
     public ResponseEntity<VisitDto> create(@RequestBody VisitCreateOrUpdateRequest visitCreateOrUpdateRequest) {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         Visit visit = visitMapper.toVisit(visitCreateOrUpdateRequest);
         Visit created = visitService.create(
                 visit,
@@ -78,8 +81,8 @@ public class VisitRestController {
 
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> update(@RequestBody VisitCreateOrUpdateRequest visitCreateOrUpdateRequest, @PathVariable long id) {
-        long doctorId = AuthUtil.getAuthUserId();
+    public ResponseEntity<Void> update(@RequestBody VisitCreateOrUpdateRequest visitCreateOrUpdateRequest, @PathVariable VisitId id) {
+        UserId doctorId = AuthUtil.getAuthUserId();
         Visit visit = visitMapper.toVisit(visitCreateOrUpdateRequest);
 
         visitService.update(visit, id, doctorId);
@@ -89,7 +92,7 @@ public class VisitRestController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable long id) {
+    public ResponseEntity<Void> delete(@PathVariable VisitId id) {
         visitService.delete(id, AuthUtil.getAuthUserId());
 
         return ResponseEntity.noContent().build();

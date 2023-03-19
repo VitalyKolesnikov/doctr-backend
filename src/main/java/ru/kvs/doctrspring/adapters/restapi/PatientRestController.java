@@ -10,6 +10,8 @@ import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
 import ru.kvs.doctrspring.adapters.restapi.mapper.PatientMapper;
 import ru.kvs.doctrspring.app.PatientService;
 import ru.kvs.doctrspring.domain.Patient;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.UserId;
 import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.net.URI;
@@ -29,14 +31,14 @@ public class PatientRestController {
 
     @GetMapping
     public ResponseEntity<List<PatientDto>> getActive() {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         List<Patient> patients = patientService.getActive(doctorId);
 
         return ResponseEntity.ok(patientMapper.toPatientDtos(patients));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PatientDto> get(@PathVariable long id) {
+    public ResponseEntity<PatientDto> get(@PathVariable PatientId id) {
         Patient patient = patientService.get(id, AuthUtil.getAuthUserId());
 
         return ResponseEntity.ok(patientMapper.toPatientDto(patient));
@@ -44,7 +46,7 @@ public class PatientRestController {
 
     @GetMapping("suggest/{part}")
     public ResponseEntity<List<PatientDto>> getSuggested(@PathVariable String part) {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         List<Patient> patients = patientService.getSuggested(doctorId, part);
 
         return ResponseEntity.ok(patientMapper.toPatientDtos(patients));
@@ -52,7 +54,7 @@ public class PatientRestController {
 
     @PostMapping
     public ResponseEntity<PatientDto> create(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest) {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         Patient patient = patientMapper.toPatient(patientCreateOrUpdateRequest);
         Patient created = patientService.create(patient, doctorId);
 
@@ -65,8 +67,8 @@ public class PatientRestController {
 
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest, @PathVariable long id) {
-        long doctorId = AuthUtil.getAuthUserId();
+    public void update(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest, @PathVariable PatientId id) {
+        UserId doctorId = AuthUtil.getAuthUserId();
         Patient patient = patientMapper.toPatient(patientCreateOrUpdateRequest);
 
         patientService.update(patient, id, doctorId);
@@ -74,7 +76,7 @@ public class PatientRestController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable PatientId id) {
         patientService.delete(id, AuthUtil.getAuthUserId());
     }
 

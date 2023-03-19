@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.kvs.doctrspring.adapters.database.jpa.*;
 import ru.kvs.doctrspring.domain.*;
+import ru.kvs.doctrspring.domain.ids.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,7 +20,7 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     private final ReminderJpaRepository reminderJpaRepository;
 
     @Override
-    public User getUser(long doctorId) {
+    public User getUser(UserId doctorId) {
         return userJpaRepository.findById(doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("User with id [%s] not found", doctorId)));
     }
@@ -30,23 +31,23 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     }
 
     @Override
-    public List<Clinic> getClinicsByDoctorId(long doctorId) {
+    public List<Clinic> getClinicsByDoctorId(UserId doctorId) {
         return clinicJpaRepository.findAllByDoctorId(doctorId);
     }
 
     @Override
-    public Clinic getClinicByIdAndDoctorId(long clinicId, long doctorId) {
+    public Clinic getClinicByIdAndDoctorId(ClinicId clinicId, UserId doctorId) {
         return clinicJpaRepository.findByIdAndDoctorId(clinicId, doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Clinic with id [%s] not found", clinicId)));
     }
 
     @Override
-    public List<Patient> getPatients(long doctorId) {
+    public List<Patient> getPatients(UserId doctorId) {
         return patientJpaRepository.getActive(doctorId);
     }
 
     @Override
-    public Patient getPatientByIdAndDoctorId(long patientId, long doctorId) {
+    public Patient getPatientByIdAndDoctorId(PatientId patientId, UserId doctorId) {
         return patientJpaRepository.findByIdAndDoctorId(patientId, doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Patient with id [%s] not found", patientId)));
     }
@@ -57,18 +58,18 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     }
 
     @Override
-    public List<Visit> getVisits(long doctorId) {
+    public List<Visit> getVisits(UserId doctorId) {
         return visitJpaRepository.getActive(doctorId);
     }
 
     @Override
-    public Visit getVisitByIdAndDoctorId(long visitId, long doctorId) {
+    public Visit getVisitByIdAndDoctorId(VisitId visitId, UserId doctorId) {
         return visitJpaRepository.findByIdAndDoctorId(visitId, doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Visit with id [%s] not found", visitId)));
     }
 
     @Override
-    public List<Visit> getVisitsOfPatient(long doctorId, long patientId) {
+    public List<Visit> getVisitsOfPatient(UserId doctorId, PatientId patientId) {
         return visitJpaRepository.getActiveForPatient(doctorId, patientId);
     }
 
@@ -78,17 +79,17 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     }
 
     @Override
-    public List<Reminder> getActualReminders(long doctorId) {
+    public List<Reminder> getActualReminders(UserId doctorId) {
         return reminderJpaRepository.getActual(doctorId);
     }
 
     @Override
-    public List<Reminder> getRemindersOfPatient(long doctorId, long patientId) {
+    public List<Reminder> getRemindersOfPatient(UserId doctorId, PatientId patientId) {
         return reminderJpaRepository.getAllForPatient(doctorId, patientId);
     }
 
     @Override
-    public Reminder getReminderByIdAndDoctorId(long reminderId, long doctorId) {
+    public Reminder getReminderByIdAndDoctorId(ReminderId reminderId, UserId doctorId) {
         return reminderJpaRepository.findByIdAndDoctorId(reminderId, doctorId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Reminder with id [%s] not found", reminderId)));
     }

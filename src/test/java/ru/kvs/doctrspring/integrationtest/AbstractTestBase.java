@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.kvs.doctrspring.config.DatabaseTestConfig;
 
@@ -29,11 +28,10 @@ import java.util.stream.Collectors;
         }
 )
 @ActiveProfiles("integration-test")
-@Sql(value = {"/sql/clearDb.sql", "/sql/user.sql", "/sql/clinics.sql"})
 @AutoConfigureMockMvc
 abstract public class AbstractTestBase {
 
-    protected static final long WRONG_ID = 404L;
+    protected static final String WRONG_ID = "79dd6c1a-0d05-4b9c-bbbc-09615ed9949e";
 
     @Autowired
     protected MockMvc mockMvc;

@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
-import ru.kvs.doctrspring.adapters.restapi.dto.response.PatientDto;
+import org.springframework.test.context.jdbc.Sql;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.VisitCreateOrUpdateRequest;
+import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
+import ru.kvs.doctrspring.domain.ids.ClinicId;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.VisitId;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +21,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Sql(value = {
+        "/sql/clearDb.sql",
+        "/sql/user.sql",
+        "/sql/clinics.sql",
+        "/sql/patients.sql"
+})
 public class VisitIntegrationTest extends AbstractTestBase {
 
     @Test
@@ -56,7 +65,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
 
         // then
         resultActions
-                .andExpect(jsonPath("$.id", comparesEqualTo(visitId.intValue())))
+                .andExpect(jsonPath("$.id", is(visitId.asString())))
                 .andExpect(jsonPath("$.date", is("05.09.2022")))
                 .andExpect(jsonPath("$.cost", is(4000)))
                 .andExpect(jsonPath("$.percent", is(25)))
@@ -65,7 +74,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.info", is("p-1 v-1")))
                 .andExpect(jsonPath("$.share", is(1000)))
                 .andExpect(jsonPath("$.status", is("ACTIVE")))
-                .andExpect(jsonPath("$.patient.id", is(1100)))
+                .andExpect(jsonPath("$.patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.patient.firstName", is("Adam")))
                 .andExpect(jsonPath("$.patient.middleName", is("Peter")))
                 .andExpect(jsonPath("$.patient.lastName", is("Brown")))
@@ -74,7 +83,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.patient.phone", is("111")))
                 .andExpect(jsonPath("$.patient.info", is("p-1 info")))
                 .andExpect(jsonPath("$.patient.status", is("ACTIVE")))
-                .andExpect(jsonPath("$.clinic.id", is(1004)))
+                .andExpect(jsonPath("$.clinic.id", is("8b8dd071-0a7c-4262-9389-44a814287ca2")))
                 .andExpect(jsonPath("$.clinic.name", is("Clinic1")))
                 .andExpect(jsonPath("$.clinic.phone", is("+7(499)111-1111")))
                 .andExpect(jsonPath("$.clinic.address", is("Moscow, Lenina 1")))
@@ -106,7 +115,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
     void getForPatient() throws Exception {
         // given
         givenVisits();
-        Long patientId = 1100L;
+        var patientId = "0a83aef4-b000-407b-905c-8ded6ff00a3d";
 
         // when
         var resultActions = mockMvc.perform(get("/api/v1/visits/patient/{id}", patientId))
@@ -116,16 +125,16 @@ public class VisitIntegrationTest extends AbstractTestBase {
         resultActions
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$.[0].date", is("10.09.2022")))
-                .andExpect(jsonPath("$.[0].patient.id", comparesEqualTo(patientId.intValue())))
+                .andExpect(jsonPath("$.[0].patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")))
                 .andExpect(jsonPath("$.[1].date", is("05.09.2022")))
-                .andExpect(jsonPath("$.[1].patient.id", comparesEqualTo(patientId.intValue())));
+                .andExpect(jsonPath("$.[1].patient.id", is("0a83aef4-b000-407b-905c-8ded6ff00a3d")));
     }
 
     @Test
     @DisplayName("API creates new visit")
     void create() throws Exception {
         // given
-        var patientId = givenPatients().get(0);
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
 
         // when
         var createdVisitId = givenVisit(patientId, LocalDate.of(2022, 9, 5), 4_000, 25, false, true, "p-1 v-1");
@@ -133,7 +142,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
         // then
         mockMvc.perform(get("/api/v1/visits/{id}", createdVisitId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", comparesEqualTo(createdVisitId.intValue())))
+                .andExpect(jsonPath("$.id", is(createdVisitId.asString())))
                 .andExpect(jsonPath("$.date", is("05.09.2022")))
                 .andExpect(jsonPath("$.cost", comparesEqualTo(4000)))
                 .andExpect(jsonPath("$.percent", comparesEqualTo(25)))
@@ -150,11 +159,11 @@ public class VisitIntegrationTest extends AbstractTestBase {
     @DisplayName("API updates existing visit")
     void update() throws Exception {
         // given
-        var patientId = givenPatients().get(0);
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
         var visitId = givenVisit(patientId, LocalDate.of(2022, 9, 5), 4_000, 25, false, true, "p-1 v-1");
 
         // when
-        mockMvc.perform(put("/api/v1/visits/{id}", visitId)
+        mockMvc.perform(put("/api/v1/visits/{id}", visitId.asString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(testResource("/json/update-visit-request.json")))
                 .andExpect(status().isNoContent());
@@ -162,7 +171,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
         // then
         mockMvc.perform(get("/api/v1/visits/{id}", visitId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", comparesEqualTo(visitId.intValue())))
+                .andExpect(jsonPath("$.id", is(visitId.asString())))
                 .andExpect(jsonPath("$.status", is("ACTIVE")))
                 .andExpect(jsonPath("$.date", is("12.08.2022")))
                 .andExpect(jsonPath("$.cost", comparesEqualTo(3000)))
@@ -177,25 +186,29 @@ public class VisitIntegrationTest extends AbstractTestBase {
     @DisplayName("API soft-deletes existing visit")
     void softDelete() throws Exception {
         // given
-        var patientId = givenPatients().get(0);
+        var patientId = PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d");
         var visitId = givenVisit(patientId, LocalDate.of(2022, 9, 5), 4_000, 25, false, true, "p-1 v-1");
 
         // when
         RestAssured.given()
                 .contentType("application/json")
-                .delete("/api/v1/visits/{id}", visitId)
+                .delete("/api/v1/visits/{id}", visitId.asString())
                 .then()
                 .assertThat()
                 .statusCode(204);
 
         // then
-        mockMvc.perform(get("/api/v1/visits/{id}", visitId))
+        mockMvc.perform(get("/api/v1/visits/{id}", visitId.asString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is("DELETED")));
     }
 
-    private List<Long> givenVisits() {
-        var patientIds = givenPatients();
+    private List<VisitId> givenVisits() {
+        var patientIds = List.of(
+                PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d"),
+                PatientId.of("5d6b362f-5953-4e6c-8ae9-82f03ace7039"),
+                PatientId.of("d8643baf-f50a-4248-93bc-106d5e1f1440")
+        );
 
         var patientId_1 = patientIds.get(0);
         var patientId_2 = patientIds.get(1);
@@ -208,13 +221,13 @@ public class VisitIntegrationTest extends AbstractTestBase {
         return List.of(visitId_1, visitId_2, visitId_3);
     }
 
-    private Long givenVisit(Long patientId, LocalDate date, Integer cost, Integer percent, Boolean child, Boolean first, String info) {
-        int createdVisitId = RestAssured.given()
+    private VisitId givenVisit(PatientId patientId, LocalDate date, Integer cost, Integer percent, Boolean child, Boolean first, String info) {
+        String createdVisitId = RestAssured.given()
                 .log()
                 .all()
                 .contentType("application/json")
                 .body(VisitCreateOrUpdateRequest.builder()
-                        .clinicId(1004L)
+                        .clinicId(ClinicId.of("8b8dd071-0a7c-4262-9389-44a814287ca2"))
                         .patientId(patientId)
                         .date(date)
                         .cost(cost)
@@ -231,38 +244,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .extract()
                 .path("id");
 
-        return (long) createdVisitId;
-    }
-
-    private List<Long> givenPatients() {
-        var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
-        var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
-        var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
-
-        return List.of(patientId_1, patientId_2, patientId_3);
-    }
-
-    private Long givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
-        int createdPatientId = RestAssured.given()
-                .contentType("application/json")
-                .body(PatientDto.builder()
-                        .firstName(firstName)
-                        .middleName(middleName)
-                        .lastName(lastName)
-                        .birthDate(birthDate)
-                        .email(email)
-                        .phone(phone)
-                        .info(info)
-                        .build()
-                )
-                .post("/api/v1/patients/")
-                .then()
-                .assertThat()
-                .statusCode(201)
-                .extract()
-                .path("id");
-
-        return (long) createdPatientId;
+        return VisitId.of(createdVisitId);
     }
 
 }

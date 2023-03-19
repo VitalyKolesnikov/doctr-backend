@@ -14,7 +14,7 @@ public class UserDto extends PersonDto {
 
     public static UserDto fromUser(User user) {
         return UserDto.builder()
-                .id(user.getId())
+                .id(user.getId().asString())
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

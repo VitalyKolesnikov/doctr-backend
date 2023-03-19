@@ -3,6 +3,8 @@ package ru.kvs.doctrspring.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.UserId;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class User extends Person {
+
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private UserId id;
 
     @Column(name = "username")
     private String username;
@@ -25,4 +31,10 @@ public class User extends Person {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
+
+    @Override
+    protected void generateId() {
+        this.id = UserId.newId();
+    }
+
 }

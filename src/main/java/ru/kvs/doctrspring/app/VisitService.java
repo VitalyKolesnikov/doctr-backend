@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kvs.doctrspring.domain.DoctrRepository;
 import ru.kvs.doctrspring.domain.Visit;
+import ru.kvs.doctrspring.domain.ids.ClinicId;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.UserId;
+import ru.kvs.doctrspring.domain.ids.VisitId;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -24,7 +28,7 @@ public class VisitService {
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
-    public List<Visit> getLastActive(long doctorId) {
+    public List<Visit> getLastActive(UserId doctorId) {
         LocalDate sixMonthsAgo = LocalDate.now(clock).minusMonths(6);
         return doctrRepository.getVisits(doctorId).stream()
                 .filter(visit -> visit.getDate().isAfter(sixMonthsAgo))
@@ -32,23 +36,23 @@ public class VisitService {
     }
 
     @Transactional(readOnly = true)
-    public Map<LocalDate, List<Visit>> getAllGroupByDate(long doctorId) {
+    public Map<LocalDate, List<Visit>> getAllGroupByDate(UserId doctorId) {
         return getLastActive(doctorId).stream()
                 .collect(groupingBy(Visit::getDate));
     }
 
     @Transactional(readOnly = true)
-    public Visit get(long id, long doctorId) {
-        return doctrRepository.getVisitByIdAndDoctorId(id, doctorId);
+    public Visit get(VisitId visitId, UserId doctorId) {
+        return doctrRepository.getVisitByIdAndDoctorId(visitId, doctorId);
     }
 
     @Transactional(readOnly = true)
-    public List<Visit> getForPatient(long doctorId, long patientId) {
+    public List<Visit> getForPatient(UserId doctorId, PatientId patientId) {
         return doctrRepository.getVisitsOfPatient(doctorId, patientId);
     }
 
     @Transactional
-    public Visit create(Visit visit, long doctorId, long patientId, long clinicId) {
+    public Visit create(Visit visit, UserId doctorId, PatientId patientId, ClinicId clinicId) {
         var patient = doctrRepository.getPatientByIdAndDoctorId(patientId, doctorId);
         var clinic = doctrRepository.getClinicByIdAndDoctorId(clinicId, doctorId);
 
@@ -57,13 +61,13 @@ public class VisitService {
     }
 
     @Transactional
-    public void update(Visit visit, long visitId, long doctorId) {
+    public void update(Visit visit, VisitId visitId, UserId doctorId) {
         Visit storedVisit = doctrRepository.getVisitByIdAndDoctorId(visitId, doctorId);
         storedVisit.update(visit);
     }
 
     @Transactional
-    public void delete(long id, long doctorId) {
+    public void delete(VisitId id, UserId doctorId) {
         Visit visit = doctrRepository.getVisitByIdAndDoctorId(id, doctorId);
         visit.softDelete();
     }

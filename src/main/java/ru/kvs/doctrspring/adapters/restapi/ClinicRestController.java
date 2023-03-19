@@ -11,6 +11,7 @@ import ru.kvs.doctrspring.adapters.restapi.dto.response.ClinicDto;
 import ru.kvs.doctrspring.adapters.restapi.mapper.ClinicMapper;
 import ru.kvs.doctrspring.app.ClinicService;
 import ru.kvs.doctrspring.domain.Clinic;
+import ru.kvs.doctrspring.domain.ids.ClinicId;
 import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class ClinicRestController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ClinicDto> get(@PathVariable long id) {
+    public ResponseEntity<ClinicDto> get(@PathVariable ClinicId id) {
         log.info("Get clinic by id={}", id);
         Clinic clinic = clinicService.get(id, AuthUtil.getAuthUserId());
 

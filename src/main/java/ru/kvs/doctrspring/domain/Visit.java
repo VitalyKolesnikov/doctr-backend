@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.kvs.doctrspring.domain.ids.UserId;
+import ru.kvs.doctrspring.domain.ids.VisitId;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,8 +19,13 @@ import java.time.LocalDate;
 @SuperBuilder
 public class Visit extends BaseEntity {
 
-    @JoinColumn(name = "doctor_id")
-    private Long doctorId;
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private VisitId id;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "doctor_id"))
+    private UserId doctorId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
@@ -52,7 +59,7 @@ public class Visit extends BaseEntity {
         return (int) Math.round(cost / 100.0 * percent);
     }
 
-    public void create(long doctorId, Patient patient, Clinic clinic) {
+    public void create(UserId doctorId, Patient patient, Clinic clinic) {
         this.doctorId = doctorId;
         this.patient = patient;
         this.clinic = clinic;
@@ -67,6 +74,11 @@ public class Visit extends BaseEntity {
         this.first = visit.getFirst();
         this.info = visit.getInfo();
         this.onUpdate();
+    }
+
+    @Override
+    protected void generateId() {
+        this.id = VisitId.newId();
     }
 
 }

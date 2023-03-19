@@ -9,6 +9,9 @@ import ru.kvs.doctrspring.adapters.restapi.dto.response.ReminderDto;
 import ru.kvs.doctrspring.adapters.restapi.mapper.ReminderMapper;
 import ru.kvs.doctrspring.app.ReminderService;
 import ru.kvs.doctrspring.domain.Reminder;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.ReminderId;
+import ru.kvs.doctrspring.domain.ids.UserId;
 import ru.kvs.doctrspring.security.AuthUtil;
 
 import java.net.URI;
@@ -34,14 +37,14 @@ public class ReminderRestController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ReminderDto> get(@PathVariable long id) {
+    public ResponseEntity<ReminderDto> get(@PathVariable ReminderId id) {
         Reminder reminder = reminderService.get(id, AuthUtil.getAuthUserId());
 
         return ResponseEntity.ok(reminderMapper.toReminderDto(reminder));
     }
 
     @GetMapping("patient/{id}")
-    public ResponseEntity<List<ReminderDto>> getForPatient(@PathVariable long id) {
+    public ResponseEntity<List<ReminderDto>> getForPatient(@PathVariable PatientId id) {
         List<Reminder> reminders = reminderService.getByPatient(AuthUtil.getAuthUserId(), id);
 
         return ResponseEntity.ok(reminderMapper.toReminderDtos(reminders));
@@ -54,7 +57,7 @@ public class ReminderRestController {
 
     @PostMapping
     public ResponseEntity<ReminderDto> create(@RequestBody ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest) {
-        long doctorId = AuthUtil.getAuthUserId();
+        UserId doctorId = AuthUtil.getAuthUserId();
         Reminder reminder = reminderMapper.toReminder(reminderCreateOrUpdateRequest);
         Reminder created = reminderService.create(reminder, reminderCreateOrUpdateRequest.getPatientId(), doctorId);
 
@@ -66,14 +69,14 @@ public class ReminderRestController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Integer> update(@RequestBody ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest, @PathVariable long id) {
+    public ResponseEntity<Integer> update(@RequestBody ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest, @PathVariable ReminderId id) {
         Reminder reminder = reminderMapper.toReminder(reminderCreateOrUpdateRequest);
 
         return ResponseEntity.ok(reminderService.update(reminder, id, AuthUtil.getAuthUserId()));
     }
 
     @PatchMapping("complete/{id}")
-    public ResponseEntity<Integer> complete(@PathVariable long id) {
+    public ResponseEntity<Integer> complete(@PathVariable ReminderId id) {
         return ResponseEntity.ok(reminderService.complete(id, AuthUtil.getAuthUserId()));
     }
 

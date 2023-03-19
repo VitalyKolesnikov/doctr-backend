@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.kvs.doctrspring.domain.ids.PatientId;
+import ru.kvs.doctrspring.domain.ids.ReminderId;
+import ru.kvs.doctrspring.domain.ids.UserId;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,8 +21,13 @@ import static ru.kvs.doctrspring.domain.Status.NOT_ACTIVE;
 @SuperBuilder
 public class Reminder extends BaseEntity {
 
-    @JoinColumn(name = "doctor_id")
-    private Long doctorId;
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private ReminderId id;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "doctor_id"))
+    private UserId doctorId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
@@ -32,7 +40,7 @@ public class Reminder extends BaseEntity {
     @Column(name = "text")
     private String text;
 
-    public void create(long doctorId, Patient patient) {
+    public void create(UserId doctorId, Patient patient) {
         this.doctorId = doctorId;
         this.patient = patient;
         this.onCreate();
@@ -47,6 +55,11 @@ public class Reminder extends BaseEntity {
     public void complete() {
         this.status = NOT_ACTIVE;
         this.onUpdate();
+    }
+
+    @Override
+    protected void generateId() {
+        this.id = ReminderId.newId();
     }
 
 }

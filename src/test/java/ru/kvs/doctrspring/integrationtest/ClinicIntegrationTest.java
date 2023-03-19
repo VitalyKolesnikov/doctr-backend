@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.BaseDto;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.ClinicDto;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.ErrorRepresentation;
@@ -13,6 +14,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.kvs.doctrspring.domain.Status.ACTIVE;
 
+@Sql(value = {
+        "/sql/clearDb.sql",
+        "/sql/user.sql",
+        "/sql/clinics.sql"
+})
 public class ClinicIntegrationTest extends AbstractTestBase {
 
     @Test
@@ -38,7 +44,7 @@ public class ClinicIntegrationTest extends AbstractTestBase {
     @DisplayName("API returns clinic by id")
     void getById() {
         // given
-        var clinicId = 1004L;
+        var clinicId = "8b8dd071-0a7c-4262-9389-44a814287ca2";
 
         // when
         var clinicDto = RestAssured.given()

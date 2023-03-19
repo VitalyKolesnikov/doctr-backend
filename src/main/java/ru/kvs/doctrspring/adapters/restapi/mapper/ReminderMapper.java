@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.ReminderCreateOrUpdateRequest;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.ReminderDto;
 import ru.kvs.doctrspring.domain.Reminder;
+import ru.kvs.doctrspring.domain.ids.ReminderId;
 
 import java.util.List;
 
@@ -15,5 +16,9 @@ public interface ReminderMapper {
     List<ReminderDto> toReminderDtos(List<Reminder> reminders);
 
     Reminder toReminder(ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest);
+
+    default String map(ReminderId id) {
+        return id.asString();
+    }
 
 }

@@ -15,7 +15,7 @@ import static ru.kvs.doctrspring.domain.Status.ACTIVE;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseDto {
-    private Long id;
+    private String id;
     private Date created;
     private Date updated;
     private Status status;

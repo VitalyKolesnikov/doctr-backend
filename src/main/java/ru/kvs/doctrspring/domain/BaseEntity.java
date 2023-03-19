@@ -7,7 +7,10 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 import static ru.kvs.doctrspring.domain.Status.ACTIVE;
@@ -19,14 +22,6 @@ import static ru.kvs.doctrspring.domain.Status.DELETED;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class BaseEntity {
-
-    public static final int START_SEQ = 1000;
-
-    @Id
-    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
-    @EqualsAndHashCode.Include
-    private Long id;
 
     @CreatedDate
     @Column(name = "created")
@@ -45,11 +40,14 @@ public abstract class BaseEntity {
     }
 
     public void onCreate() {
+        generateId();
         var now = LocalDateTime.now();
         this.created = now;
         this.updated = now;
         this.status = ACTIVE;
     }
+
+    protected abstract void generateId();
 
     public void onUpdate() {
         this.updated = LocalDateTime.now();

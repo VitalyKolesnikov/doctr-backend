@@ -17,7 +17,7 @@ public class DatabaseTestConfig implements ApplicationContextInitializer<Configu
     private static PostgreSQLContainer postgres;
 
     static {
-        postgres = new PostgreSQLContainer("postgres:12")
+        postgres = new PostgreSQLContainer("postgres:13")
                 .withDatabaseName("postgres")
                 .withUsername("postgres")
                 .withPassword("postgres");

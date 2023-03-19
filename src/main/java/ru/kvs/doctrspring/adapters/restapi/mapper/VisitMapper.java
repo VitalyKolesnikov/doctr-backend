@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.VisitCreateOrUpdateRequest;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.VisitDto;
 import ru.kvs.doctrspring.domain.Visit;
+import ru.kvs.doctrspring.domain.ids.VisitId;
 
 import java.util.List;
 
@@ -15,5 +16,9 @@ public interface VisitMapper {
     List<VisitDto> toVisitDtos(List<Visit> Visits);
 
     Visit toVisit(VisitCreateOrUpdateRequest VisitCreateOrUpdateRequest);
+
+    default String map(VisitId id) {
+        return id.asString();
+    }
 
 }

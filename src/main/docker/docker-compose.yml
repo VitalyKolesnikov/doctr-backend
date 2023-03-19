@@ -1,34 +1,36 @@
 version: '2'
 
 services:
-  doctr-frontend:
-    image: 'doctr-frontend:latest'
-    container_name: doctr-frontend
-    build: doctr-frontend
+  frontend:
+    image: 'vkolesnikov88/doctr-frontend:okteto'
+    container_name: frontend
     ports:
       - "8081:80"
 
-  doctr-backend:
-    image: 'doctr-springboot:latest'
+  backend:
+    image: 'vkolesnikov88/doctr-backend:1.0'
     ports:
       - "8080:8080"
-    build:
-      context: .
-    container_name: doctr-backend
+    container_name: backend
     depends_on:
-      - doctr-db
+      - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://doctr-db:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
       - SENTRY_DSN=https://273f5579cd174cd7acef4a6cad8facbc@o1381261.ingest.sentry.io/6694950
 
-  doctr-db:
-    image: 'postgres:12-alpine'
+  db:
+    image: 'postgres:13-alpine'
     ports:
       - "5432:5432"
-    container_name: doctr-db
+    container_name: db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
