@@ -1,12 +1,11 @@
 package ru.kvs.doctrspring.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ru.kvs.doctrspring.domain.ids.PatientId;
 import ru.kvs.doctrspring.domain.ids.UserId;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Entity

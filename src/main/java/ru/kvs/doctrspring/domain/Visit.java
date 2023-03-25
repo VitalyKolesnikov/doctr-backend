@@ -2,6 +2,7 @@ package ru.kvs.doctrspring.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 import ru.kvs.doctrspring.domain.ids.UserId;
 import ru.kvs.doctrspring.domain.ids.VisitId;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity

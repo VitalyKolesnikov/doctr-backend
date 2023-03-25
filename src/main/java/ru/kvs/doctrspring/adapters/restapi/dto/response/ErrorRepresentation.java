@@ -2,7 +2,7 @@ package ru.kvs.doctrspring.adapters.restapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
