@@ -17,7 +17,6 @@ public class Patient extends Person {
 
     @EmbeddedId
     @AttributeOverride(name = "value", column = @Column(name = "id"))
-    @GeneratedValue(strategy = GenerationType.TABLE)
     private PatientId id;
 
     @Column(name = "info")

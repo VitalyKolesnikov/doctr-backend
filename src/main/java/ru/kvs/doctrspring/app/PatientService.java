@@ -30,7 +30,8 @@ public class PatientService {
     @Transactional(readOnly = true)
     public List<Patient> getSuggested(UserId doctorId, String part) {
         String partLowerCased = part.toLowerCase();
-        return getActive(doctorId).stream()
+
+        return doctrRepository.getPatients(doctorId).stream()
                 .filter(patient -> (patient.getLastName().toLowerCase().contains(partLowerCased) ||
                         patient.getFirstName().toLowerCase().contains(partLowerCased)) ||
                         patient.getMiddleName().toLowerCase().contains(partLowerCased))

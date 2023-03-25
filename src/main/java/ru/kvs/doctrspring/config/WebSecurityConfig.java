@@ -19,7 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.kvs.doctrspring.security.JwtUserDetailsService;
-import ru.kvs.doctrspring.security.jwt.AuthEntryPointJwt;
+import ru.kvs.doctrspring.security.jwt.JwtAuthEntryPoint;
 import ru.kvs.doctrspring.security.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.Collections;
 public class WebSecurityConfig {
 
     private final JwtUserDetailsService userDetailsService;
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final JwtAuthEntryPoint unauthorizedHandler;
     private final JwtTokenFilter jwtTokenFilter;
 
     private static final String ADMIN_ENDPOINT = "/api/v1/admin/**";
