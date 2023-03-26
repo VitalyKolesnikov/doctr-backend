@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.AuthenticationRequest;
 import ru.kvs.doctrspring.domain.User;
-import ru.kvs.doctrspring.security.jwt.JwtTokenProvider;
+import ru.kvs.doctrspring.security.JwtTokenProvider;
 import ru.kvs.doctrspring.app.UserService;
 
 import java.util.HashMap;

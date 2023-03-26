@@ -1,4 +1,4 @@
-package ru.kvs.doctrspring.security.jwt;
+package ru.kvs.doctrspring.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

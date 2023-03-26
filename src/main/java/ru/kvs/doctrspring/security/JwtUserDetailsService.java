@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.kvs.doctrspring.app.UserService;
 import ru.kvs.doctrspring.domain.User;
-import ru.kvs.doctrspring.security.jwt.JwtUserFactory;
 
 @Service
 @Primary

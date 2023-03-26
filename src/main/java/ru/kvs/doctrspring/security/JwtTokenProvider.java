@@ -1,4 +1,4 @@
-package ru.kvs.doctrspring.security.jwt;
+package ru.kvs.doctrspring.security;
 
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
