@@ -31,14 +31,15 @@ import static ru.kvs.doctrspring.adapters.restapi.VisitRestController.REST_URL;
 public class VisitRestController {
 
     public final static String REST_URL = "/api/v1/visits/";
+    public final static int MONTHS = 6;
 
     private final VisitService visitService;
     private final VisitMapper visitMapper;
 
     @GetMapping
-    public List<DatedVisitListDto> getAllGroupByDate() {
+    public List<DatedVisitListDto> getAllInTimeRangeGroupByDate() {
         UserId doctorId = AuthUtil.getAuthUserId();
-        Map<LocalDate, List<Visit>> visitsByDate = visitService.getAllGroupByDate(doctorId);
+        Map<LocalDate, List<Visit>> visitsByDate = visitService.getAllInTimeRangeGroupByDate(doctorId, MONTHS);
         List<DatedVisitListDto> datedVisitListDtos = new ArrayList<>();
 
         visitsByDate.forEach((key, value) -> datedVisitListDtos.add(new DatedVisitListDto(key, value)));

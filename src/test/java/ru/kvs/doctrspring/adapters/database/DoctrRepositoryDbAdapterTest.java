@@ -48,21 +48,25 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("getUser should return User if found in repository")
     void testGetUserWhenFound() {
+        // given
         User expectedUser = User.builder().id(USER_ID).build();
-
         when(userJpaRepository.findById(USER_ID)).thenReturn(java.util.Optional.of(expectedUser));
 
+        // when
         User actualUser = adapter.getUser(USER_ID);
 
-        assertEquals(expectedUser, actualUser);
+        // then
         verify(userJpaRepository).findById(USER_ID);
+        assertEquals(expectedUser, actualUser);
     }
 
     @Test
     @DisplayName("getUser should throw NoSuchElementException if not found in repository")
     void testGetUserWhenNotFound() {
+        // given
         when(userJpaRepository.findById(USER_ID)).thenReturn(java.util.Optional.empty());
 
+        // when then
         assertThrows(NoSuchElementException.class, () -> adapter.getUser(USER_ID));
         verify(userJpaRepository).findById(USER_ID);
     }
@@ -70,46 +74,54 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("getUserByUsernameIgnoreCase should call corresponding method in repository")
     void testGetUserByUsernameIgnoreCase() {
+        // given
         String username = "some_username";
         User expectedUser = User.builder().id(USER_ID).build();
-
         when(userJpaRepository.getUserByUsernameIgnoreCase(username)).thenReturn(expectedUser);
 
+        // when
         User actualUser = adapter.getUserByUsernameIgnoreCase(username);
 
-        assertEquals(expectedUser, actualUser);
+        // then
         verify(userJpaRepository).getUserByUsernameIgnoreCase(username);
+        assertEquals(expectedUser, actualUser);
     }
 
     @Test
     @DisplayName("getClinicsByDoctorId should call corresponding method in repository")
     void testGetClinicsByDoctorId() {
+        // when
         adapter.getClinicsByDoctorId(USER_ID);
 
+        // then
         verify(clinicJpaRepository).findAllByDoctorId(USER_ID);
     }
 
     @Test
     @DisplayName("getClinicByIdAndDoctorId should return Clinic if found in repository")
     void testGetClinicByIdAndDoctorIdWhenFound() {
+        // given
         Clinic expectedClinic = Clinic.builder()
                 .id(CLINIC_ID)
                 .doctorId(USER_ID)
                 .build();
-
         when(clinicJpaRepository.findByIdAndDoctorId(CLINIC_ID, USER_ID)).thenReturn(java.util.Optional.of(expectedClinic));
 
+        // when
         Clinic actualClinic = adapter.getClinicByIdAndDoctorId(CLINIC_ID, USER_ID);
 
-        assertEquals(expectedClinic, actualClinic);
+        // then
         verify(clinicJpaRepository).findByIdAndDoctorId(CLINIC_ID, USER_ID);
+        assertEquals(expectedClinic, actualClinic);
     }
 
     @Test
     @DisplayName("getClinicByIdAndDoctorId should throw NoSuchElementException if not found in repository")
     void testGetClinicByIdAndDoctorIdWhenNotFound() {
+        // when
         when(clinicJpaRepository.findByIdAndDoctorId(CLINIC_ID, USER_ID)).thenReturn(java.util.Optional.empty());
 
+        // then
         assertThrows(NoSuchElementException.class, () -> adapter.getClinicByIdAndDoctorId(CLINIC_ID, USER_ID));
         verify(clinicJpaRepository).findByIdAndDoctorId(CLINIC_ID, USER_ID);
     }
@@ -117,29 +129,35 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("getPatients should call corresponding method in repository")
     void testGetPatients() {
+        // when
         adapter.getPatients(USER_ID);
 
+        // then
         verify(patientJpaRepository).getActive(USER_ID);
     }
 
     @Test
     @DisplayName("getPatientByIdAndDoctorId should return patient if found in repository")
     void testGetPatientByIdAndDoctorIdWhenFound() {
+        // given
         Patient expectedPatient = Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build();
-
         when(patientJpaRepository.findByIdAndDoctorId(PATIENT_ID, USER_ID)).thenReturn(Optional.of(expectedPatient));
 
+        // when
         Patient actualPatient = adapter.getPatientByIdAndDoctorId(PATIENT_ID, USER_ID);
 
-        assertEquals(expectedPatient, actualPatient);
+        // then
         verify(patientJpaRepository).findByIdAndDoctorId(PATIENT_ID, USER_ID);
+        assertEquals(expectedPatient, actualPatient);
     }
 
     @Test
     @DisplayName("getPatientByIdAndDoctorId should throw NoSuchElementException if patient not found")
     void testGetPatientByIdAndDoctorIdWhenNotFound() {
+        // when
         when(patientJpaRepository.findByIdAndDoctorId(PATIENT_ID, USER_ID)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(NoSuchElementException.class, () -> adapter.getPatientByIdAndDoctorId(PATIENT_ID, USER_ID));
         verify(patientJpaRepository).findByIdAndDoctorId(PATIENT_ID, USER_ID);
     }
@@ -147,50 +165,58 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("savePatient should return saved patient")
     void testSavePatient() {
+        // given
         Patient patient = Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build();
-
         when(patientJpaRepository.save(patient)).thenReturn(patient);
 
+        // when
         Patient savedPatient = adapter.savePatient(patient);
 
-        assertEquals(patient, savedPatient);
+        // then
         verify(patientJpaRepository).save(patient);
+        assertEquals(patient, savedPatient);
     }
 
     @Test
     @DisplayName("getVisits should return active visits for doctor")
     void testGetVisits() {
+        // given
         List<Visit> expectedVisits = List.of(
                 Visit.builder().id(VISIT1_ID).doctorId(USER_ID).build(),
                 Visit.builder().id(VISIT2_ID).doctorId(USER_ID).build()
         );
-
         when(visitJpaRepository.getActive(USER_ID)).thenReturn(expectedVisits);
 
+        // when
         List<Visit> actualVisits = adapter.getVisits(USER_ID);
 
-        assertEquals(expectedVisits, actualVisits);
+        // then
         verify(visitJpaRepository).getActive(USER_ID);
+        assertEquals(expectedVisits, actualVisits);
     }
 
     @Test
     @DisplayName("getVisitByIdAndDoctorId should return visit if found in repository")
     void testGetVisitByIdAndDoctorIdWhenFound() {
+        // given
         Visit expectedVisit = Visit.builder().id(VISIT1_ID).doctorId(USER_ID).build();
-
         when(visitJpaRepository.findByIdAndDoctorId(VISIT1_ID, USER_ID)).thenReturn(Optional.of(expectedVisit));
 
+        // when
         Visit actualVisit = adapter.getVisitByIdAndDoctorId(VISIT1_ID, USER_ID);
 
-        assertEquals(expectedVisit, actualVisit);
+        // then
         verify(visitJpaRepository).findByIdAndDoctorId(VISIT1_ID, USER_ID);
+        assertEquals(expectedVisit, actualVisit);
     }
 
     @Test
     @DisplayName("getVisitByIdAndDoctorId should throw NoSuchElementException if visit not found")
     void testGetVisitByIdAndDoctorIdWhenNotFound() {
+        // when
         when(visitJpaRepository.findByIdAndDoctorId(VISIT1_ID, USER_ID)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(NoSuchElementException.class, () -> adapter.getVisitByIdAndDoctorId(VISIT1_ID, USER_ID));
         verify(visitJpaRepository).findByIdAndDoctorId(VISIT1_ID, USER_ID);
     }
@@ -198,86 +224,98 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("getVisitsOfPatient should return active visits for patient")
     void testGetVisitsOfPatient() {
+        // given
         List<Visit> expectedVisits = List.of(
                 Visit.builder().id(VISIT1_ID).doctorId(USER_ID).patient(Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build()).build(),
                 Visit.builder().id(VISIT2_ID).doctorId(USER_ID).patient(Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build()).build()
         );
-
         when(visitJpaRepository.getActiveForPatient(USER_ID, PATIENT_ID)).thenReturn(expectedVisits);
 
+        // when
         List<Visit> actualVisits = adapter.getVisitsOfPatient(USER_ID, PATIENT_ID);
 
-        assertEquals(expectedVisits, actualVisits);
+        // then
         verify(visitJpaRepository).getActiveForPatient(USER_ID, PATIENT_ID);
+        assertEquals(expectedVisits, actualVisits);
     }
 
     @Test
     @DisplayName("saveVisit should return saved visit")
     void testSaveVisit() {
+        // given
         Visit visit = Visit.builder()
                 .id(VISIT1_ID)
                 .doctorId(USER_ID)
                 .patient(Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build())
                 .date(LocalDate.now()).build();
-
         when(visitJpaRepository.save(visit)).thenReturn(visit);
 
+        // when
         Visit savedVisit = adapter.saveVisit(visit);
 
-        assertEquals(visit, savedVisit);
+        // then
         verify(visitJpaRepository).save(visit);
+        assertEquals(visit, savedVisit);
     }
 
     @Test
     @DisplayName("getActualReminders should return actual reminders for doctor")
     void testGetActualReminders() {
+        // given
         List<Reminder> expectedReminders = List.of(
                 Reminder.builder().id(REMINDER1_ID).doctorId(USER_ID).build(),
                 Reminder.builder().id(REMINDER2_ID).doctorId(USER_ID).build()
         );
-
         when(reminderJpaRepository.getActual(USER_ID)).thenReturn(expectedReminders);
 
+        // when
         List<Reminder> actualReminders = adapter.getActualReminders(USER_ID);
 
-        assertEquals(expectedReminders, actualReminders);
+        // then
         verify(reminderJpaRepository).getActual(USER_ID);
+        assertEquals(expectedReminders, actualReminders);
     }
 
     @Test
     @DisplayName("getRemindersOfPatient should return reminders for patient")
     void testGetRemindersOfPatient() {
+        // given
         List<Reminder> expectedReminders = List.of(
                 Reminder.builder().id(REMINDER1_ID).doctorId(USER_ID).patient(Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build()).build(),
                 Reminder.builder().id(REMINDER2_ID).doctorId(USER_ID).patient(Patient.builder().id(PATIENT_ID).doctorId(USER_ID).build()).build()
         );
-
         when(reminderJpaRepository.getAllForPatient(USER_ID, PATIENT_ID)).thenReturn(expectedReminders);
 
+        // when
         List<Reminder> actualReminders = adapter.getRemindersOfPatient(USER_ID, PATIENT_ID);
 
-        assertEquals(expectedReminders, actualReminders);
+        // then
         verify(reminderJpaRepository).getAllForPatient(USER_ID, PATIENT_ID);
+        assertEquals(expectedReminders, actualReminders);
     }
 
     @Test
     @DisplayName("getReminderByIdAndDoctorId should return reminder if found in repository")
     void testGetReminderByIdAndDoctorIdWhenFound() {
+        // given
         Reminder expectedReminder = Reminder.builder().id(REMINDER1_ID).doctorId(USER_ID).build();
-
         when(reminderJpaRepository.findByIdAndDoctorId(REMINDER1_ID, USER_ID)).thenReturn(Optional.of(expectedReminder));
 
+        // when
         Reminder actualReminder = adapter.getReminderByIdAndDoctorId(REMINDER1_ID, USER_ID);
 
-        assertEquals(expectedReminder, actualReminder);
+        // then
         verify(reminderJpaRepository).findByIdAndDoctorId(REMINDER1_ID, USER_ID);
+        assertEquals(expectedReminder, actualReminder);
     }
 
     @Test
     @DisplayName("getReminderByIdAndDoctorId should throw NoSuchElementException if reminder not found")
     void testGetReminderByIdAndDoctorIdWhenNotFound() {
+        // when
         when(reminderJpaRepository.findByIdAndDoctorId(REMINDER1_ID, USER_ID)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(NoSuchElementException.class, () -> adapter.getReminderByIdAndDoctorId(REMINDER1_ID, USER_ID));
         verify(reminderJpaRepository).findByIdAndDoctorId(REMINDER1_ID, USER_ID);
     }
@@ -285,14 +323,16 @@ class DoctrRepositoryDbAdapterTest {
     @Test
     @DisplayName("saveReminder should return saved reminder")
     void testSaveReminder() {
+        // given
         Reminder reminder = Reminder.builder().id(REMINDER1_ID).doctorId(USER_ID).text("Take your medication").build();
-
         when(reminderJpaRepository.save(reminder)).thenReturn(reminder);
 
+        // when
         Reminder savedReminder = adapter.saveReminder(reminder);
 
-        assertEquals(reminder, savedReminder);
+        // then
         verify(reminderJpaRepository).save(reminder);
+        assertEquals(reminder, savedReminder);
     }
 
 }

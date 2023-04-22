@@ -15,7 +15,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -28,16 +27,11 @@ public class VisitService {
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
-    public List<Visit> getLastActive(UserId doctorId) {
-        LocalDate sixMonthsAgo = LocalDate.now(clock).minusMonths(6);
-        return doctrRepository.getVisits(doctorId).stream()
-                .filter(visit -> visit.getDate().isAfter(sixMonthsAgo))
-                .collect(Collectors.toList());
-    }
+    public Map<LocalDate, List<Visit>> getAllInTimeRangeGroupByDate(UserId doctorId, int months) {
+        LocalDate dateLimit = LocalDate.now(clock).minusMonths(months);
 
-    @Transactional(readOnly = true)
-    public Map<LocalDate, List<Visit>> getAllGroupByDate(UserId doctorId) {
-        return getLastActive(doctorId).stream()
+        return doctrRepository.getVisits(doctorId).stream()
+                .filter(visit -> visit.getDate().isAfter(dateLimit))
                 .collect(groupingBy(Visit::getDate));
     }
 

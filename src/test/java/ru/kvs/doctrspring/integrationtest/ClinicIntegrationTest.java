@@ -24,7 +24,6 @@ public class ClinicIntegrationTest extends AbstractTestBase {
     @Test
     @DisplayName("API returns all active clinics of current user")
     void getAll() {
-
         // when
         var clinicDtos = RestAssured.given()
                 .get("/api/v1/clinics/")
