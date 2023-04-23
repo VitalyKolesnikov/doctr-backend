@@ -24,7 +24,7 @@ import static ru.kvs.doctrspring.adapters.restapi.PatientRestController.REST_URL
 @RequestMapping(value = REST_URL)
 public class PatientRestController {
 
-    public final static String REST_URL = "/api/v1/patients/";
+    protected final static String REST_URL = "/api/v1/patients/";
 
     private final PatientService patientService;
     private final PatientMapper patientMapper;

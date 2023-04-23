@@ -31,4 +31,5 @@ public class UserRestController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
 }
