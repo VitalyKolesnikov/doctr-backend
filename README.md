@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/VitalyKolesnikov/doctr-spring/branch/master/graph/badge.svg)](https://codecov.io/gh/VitalyKolesnikov/doctr-spring)
+
 **Doctr** is a Spring Boot application with REST API. It was developed for my wife
 who is a dentist, so she can track patients and their visits data.
 
