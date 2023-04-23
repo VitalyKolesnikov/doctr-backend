@@ -22,13 +22,7 @@ public class UserRestController {
     @GetMapping(value = "{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UserId id) {
         User user = userService.findById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
         UserDto result = UserDto.fromUser(user);
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
