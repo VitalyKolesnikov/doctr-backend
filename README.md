@@ -1,7 +1,7 @@
 [![codecov](https://codecov.io/gh/VitalyKolesnikov/doctr-spring/branch/master/graph/badge.svg)](https://codecov.io/gh/VitalyKolesnikov/doctr-spring)
 
 # Doctr
-**Doctr** is a Spring Boot application with REST API. It was developed for my wife who is a dentist, so she can track patients and their visits data.
+**Doctr** is a Spring Boot application with REST API. It was developed for my wife who is a dentist so she can track patients and their visits data.
 
 Here is the backend part. Frontend part is available [here](https://github.com/VitalyKolesnikov/doctr). 
 
@@ -11,8 +11,8 @@ In this project I'm trying to implement all the technologies and best practices 
 
 #### Key features are listed below:
 
-- Java 17
-- Spring Boot 3
+- [Java 17](https://www.java.com/)
+- [Spring Boot 3](https://spring.io/)
 
 #### Database
 - [Postgresql](https://www.postgresql.org/) as a data storage
