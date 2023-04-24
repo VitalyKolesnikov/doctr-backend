@@ -3,7 +3,7 @@
 # Doctr
 **Doctr** is a Spring Boot application with REST API. It was developed for my wife who is a dentist so she can track patients and their visits data.
 
-Here is the backend part. Frontend part is available [here](https://github.com/VitalyKolesnikov/doctr). 
+This is the backend part. Frontend part is available [here](https://github.com/VitalyKolesnikov/doctr). 
 
 API documentation is available at http://localhost:8080/swagger-ui/index.html
 
@@ -20,7 +20,7 @@ In this project I'm trying to implement all the technologies and best practices 
 - [Hibernate](https://hibernate.org/) as ORM
 
 #### Testing
-- Unit tests with [JUnit 5](https://junit.org/junit5/) and [Mockito](https://site.mockito.org/)
+- Unit tests with [JUnit 5](https://junit.org/junit5/), [Mockito](https://site.mockito.org/) and [Hamcrest](https://hamcrest.org/)
 - Integration tests with [Testcontainers](https://www.testcontainers.org/) and [REST Assured](https://rest-assured.io/)
 - Hexagonal architecture tests with [ArchUnit](https://www.archunit.org/)
 
