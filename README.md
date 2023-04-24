@@ -25,8 +25,8 @@ In this project I'm trying to implement all the technologies and best practices 
 - Hexagonal architecture tests with [ArchUnit](https://www.archunit.org/)
 
 #### Tools
-- [Sentry](https://sentry.io/) for error tracking
-- [JaCoCo](https://www.eclemma.org/jacoco/) for code coverage
-- [OpenAPI](https://www.openapis.org/) and [Swagger](https://swagger.io/) for REST documentation
 - [Lombok](https://projectlombok.org/) to write less boilerplate code
 - [Mapstruct](https://mapstruct.org/) for mappings
+- [OpenAPI](https://www.openapis.org/) and [Swagger](https://swagger.io/) for REST documentation
+- [Sentry](https://sentry.io/) for error tracking
+- [JaCoCo](https://www.eclemma.org/jacoco/) and [Codecov](https://about.codecov.io/) for code coverage
