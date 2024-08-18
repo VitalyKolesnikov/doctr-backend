@@ -1,19 +1,24 @@
 version: '2'
 
+networks:
+  dev:
+    driver: bridge
+
 services:
+
   frontend:
-    image: 'vkolesnikov88/doctr-frontend:1.2'
-    container_name: frontend
+    image: 'vkolesnikov88/doctr-frontend:1.3'
+    networks:
+      - dev
     ports:
-      - "8081:80"
-    environment:
-      - REACT_APP_API_HOST=${REACT_APP_API_HOST}
+      - "80:80"
 
   backend:
-    image: 'vkolesnikov88/doctr-backend:2.0'
+    networks:
+      - dev
+    image: 'vkolesnikov88/doctr-backend:2.1'
     ports:
-      - "8080:8080"
-    container_name: backend
+      - "8000:8080"
     depends_on:
       - db
     environment:
@@ -26,7 +31,8 @@ services:
     image: 'postgres:13-alpine'
     ports:
       - "5432:5432"
-    container_name: db
+    networks:
+      - dev
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
