@@ -1,5 +1,3 @@
-version: '2'
-
 networks:
   dev:
     driver: bridge
@@ -7,7 +5,7 @@ networks:
 services:
 
   frontend:
-    image: 'vkolesnikov88/doctr-frontend:1.3'
+    image: 'vkolesnikov88/doctr-frontend:2.0.0'
     networks:
       - dev
     ports:
@@ -18,7 +16,7 @@ services:
       - dev
     image: 'vkolesnikov88/doctr-backend:2.1'
     ports:
-      - "8000:8080"
+      - "8080:8080"
     depends_on:
       - db
     environment:
