@@ -1,43 +1,19 @@
-networks:
-  dev:
-    driver: bridge
 services:
   frontend:
     image: 'vkolesnikov88/doctr-frontend:2.1.0'
-    networks:
-      - dev
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
   backend:
-    networks:
-      - dev
     image: 'vkolesnikov88/doctr-backend:3.0.0'
     ports:
       - '8085:8080'
-    depends_on:
-      - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
       - SENTRY_DSN=${SENTRY_DSN}
-  db:
-    image: 'postgres:16-alpine'
-    restart: always
-    container_name: db
-    ports:
-      - '5432:5432'
-    networks:
-      - dev
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
-      - POSTGRES_DB=${DB_NAME}
-    volumes:
-      - db-data:/var/lib/postgresql/data/
-volumes:
-  db-data:
-    name: db-data
+    extra_hosts:
+      - db:172.17.0.1
