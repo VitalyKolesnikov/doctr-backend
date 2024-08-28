@@ -4,11 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_run:
-    workflows: ["test"]
-    branches: ["master"]
-    types:
-      - completed
 
 jobs:
   build_docker_images:
