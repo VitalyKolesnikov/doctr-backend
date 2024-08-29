@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: 'vkolesnikov88/doctr-frontend:2.1.0'
+    image: 'vkolesnikov88/doctr-frontend:latest'
     ports:
       - '80:80'
       - '443:443'
