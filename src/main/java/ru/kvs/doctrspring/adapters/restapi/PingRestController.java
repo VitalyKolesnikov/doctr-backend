@@ -15,7 +15,7 @@ public class PingRestController {
     @GetMapping
     public ResponseEntity<String> ping() {
         log.info("Ping endpoint triggered");
-        return new ResponseEntity<>("Ok new ver!", HttpStatus.OK);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
 }
