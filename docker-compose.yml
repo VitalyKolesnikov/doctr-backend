@@ -7,7 +7,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
   backend:
-    image: 'vkolesnikov88/doctr-backend:3.0.0'
+    image: 'vkolesnikov88/doctr-backend:latest'
     ports:
       - '8085:8080'
     environment:
