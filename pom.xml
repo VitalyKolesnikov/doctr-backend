@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>ru.kvs</groupId>
-    <artifactId>doctr-springboot</artifactId>
+    <artifactId>doctr-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>doctr-springboot</name>
+    <name>doctr-backend</name>
 
     <properties>
         <java.version>17</java.version>

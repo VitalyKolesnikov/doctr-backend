@@ -1,9 +1,7 @@
-[![codecov](https://codecov.io/gh/VitalyKolesnikov/doctr-spring/branch/master/graph/badge.svg)](https://codecov.io/gh/VitalyKolesnikov/doctr-spring)
-
 # Doctr
 **Doctr** is a Spring Boot application with REST API. It was developed for my wife who is a dentist so she can track patients and their visits data.
 
-This is the backend part. Frontend part is available [here](https://github.com/VitalyKolesnikov/doctr). 
+This is the backend part. Frontend part is available [here](https://github.com/VitalyKolesnikov/doctr-frontend). 
 
 API documentation is available at http://localhost:8080/swagger-ui/index.html
 
