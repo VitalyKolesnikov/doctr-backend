@@ -9,7 +9,7 @@ In this project I'm trying to implement all the technologies and best practices 
 
 #### Key features are listed below:
 
-- [Java 17](https://www.java.com/)
+- [Java 21](https://www.java.com/)
 - [Spring Boot 3](https://spring.io/)
 
 #### Database
@@ -27,4 +27,4 @@ In this project I'm trying to implement all the technologies and best practices 
 - [Mapstruct](https://mapstruct.org/) for mappings
 - [OpenAPI](https://www.openapis.org/) and [Swagger](https://swagger.io/) for REST documentation
 - [Sentry](https://sentry.io/) for error tracking
-- [JaCoCo](https://www.eclemma.org/jacoco/) and [Codecov](https://about.codecov.io/) for code coverage
+- [JaCoCo](https://www.eclemma.org/jacoco/) for code coverage

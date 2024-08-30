@@ -14,10 +14,11 @@ import javax.sql.DataSource;
 @Slf4j
 @TestConfiguration
 public class DatabaseTestConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     private static PostgreSQLContainer postgres;
 
     static {
-        postgres = new PostgreSQLContainer("postgres:13")
+        postgres = new PostgreSQLContainer("postgres:14")
                 .withDatabaseName("postgres")
                 .withUsername("postgres")
                 .withPassword("postgres");
@@ -40,4 +41,5 @@ public class DatabaseTestConfig implements ApplicationContextInitializer<Configu
     public void initialize(ConfigurableApplicationContext applicationContext) {
         postgres.start();
     }
+
 }
