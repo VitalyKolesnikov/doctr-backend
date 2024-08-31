@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME}?serverTimezone=UTC
+    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:doctrdb}?serverTimezone=UTC
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
 
 sentry:
   dsn:

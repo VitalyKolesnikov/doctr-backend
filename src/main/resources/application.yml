@@ -18,6 +18,11 @@ spring:
     init:
       mode: never
 
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
+
 jwt:
   token:
     secret: doctrspringboot

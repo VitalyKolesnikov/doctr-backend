@@ -36,7 +36,7 @@ public class WebSecurityConfig {
 
     private static final String ADMIN_ENDPOINT = "/api/v1/admin/**";
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
-    private static final String PING_ENDPOINT = "/api/v1/ping/";
+    private static final String ACTUATOR_ENDPOINT = "/actuator/**";
     private static final String API_DOCS = "/v3/api-docs/**";
     private static final String SWAGGER_UI = "/swagger-ui/**";
     private static final String SWAGGER_UI_INDEX = "/swagger-ui.html";
@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(LOGIN_ENDPOINT, PING_ENDPOINT, API_DOCS, SWAGGER_UI, SWAGGER_UI_INDEX).permitAll()
+                        .requestMatchers(LOGIN_ENDPOINT, ACTUATOR_ENDPOINT, API_DOCS, SWAGGER_UI, SWAGGER_UI_INDEX).permitAll()
                         .requestMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                         .anyRequest().authenticated());
 
