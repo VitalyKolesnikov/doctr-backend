@@ -12,6 +12,7 @@ import java.time.ZoneId;
 
 @Configuration
 public class ClockConfig {
+
     private final static LocalDate TEST_LOCAL_DATE = LocalDate.of(2022, 9, 15);
 
     @Bean
@@ -26,4 +27,5 @@ public class ClockConfig {
     Clock getFixedClock() {
         return Clock.fixed(TEST_LOCAL_DATE.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
     }
+
 }
