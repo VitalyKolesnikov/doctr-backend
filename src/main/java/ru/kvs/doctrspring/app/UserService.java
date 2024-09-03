@@ -15,7 +15,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
-        return doctrRepository.getUserByUsernameIgnoreCase(username);
+        return doctrRepository.getByUsernameIgnoreCase(username);
     }
 
     @Transactional(readOnly = true)

@@ -26,8 +26,8 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     }
 
     @Override
-    public User getUserByUsernameIgnoreCase(String username) {
-        return userJpaRepository.getUserByUsernameIgnoreCase(username);
+    public User getByUsernameIgnoreCase(String username) {
+        return userJpaRepository.getByUsernameIgnoreCase(username);
     }
 
     @Override

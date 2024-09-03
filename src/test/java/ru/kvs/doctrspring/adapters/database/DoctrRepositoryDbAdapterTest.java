@@ -72,18 +72,18 @@ class DoctrRepositoryDbAdapterTest {
     }
 
     @Test
-    @DisplayName("getUserByUsernameIgnoreCase should call corresponding method in repository")
+    @DisplayName("getByUsernameIgnoreCase should call corresponding method in repository")
     void testGetUserByUsernameIgnoreCase() {
         // given
         String username = "some_username";
         User expectedUser = User.builder().id(USER_ID).build();
-        when(userJpaRepository.getUserByUsernameIgnoreCase(username)).thenReturn(expectedUser);
+        when(userJpaRepository.getByUsernameIgnoreCase(username)).thenReturn(expectedUser);
 
         // when
-        User actualUser = adapter.getUserByUsernameIgnoreCase(username);
+        User actualUser = adapter.getByUsernameIgnoreCase(username);
 
         // then
-        verify(userJpaRepository).getUserByUsernameIgnoreCase(username);
+        verify(userJpaRepository).getByUsernameIgnoreCase(username);
         assertEquals(expectedUser, actualUser);
     }
 

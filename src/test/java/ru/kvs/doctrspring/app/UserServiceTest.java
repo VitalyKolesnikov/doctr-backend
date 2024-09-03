@@ -30,13 +30,13 @@ public class UserServiceTest {
     void testFindByUsername() {
         // given
         User expectedUser = User.builder().id(USER_ID).username(USERNAME).build();
-        when(doctrRepository.getUserByUsernameIgnoreCase(USERNAME)).thenReturn(expectedUser);
+        when(doctrRepository.getByUsernameIgnoreCase(USERNAME)).thenReturn(expectedUser);
 
         // when
         User actualUser = userService.findByUsername(USERNAME);
 
         // then
-        verify(doctrRepository).getUserByUsernameIgnoreCase(USERNAME);
+        verify(doctrRepository).getByUsernameIgnoreCase(USERNAME);
         assertEquals(expectedUser, actualUser);
     }
 

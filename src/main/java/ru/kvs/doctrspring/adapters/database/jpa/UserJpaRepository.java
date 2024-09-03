@@ -5,5 +5,5 @@ import ru.kvs.doctrspring.domain.User;
 import ru.kvs.doctrspring.domain.ids.UserId;
 
 public interface UserJpaRepository extends JpaRepository<User, UserId> {
-    User getUserByUsernameIgnoreCase(String username);
+    User getByUsernameIgnoreCase(String username);
 }

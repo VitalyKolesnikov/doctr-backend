@@ -8,7 +8,7 @@ public interface DoctrRepository {
 
     User getUser(UserId doctorId);
 
-    User getUserByUsernameIgnoreCase(String username);
+    User getByUsernameIgnoreCase(String username);
 
     List<Clinic> getClinicsByDoctorId(UserId doctorId);
 
