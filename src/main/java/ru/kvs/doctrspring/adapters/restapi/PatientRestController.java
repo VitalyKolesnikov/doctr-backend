@@ -3,6 +3,7 @@ package ru.kvs.doctrspring.adapters.restapi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.PatientCreateOrUpdateRequest;
@@ -53,7 +54,7 @@ public class PatientRestController {
     }
 
     @PostMapping
-    public ResponseEntity<PatientDto> create(@RequestBody PatientCreateOrUpdateRequest patientCreateOrUpdateRequest) {
+    public ResponseEntity<PatientDto> create(@RequestBody @Validated PatientCreateOrUpdateRequest patientCreateOrUpdateRequest) {
         UserId doctorId = AuthUtil.getAuthUserId();
         Patient patient = patientMapper.toPatient(patientCreateOrUpdateRequest);
         Patient created = patientService.create(patient, doctorId);

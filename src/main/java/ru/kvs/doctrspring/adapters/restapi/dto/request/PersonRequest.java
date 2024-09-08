@@ -1,6 +1,7 @@
 package ru.kvs.doctrspring.adapters.restapi.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,6 @@ public abstract class PersonRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate birthDate;
     private String email;
+    @Pattern(regexp = "(\\+7)(\\(\\d{3}\\))(\\d{3})-(\\d{2})-(\\d{2})")
     private String phone;
 }

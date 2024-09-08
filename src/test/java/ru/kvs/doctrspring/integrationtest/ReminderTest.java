@@ -73,7 +73,7 @@ public class ReminderTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.patient.lastName", is("Brown")))
                 .andExpect(jsonPath("$.patient.birthDate", is("01.01.1985")))
                 .andExpect(jsonPath("$.patient.email", is("abrown@gmail.com")))
-                .andExpect(jsonPath("$.patient.phone", is("111")))
+                .andExpect(jsonPath("$.patient.phone", is("+7(915)333-22-11")))
                 .andExpect(jsonPath("$.patient.info", is("p-1 info")))
                 .andExpect(jsonPath("$.patient.status", is("ACTIVE")));
     }

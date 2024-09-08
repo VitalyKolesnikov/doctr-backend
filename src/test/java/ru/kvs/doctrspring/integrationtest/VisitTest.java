@@ -80,7 +80,7 @@ public class VisitTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.patient.lastName", is("Brown")))
                 .andExpect(jsonPath("$.patient.birthDate", is("01.01.1985")))
                 .andExpect(jsonPath("$.patient.email", is("abrown@gmail.com")))
-                .andExpect(jsonPath("$.patient.phone", is("111")))
+                .andExpect(jsonPath("$.patient.phone", is("+7(915)333-22-11")))
                 .andExpect(jsonPath("$.patient.info", is("p-1 info")))
                 .andExpect(jsonPath("$.patient.status", is("ACTIVE")))
                 .andExpect(jsonPath("$.clinic.id", is("8b8dd071-0a7c-4262-9389-44a814287ca2")))
