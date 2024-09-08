@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "/sql/clinics.sql",
         "/sql/patients.sql"
 })
-public class VisitIntegrationTest extends AbstractTestBase {
+public class VisitTest extends AbstractTestBase {
 
     @Test
     @DisplayName("API returns all visits of last six months grouped by date")
@@ -203,7 +203,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.status", is("DELETED")));
     }
 
-    private List<VisitId> givenVisits() {
+    static List<VisitId> givenVisits() {
         var patientIds = List.of(
                 PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d"),
                 PatientId.of("5d6b362f-5953-4e6c-8ae9-82f03ace7039"),
@@ -221,7 +221,7 @@ public class VisitIntegrationTest extends AbstractTestBase {
         return List.of(visitId_1, visitId_2, visitId_3);
     }
 
-    private VisitId givenVisit(PatientId patientId, LocalDate date, Integer cost, Integer percent, Boolean child, Boolean first, String info) {
+    static VisitId givenVisit(PatientId patientId, LocalDate date, Integer cost, Integer percent, Boolean child, Boolean first, String info) {
         String createdVisitId = RestAssured.given()
                 .log()
                 .all()

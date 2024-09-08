@@ -22,7 +22,7 @@ import static ru.kvs.doctrspring.domain.Status.DELETED;
         "/sql/user.sql",
         "/sql/clinics.sql"
 })
-public class PatientIntegrationTest extends AbstractTestBase {
+public class PatientTest extends AbstractTestBase {
 
     @Test
     @DisplayName("API returns all active patients of current user sorted by lastname")
@@ -224,7 +224,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
         assertThat(patientDto.getStatus()).isEqualTo(DELETED);
     }
 
-    private List<PatientId> givenPatients() {
+    static List<PatientId> givenPatients() {
         var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "111", "p-1 info");
         var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "333", "p-3 info");
         var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "222", "p-2 info");
@@ -232,7 +232,7 @@ public class PatientIntegrationTest extends AbstractTestBase {
         return List.of(patientId_1, patientId_2, patientId_3);
     }
 
-    private PatientId givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
+    static PatientId givenPatient(String firstName, String middleName, String lastName, LocalDate birthDate, String email, String phone, String info) {
         String createdPatientId = RestAssured.given()
                 .contentType("application/json")
                 .body(PatientCreateOrUpdateRequest.builder()

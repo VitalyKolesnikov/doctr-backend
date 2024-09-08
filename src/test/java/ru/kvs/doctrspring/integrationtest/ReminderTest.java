@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "/sql/clinics.sql",
         "/sql/patients.sql"
 })
-public class ReminderIntegrationTest extends AbstractTestBase {
+public class ReminderTest extends AbstractTestBase {
 
     @Test
     @DisplayName("API returns all active reminders")
@@ -209,7 +209,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
                 .andExpect(jsonPath("$.status", is("NOT_ACTIVE")));
     }
 
-    private List<ReminderId> givenReminders() {
+    static List<ReminderId> givenReminders() {
         var patientIds = List.of(
                 PatientId.of("0a83aef4-b000-407b-905c-8ded6ff00a3d"),
                 PatientId.of("5d6b362f-5953-4e6c-8ae9-82f03ace7039"),
@@ -229,7 +229,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         return List.of(reminderId_3, reminderId_2, reminderId_1, reminderId_4);
     }
 
-    private ReminderId givenReminder(PatientId patientId, LocalDate date, String text) {
+    static ReminderId givenReminder(PatientId patientId, LocalDate date, String text) {
         String createdReminderId = RestAssured.given()
                 .log()
                 .all()
@@ -250,7 +250,7 @@ public class ReminderIntegrationTest extends AbstractTestBase {
         return ReminderId.of(createdReminderId);
     }
 
-    private void setReminderCompleted(ReminderId reminderId) {
+    static void setReminderCompleted(ReminderId reminderId) {
         RestAssured.given()
                 .log()
                 .all()

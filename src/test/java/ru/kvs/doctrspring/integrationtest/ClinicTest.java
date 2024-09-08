@@ -19,7 +19,7 @@ import static ru.kvs.doctrspring.domain.Status.ACTIVE;
         "/sql/user.sql",
         "/sql/clinics.sql"
 })
-public class ClinicIntegrationTest extends AbstractTestBase {
+public class ClinicTest extends AbstractTestBase {
 
     @Test
     @DisplayName("API returns all active clinics of current user")
