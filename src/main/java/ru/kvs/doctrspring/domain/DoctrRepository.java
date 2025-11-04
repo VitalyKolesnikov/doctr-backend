@@ -20,7 +20,7 @@ public interface DoctrRepository {
 
     Patient savePatient(Patient patient);
 
-    List<Visit> getVisits(UserId doctorId);
+    List<Visit> getVisitsWithLimit(UserId doctorId, int limit);
 
     Visit getVisitByIdAndDoctorId(VisitId visitId, UserId doctorId);
 

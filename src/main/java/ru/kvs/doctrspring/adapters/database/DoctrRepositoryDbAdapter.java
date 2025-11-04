@@ -1,6 +1,7 @@
 package ru.kvs.doctrspring.adapters.database;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.kvs.doctrspring.adapters.database.jpa.*;
 import ru.kvs.doctrspring.domain.*;
@@ -58,8 +59,8 @@ public class DoctrRepositoryDbAdapter implements DoctrRepository {
     }
 
     @Override
-    public List<Visit> getVisits(UserId doctorId) {
-        return visitJpaRepository.getActive(doctorId);
+    public List<Visit> getVisitsWithLimit(UserId doctorId, int limit) {
+        return visitJpaRepository.getActiveWithLimit(doctorId, PageRequest.of(0, limit));
     }
 
     @Override

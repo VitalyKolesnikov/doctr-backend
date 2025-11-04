@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VisitTest extends AbstractTestBase {
 
     @Test
-    @DisplayName("API returns all visits of last six months grouped by date")
+    @DisplayName("API returns last N visits grouped by date")
     void getAllGroupByDate() throws Exception {
         // given
         givenVisits();

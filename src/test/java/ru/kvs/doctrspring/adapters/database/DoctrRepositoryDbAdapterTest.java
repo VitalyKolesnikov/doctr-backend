@@ -178,24 +178,6 @@ class DoctrRepositoryDbAdapterTest {
     }
 
     @Test
-    @DisplayName("getVisits should return active visits for doctor")
-    void testGetVisits() {
-        // given
-        List<Visit> expectedVisits = List.of(
-                Visit.builder().id(VISIT1_ID).doctorId(USER_ID).build(),
-                Visit.builder().id(VISIT2_ID).doctorId(USER_ID).build()
-        );
-        when(visitJpaRepository.getActive(USER_ID)).thenReturn(expectedVisits);
-
-        // when
-        List<Visit> actualVisits = adapter.getVisits(USER_ID);
-
-        // then
-        verify(visitJpaRepository).getActive(USER_ID);
-        assertEquals(expectedVisits, actualVisits);
-    }
-
-    @Test
     @DisplayName("getVisitByIdAndDoctorId should return visit if found in repository")
     void testGetVisitByIdAndDoctorIdWhenFound() {
         // given

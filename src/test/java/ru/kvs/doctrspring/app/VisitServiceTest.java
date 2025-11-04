@@ -16,9 +16,7 @@ import ru.kvs.doctrspring.domain.ids.UserId;
 import ru.kvs.doctrspring.domain.ids.VisitId;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -44,20 +42,21 @@ public class VisitServiceTest {
     private VisitService visitService;
 
     @Test
-    @DisplayName("getAllInTimeRangeGroupByDate should return visits in time range grouped by date for doctor")
-    void testGetAllInTimeRangeGroupByDate() {
+    @DisplayName("getAllWithLimitGroupByDate should return last N visits grouped by date for doctor")
+    void testGetAllWithLimitGroupByDate() {
         // given
         LocalDate now = LocalDate.now();
-        LocalDate sixMonthsAgo = now.minusMonths(6);
+        LocalDate yesterday = now.minusDays(1);
         Visit visit1 = Visit.builder().id(VISIT1_ID).doctorId(USER_ID).date(now).build();
-        Visit visit2 = Visit.builder().id(VISIT2_ID).doctorId(USER_ID).date(sixMonthsAgo).build();
-        when(clock.instant()).thenReturn(Instant.now());
-        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
-        when(doctrRepository.getVisits(USER_ID)).thenReturn(List.of(visit1, visit2));
-        Map<LocalDate, List<Visit>> expectedVisits = Map.of(now, List.of(visit1));
+        Visit visit2 = Visit.builder().id(VISIT2_ID).doctorId(USER_ID).date(yesterday).build();
+        when(doctrRepository.getVisitsWithLimit(USER_ID, 400)).thenReturn(List.of(visit1, visit2));
+        Map<LocalDate, List<Visit>> expectedVisits = Map.of(
+                now, List.of(visit1),
+                yesterday, List.of(visit2)
+        );
 
         // when
-        Map<LocalDate, List<Visit>> actualVisits = visitService.getAllInTimeRangeGroupByDate(USER_ID, 6);
+        Map<LocalDate, List<Visit>> actualVisits = visitService.getAllWithLimitGroupByDate(USER_ID, 400);
 
         // then
         assertEquals(expectedVisits, actualVisits);

@@ -95,10 +95,10 @@ class VisitRestControllerTest {
     private final List<VisitDto> visitDtos = Collections.singletonList(visitDto);
 
     @Test
-    @DisplayName("getAllInTimeRangeGroupByDate should return list of dated visit list dtos")
-    void testGetAllInTimeRangeGroupByDate() throws Exception {
+    @DisplayName("getAllWithLimitGroupByDate should return list of dated visit list dtos")
+    void testGetAllWithLimitGroupByDate() throws Exception {
         // given
-        when(visitService.getAllInTimeRangeGroupByDate(any(UserId.class), anyInt())).thenReturn(Collections.emptyMap());
+        when(visitService.getAllWithLimitGroupByDate(any(UserId.class), anyInt())).thenReturn(Collections.emptyMap());
 
         // when, then
         mockMvc.perform(get(REST_URL)
@@ -106,7 +106,7 @@ class VisitRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
 
-        verify(visitService).getAllInTimeRangeGroupByDate(any(UserId.class), anyInt());
+        verify(visitService).getAllWithLimitGroupByDate(any(UserId.class), anyInt());
     }
 
     @Test

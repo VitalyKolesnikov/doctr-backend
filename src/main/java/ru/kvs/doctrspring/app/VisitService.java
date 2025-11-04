@@ -27,11 +27,8 @@ public class VisitService {
     private final DoctrRepository doctrRepository;
 
     @Transactional(readOnly = true)
-    public Map<LocalDate, List<Visit>> getAllInTimeRangeGroupByDate(UserId doctorId, int months) {
-        LocalDate dateLimit = LocalDate.now(clock).minusMonths(months);
-
-        return doctrRepository.getVisits(doctorId).stream()
-                .filter(visit -> visit.getDate().isAfter(dateLimit))
+    public Map<LocalDate, List<Visit>> getAllWithLimitGroupByDate(UserId doctorId, int limit) {
+        return doctrRepository.getVisitsWithLimit(doctorId, limit).stream()
                 .collect(groupingBy(Visit::getDate));
     }
 

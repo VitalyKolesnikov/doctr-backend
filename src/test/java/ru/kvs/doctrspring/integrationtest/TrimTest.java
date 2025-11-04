@@ -12,12 +12,11 @@ import ru.kvs.doctrspring.domain.ids.PatientId;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.kvs.doctrspring.domain.Status.ACTIVE;
 import static ru.kvs.doctrspring.integrationtest.PatientTest.givenPatient;
 import static ru.kvs.doctrspring.integrationtest.ReminderTest.givenReminder;
 import static ru.kvs.doctrspring.integrationtest.VisitTest.givenVisit;
