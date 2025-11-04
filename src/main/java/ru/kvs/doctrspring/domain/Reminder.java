@@ -32,7 +32,7 @@ public class Reminder extends BaseEntity {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @Column(name = "date", columnDefinition = "DATE")
+    @Column(name = "date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate date;
 
