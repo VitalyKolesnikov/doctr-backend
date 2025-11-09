@@ -151,6 +151,68 @@ public class PatientTest extends AbstractTestBase {
     }
 
     @Test
+    @DisplayName("API creates new patient with all null fields except first name and last name")
+    void createWithNullFields() {
+        // when
+        var createdPatientId = givenPatient("Adam", null, "Brown",
+                null, null, null, null);
+
+        // then
+        var patientDto = RestAssured.given()
+                .get("/api/v1/patients/{id}", createdPatientId.asString())
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<PatientDto>() {
+                });
+
+        assertThat(patientDto.getId()).isEqualTo(createdPatientId.asString());
+        assertThat(patientDto.getFirstName()).isEqualTo("Adam");
+        assertThat(patientDto.getMiddleName()).isNull();
+        assertThat(patientDto.getLastName()).isEqualTo("Brown");
+        assertThat(patientDto.getBirthDate()).isNull();
+        assertThat(patientDto.getEmail()).isNull();
+        assertThat(patientDto.getPhone()).isNull();
+        assertThat(patientDto.getInfo()).isNull();
+        assertThat(patientDto.getCreated()).isNotNull();
+        assertThat(patientDto.getUpdated()).isNotNull();
+        assertThat(patientDto.getCreated()).isEqualTo(patientDto.getUpdated());
+        assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
+    }
+
+    @Test
+    @DisplayName("API creates new patient with all empty fields except first name and last name")
+    void createWithEmptyFields() {
+        // when
+        var createdPatientId = givenPatient("Adam", "", "Brown",
+                null, "", "", "");
+
+        // then
+        var patientDto = RestAssured.given()
+                .get("/api/v1/patients/{id}", createdPatientId.asString())
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<PatientDto>() {
+                });
+
+        assertThat(patientDto.getId()).isEqualTo(createdPatientId.asString());
+        assertThat(patientDto.getFirstName()).isEqualTo("Adam");
+        assertThat(patientDto.getMiddleName()).isNull();
+        assertThat(patientDto.getLastName()).isEqualTo("Brown");
+        assertThat(patientDto.getBirthDate()).isNull();
+        assertThat(patientDto.getEmail()).isNull();
+        assertThat(patientDto.getPhone()).isNull();
+        assertThat(patientDto.getInfo()).isNull();
+        assertThat(patientDto.getCreated()).isNotNull();
+        assertThat(patientDto.getUpdated()).isNotNull();
+        assertThat(patientDto.getCreated()).isEqualTo(patientDto.getUpdated());
+        assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
+    }
+
+    @Test
     @DisplayName("API updates existing patient")
     void update() {
         // given

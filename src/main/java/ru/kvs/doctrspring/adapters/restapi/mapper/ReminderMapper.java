@@ -1,6 +1,7 @@
 package ru.kvs.doctrspring.adapters.restapi.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.kvs.doctrspring.adapters.restapi.dto.request.ReminderCreateOrUpdateRequest;
 import ru.kvs.doctrspring.adapters.restapi.dto.response.ReminderDto;
 import ru.kvs.doctrspring.domain.Reminder;
@@ -15,6 +16,12 @@ public interface ReminderMapper {
 
     List<ReminderDto> toReminderDtos(List<Reminder> reminders);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "doctorId", ignore = true)
+    @Mapping(target = "patient", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "created", ignore = true)
+    @Mapping(target = "updated", ignore = true)
     Reminder toReminder(ReminderCreateOrUpdateRequest reminderCreateOrUpdateRequest);
 
     default String map(ReminderId id) {

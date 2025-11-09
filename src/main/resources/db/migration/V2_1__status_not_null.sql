@@ -1,0 +1,17 @@
+ALTER TABLE users
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE roles
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE patients
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE clinics
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE visits
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE reminders
+    ALTER COLUMN status SET NOT NULL;

@@ -22,3 +22,4 @@ out/
 
 docker/*.jar
 /.vscode/settings.json
+/target/

@@ -31,9 +31,4 @@ public class User extends Person {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
-    @Override
-    protected void generateId() {
-        this.id = UserId.newId();
-    }
-
 }

@@ -40,7 +40,7 @@ public class PatientService {
 
     @Transactional
     public Patient create(Patient patient, UserId doctorId) {
-        patient.create(doctorId);
+        patient.createNew(doctorId);
         return doctrRepository.savePatient(patient);
     }
 

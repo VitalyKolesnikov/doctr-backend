@@ -44,7 +44,7 @@ public class ReminderService {
     @Transactional
     public Reminder create(Reminder reminder, PatientId patientId, UserId doctorId) {
         var patient = doctrRepository.getPatientByIdAndDoctorId(patientId, doctorId);
-        reminder.create(doctorId, patient);
+        reminder.createNew(doctorId, patient);
         return doctrRepository.saveReminder(reminder);
     }
 

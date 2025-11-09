@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class PersonRequest {
+public abstract class PersonCreateOrUpdateRequest {
     private String firstName;
     private String middleName;
     private String lastName;

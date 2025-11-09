@@ -60,10 +60,10 @@ public class Visit extends BaseEntity {
     }
 
     public void create(UserId doctorId, Patient patient, Clinic clinic) {
+        this.id = VisitId.newId();
         this.doctorId = doctorId;
         this.patient = patient;
         this.clinic = clinic;
-        this.onCreate();
     }
 
     public void update(Visit visit) {
@@ -73,12 +73,6 @@ public class Visit extends BaseEntity {
         this.child = visit.getChild();
         this.first = visit.getFirst();
         this.info = visit.getInfo();
-        this.onUpdate();
-    }
-
-    @Override
-    protected void generateId() {
-        this.id = VisitId.newId();
     }
 
 }

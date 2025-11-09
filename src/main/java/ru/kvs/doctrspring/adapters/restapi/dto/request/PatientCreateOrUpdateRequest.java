@@ -7,6 +7,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @SuperBuilder
-public class PatientCreateOrUpdateRequest extends PersonRequest {
+public class PatientCreateOrUpdateRequest extends PersonCreateOrUpdateRequest {
     private String info;
 }

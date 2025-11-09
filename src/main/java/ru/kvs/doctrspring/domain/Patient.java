@@ -26,9 +26,9 @@ public class Patient extends Person {
     @AttributeOverride(name = "value", column = @Column(name = "doctor_id"))
     private UserId doctorId;
 
-    public void create(UserId doctorId) {
+    public void createNew(UserId doctorId) {
+        this.id = PatientId.newId();
         this.doctorId = doctorId;
-        this.onCreate();
     }
 
     public void update(Patient patient) {
@@ -39,12 +39,6 @@ public class Patient extends Person {
         this.email = patient.getEmail();
         this.phone = patient.getPhone();
         this.info = patient.getInfo();
-        this.onUpdate();
-    }
-
-    @Override
-    protected void generateId() {
-        this.id = PatientId.newId();
     }
 
 }

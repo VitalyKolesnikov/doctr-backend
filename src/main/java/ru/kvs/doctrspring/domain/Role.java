@@ -24,9 +24,4 @@ public class Role extends BaseEntity {
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users;
 
-    @Override
-    protected void generateId() {
-        this.id = RoleId.newId();
-    }
-
 }

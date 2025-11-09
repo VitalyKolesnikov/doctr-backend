@@ -39,26 +39,19 @@ public class Reminder extends BaseEntity {
     @Column(name = "text")
     private String text;
 
-    public void create(UserId doctorId, Patient patient) {
+    public void createNew(UserId doctorId, Patient patient) {
+        this.id = ReminderId.newId();
         this.doctorId = doctorId;
         this.patient = patient;
-        this.onCreate();
     }
 
     public void update(Reminder reminder) {
         this.date = reminder.getDate();
         this.text = reminder.getText();
-        this.onUpdate();
     }
 
     public void complete() {
         this.status = NOT_ACTIVE;
-        this.onUpdate();
-    }
-
-    @Override
-    protected void generateId() {
-        this.id = ReminderId.newId();
     }
 
 }

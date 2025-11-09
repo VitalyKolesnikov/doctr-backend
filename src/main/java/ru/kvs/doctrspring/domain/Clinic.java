@@ -34,9 +34,4 @@ public class Clinic extends BaseEntity {
     @AttributeOverride(name = "value", column = @Column(name = "doctor_id"))
     private UserId doctorId;
 
-    @Override
-    protected void generateId() {
-        this.id = ClinicId.newId();
-    }
-
 }

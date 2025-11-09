@@ -13,7 +13,11 @@ public class CustomStringDeserializer extends StringDeserializer {
     @Override
     public String deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
         String value = super.deserialize(p, ctx);
-        return value != null ? value.strip() : null;
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.strip();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
 }
