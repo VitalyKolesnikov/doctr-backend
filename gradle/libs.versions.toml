@@ -1,0 +1,38 @@
+[versions]
+com-tngtech-archunit-archunit = "1.3.0"
+io-jsonwebtoken-jjwt = "0.9.1"
+io-sentry-sentry-logback = "6.16.0"
+io-sentry-sentry-spring-boot-starter = "6.16.0"
+javax-xml-bind-jaxb-api = "2.4.0-b180830.0359"
+org-flywaydb-flyway-core = "9.16.0"
+org-mapstruct-mapstruct = "1.5.3.Final"
+org-projectlombok-lombok-mapstruct-binding = "0.2.0"
+org-springdoc-springdoc-openapi-starter-webmvc-ui = "2.0.4"
+org-springdoc-springdoc-openapi-ui = "1.6.15"
+
+[libraries]
+com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+com-tngtech-archunit-archunit = { module = "com.tngtech.archunit:archunit", version.ref = "com-tngtech-archunit-archunit" }
+io-jsonwebtoken-jjwt = { module = "io.jsonwebtoken:jjwt", version.ref = "io-jsonwebtoken-jjwt" }
+io-rest-assured-json-path = { module = "io.rest-assured:json-path" }
+io-rest-assured-rest-assured = { module = "io.rest-assured:rest-assured" }
+io-sentry-sentry-logback = { module = "io.sentry:sentry-logback", version.ref = "io-sentry-sentry-logback" }
+io-sentry-sentry-spring-boot-starter = { module = "io.sentry:sentry-spring-boot-starter", version.ref = "io-sentry-sentry-spring-boot-starter" }
+javax-xml-bind-jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "javax-xml-bind-jaxb-api" }
+org-flywaydb-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "org-flywaydb-flyway-core" }
+org-glassfish-jaxb-jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime" }
+org-hibernate-validator-hibernate-validator = { module = "org.hibernate.validator:hibernate-validator" }
+org-mapstruct-mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "org-mapstruct-mapstruct" }
+org-postgresql-postgresql = { module = "org.postgresql:postgresql" }
+org-projectlombok-lombok = { module = "org.projectlombok:lombok" }
+org-projectlombok-lombok-mapstruct-binding = { module = "org.projectlombok:lombok-mapstruct-binding", version.ref = "org-projectlombok-lombok-mapstruct-binding" }
+org-springdoc-springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "org-springdoc-springdoc-openapi-starter-webmvc-ui" }
+org-springdoc-springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "org-springdoc-springdoc-openapi-ui" }
+org-springframework-boot-spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+org-springframework-boot-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+org-springframework-boot-spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+org-springframework-boot-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+org-springframework-boot-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+org-springframework-security-spring-security-test = { module = "org.springframework.security:spring-security-test" }
+org-testcontainers-postgresql = { module = "org.testcontainers:postgresql" }
+org-testcontainers-testcontainers = { module = "org.testcontainers:testcontainers" }
