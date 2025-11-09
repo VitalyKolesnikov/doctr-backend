@@ -1,6 +1,7 @@
 HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
+build/
+.gradle/
+out/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -20,3 +21,4 @@ target/
 *.ipr
 
 docker/*.jar
+/.vscode/settings.json
