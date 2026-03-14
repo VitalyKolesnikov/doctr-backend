@@ -71,7 +71,7 @@ public class PatientTest extends AbstractTestBase {
         assertThat(patientDto.getLastName()).isEqualTo("Brown");
         assertThat(patientDto.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
         assertThat(patientDto.getEmail()).isEqualTo("abrown@gmail.com");
-        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-22-11");
+        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-2211");
         assertThat(patientDto.getInfo()).isEqualTo("p-1 info");
         assertThat(patientDto.getStatus()).isEqualTo(ACTIVE);
     }
@@ -124,7 +124,7 @@ public class PatientTest extends AbstractTestBase {
     void create() {
         // when
         var createdPatientId = givenPatient("Adam", "Peter", "Brown",
-                LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-22-11", "p-1 info");
+                LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
 
         // then
         var patientDto = RestAssured.given()
@@ -142,7 +142,7 @@ public class PatientTest extends AbstractTestBase {
         assertThat(patientDto.getLastName()).isEqualTo("Brown");
         assertThat(patientDto.getBirthDate()).isEqualTo(LocalDate.of(1985, 1, 1));
         assertThat(patientDto.getEmail()).isEqualTo("abrown@gmail.com");
-        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-22-11");
+        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-2211");
         assertThat(patientDto.getInfo()).isEqualTo("p-1 info");
         assertThat(patientDto.getCreated()).isNotNull();
         assertThat(patientDto.getUpdated()).isNotNull();
@@ -216,7 +216,7 @@ public class PatientTest extends AbstractTestBase {
     @DisplayName("API updates existing patient")
     void update() {
         // given
-        var patientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-22-11", "p-1 info");
+        var patientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
 
         // when
         RestAssured.given()
@@ -264,7 +264,7 @@ public class PatientTest extends AbstractTestBase {
     @DisplayName("API soft-deletes existing patient")
     void softDelete() {
         // given
-        var patientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-22-11", "p-1 info");
+        var patientId = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
 
         // when
         RestAssured.given()
@@ -300,9 +300,9 @@ public class PatientTest extends AbstractTestBase {
     }
 
     static List<PatientId> givenPatients() {
-        var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-22-11", "p-1 info");
-        var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "+7(915)333-22-33", "p-3 info");
-        var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "+7(915)333-22-22", "p-2 info");
+        var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
+        var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "+7(915)333-2233", "p-3 info");
+        var patientId_3 = givenPatient("Mike", "Robert", "Charles", LocalDate.of(1985, 2, 2), "mcharles@gmail.com", "+7(915)333-2222", "p-2 info");
 
         return List.of(patientId_1, patientId_2, patientId_3);
     }

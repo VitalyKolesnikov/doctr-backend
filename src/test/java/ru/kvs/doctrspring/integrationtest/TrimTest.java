@@ -34,7 +34,7 @@ public class TrimTest extends AbstractTestBase {
     void createPatientTrimmed() {
         // when
         var createdPatientId = givenPatient(" Adam ", " Peter ", " Brown ",
-                LocalDate.of(1985, 1, 1), " abrown@gmail.com ", " +7(915)333-22-11 ", " p-1 info ");
+                LocalDate.of(1985, 1, 1), " abrown@gmail.com ", " +7(915)333-2211 ", " p-1 info ");
 
         // then
         var patientDto = RestAssured.given()
@@ -50,7 +50,7 @@ public class TrimTest extends AbstractTestBase {
         assertThat(patientDto.getMiddleName()).isEqualTo("Peter");
         assertThat(patientDto.getLastName()).isEqualTo("Brown");
         assertThat(patientDto.getEmail()).isEqualTo("abrown@gmail.com");
-        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-22-11");
+        assertThat(patientDto.getPhone()).isEqualTo("+7(915)333-2211");
         assertThat(patientDto.getInfo()).isEqualTo("p-1 info");
     }
 
@@ -59,7 +59,7 @@ public class TrimTest extends AbstractTestBase {
     void updatePatientTrimmed() {
         // given
         var patientId = givenPatient("Adam", "Peter", "Brown",
-                LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-22-11", "p-1 info");
+                LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
 
         // when
         RestAssured.given()
