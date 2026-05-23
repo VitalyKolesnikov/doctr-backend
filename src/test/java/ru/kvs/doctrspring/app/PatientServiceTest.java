@@ -82,6 +82,24 @@ class PatientServiceTest {
     }
 
     @Test
+    @DisplayName("getSuggested should ignore null name parts")
+    void testGetSuggestedWithNullNameParts() {
+        // given
+        List<Patient> expectedPatients = List.of(
+                Patient.builder().id(PATIENT1_ID).doctorId(USER_ID).lastName("Johnson").firstName("John").middleName(null).build(),
+                Patient.builder().id(PATIENT2_ID).doctorId(USER_ID).lastName("Doe").firstName("Jane").middleName("Elizabeth").build()
+        );
+        when(doctrRepository.getPatients(USER_ID)).thenReturn(expectedPatients);
+
+        // when
+        List<Patient> actualPatients = service.getSuggested(USER_ID, "Jo");
+
+        // then
+        verify(doctrRepository).getPatients(USER_ID);
+        assertEquals(List.of(expectedPatients.get(0)), actualPatients);
+    }
+
+    @Test
     @DisplayName("create should create new patient with given data for doctor")
     void testCreate() {
         // given

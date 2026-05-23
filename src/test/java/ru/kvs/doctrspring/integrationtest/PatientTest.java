@@ -299,6 +299,28 @@ public class PatientTest extends AbstractTestBase {
         assertThat(error.getMessage()).isEqualTo("Bad request, please check your data");
     }
 
+    @Test
+    @DisplayName("API returns suggested patients even when middle name is null")
+    void getSuggestedWithNullMiddleName() {
+        // given
+        givenPatient("Null", null, "Middle", null, null, null, null);
+
+        // when
+        var patientDtos = RestAssured.given()
+                .get("/api/v1/patients/suggest/{part}", "mid")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<List<PatientDto>>() {
+                });
+
+        // then
+        assertThat(patientDtos).hasSize(1);
+        assertThat(patientDtos.get(0).getLastName()).isEqualTo("Middle");
+        assertThat(patientDtos.get(0).getMiddleName()).isNull();
+    }
+
     static List<PatientId> givenPatients() {
         var patientId_1 = givenPatient("Adam", "Peter", "Brown", LocalDate.of(1985, 1, 1), "abrown@gmail.com", "+7(915)333-2211", "p-1 info");
         var patientId_2 = givenPatient("John", "Mac", "Peterson", LocalDate.of(1985, 3, 3), "jpeterson@gmail.com", "+7(915)333-2233", "p-3 info");

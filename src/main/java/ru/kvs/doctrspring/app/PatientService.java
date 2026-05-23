@@ -32,9 +32,9 @@ public class PatientService {
         String partLowerCased = part.toLowerCase();
 
         return doctrRepository.getPatients(doctorId).stream()
-                .filter(patient -> (patient.getLastName().toLowerCase().contains(partLowerCased) ||
-                        patient.getFirstName().toLowerCase().contains(partLowerCased)) ||
-                        patient.getMiddleName().toLowerCase().contains(partLowerCased))
+                .filter(patient -> containsIgnoreCase(patient.getLastName(), partLowerCased)
+                        || containsIgnoreCase(patient.getFirstName(), partLowerCased)
+                        || containsIgnoreCase(patient.getMiddleName(), partLowerCased))
                 .collect(Collectors.toList());
     }
 
@@ -54,6 +54,10 @@ public class PatientService {
     public void delete(PatientId id, UserId doctorId) {
         Patient patient = doctrRepository.getPatientByIdAndDoctorId(id, doctorId);
         patient.softDelete();
+    }
+
+    private boolean containsIgnoreCase(String value, String partLowerCased) {
+        return value != null && value.toLowerCase().contains(partLowerCased);
     }
 
 }
